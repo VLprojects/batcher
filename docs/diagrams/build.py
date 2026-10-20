@@ -305,15 +305,15 @@ def shutdown(pal):
 def modules(pal):
 	# the group is one container: core underneath, the starter on top; a service on the left points
 	# at what it puts in its build
-	a = Art(704, 272, pal)
-	cx, cy, cw, ch = 208, 16, 480, 240
-	a.plate(cx, cy, cw, ch)
-	a.name(cx + 16, cy + 28, "pro.vlprojects", mono=True)
-	a.t(cx + 136, cy + 28, "four artifacts", color="soft")
+	a = Art(704, 268, pal)
+	cx, cy, cw, ch = 208, 16, 480, 236
+	a.rect(cx, cy, cw, ch, "plate", r=14)  # outer radius = inner radius + padding
+	a.t(cx + 16, cy + 26, "group", color="soft")
+	a.name(cx + 60, cy + 26, "pro.vlprojects", mono=True)
 
 	ix, iw, h, gap = cx + 12, cw - 24, 56, 8
 	half = (iw - gap) / 2
-	y1 = cy + 44
+	y1 = cy + 40
 	y2, y3 = y1 + h + gap, y1 + 2 * (h + gap)
 
 	def card(x, y, w, hue, title, note):
@@ -326,21 +326,22 @@ def modules(pal):
 	card(ix + half + gap, y2, half, "green", "batcher-spring-boot", "auto-configuration, lifecycle")
 	card(ix, y3, iw, "blue", "batcher-core", "the engine and every interface, no Spring")
 
-	def chip(y, fill, text):
+	def chip(y, fill, text, note):
 		a.rect(16, y - 16, 160, 32, fill, r=16)
-		a.t(96, y + 4.5, text, color="on-" + fill, weight="650", anchor="middle")
+		a.t(32, y + 4.5, text, color="on-" + fill, weight="650")
+		a.t(32, y + 36, note)
 
 	def head(x, y, color):
 		x -= 2
 		a.add(f'<path d="M{x - 7},{y - 4} L{x},{y} L{x - 7},{y + 4} Z" fill="{pal[color]}"/>')
 
 	c1, c2, c3 = y1 + h / 2, y2 + h / 2, y3 + h / 2
-	chip(c1, "green", "Spring Boot service")
+	chip(c1, "green", "Spring Boot service", "gets all four through it")
 	a.path(f"M176,{c1} L{ix - 8},{c1}", "green", width=2)
 	head(ix, c1, "green")
 
 	cj, fx, r = (c2 + c3) / 2, 192, 8
-	chip(cj, "blue", "plain JVM service")
+	chip(cj, "blue", "plain JVM service", "picks what it needs")
 	a.path(f"M176,{cj} L{fx},{cj}", "blue", width=2)
 	for cy_ in (c2, c3):
 		sign = -1 if cy_ < cj else 1
