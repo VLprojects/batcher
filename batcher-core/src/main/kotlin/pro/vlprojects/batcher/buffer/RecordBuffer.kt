@@ -13,10 +13,20 @@ public interface RecordBuffer<T : Any> {
     /** Records outlive the process, so the source may acknowledge one as soon as [add] returns. */
     public val isDurable: Boolean
 
-    /** Before the first [add]: cut batches go to [listener] from then on. */
-    public fun open(listener: BatchReadyListener<T>)
+    /**
+     * From any thread, at any time; counts from the next cut batch. A batch goes to every listener in
+     * the order they were added, and the records are let go only once all of them have returned. A
+     * throw from any keeps the batch, and all of them get it again: a listener has to bear a repeat,
+     * which it can tell by [Batch.id].
+     */
+    public fun addListener(listener: BatchReadyListener<T>)
 
-    /** Returns once the record is in. A throw means it is not, and it is still the caller's. */
+    public fun removeListener(listener: BatchReadyListener<T>)
+
+    /**
+     * Returns once the record is in. A throw means it is not, and it is still the caller's: with no
+     * listener a cut batch has nowhere to go, so the buffer stops taking records.
+     */
     public fun add(record: T)
 
     /**

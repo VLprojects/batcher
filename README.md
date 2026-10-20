@@ -240,7 +240,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batch<T>` | records, an id, the arrival of the first one | value type |
 | `BatchWriter<T>` | one insert of one batch | **yours**, there is no default |
 | `RecordBuffer<T>` | collect records and cut batches by a rule of its own | in memory, cut by size or by age on a daemon thread |
-| `BatchReadyListener<T>` | take a batch the buffer has cut | the batcher, which offers it to the queue |
+| `BatchReadyListener<T>` | take a batch the buffer has cut; any number, added and removed at run time | the batcher, which offers it to the queue |
 | `BatchQueue<T>` | hold cut batches until the writer leases one | in memory, bounded |
 | `BatchLease<T>` | a batch out of the queue: `complete()` or `release()` | — |
 | `WriteFallback<T>` | keep what could not be written, with a `FallbackCause` | none: log at ERROR and count |
@@ -255,8 +255,9 @@ delivers the batch again.
 
 A stage lets go of a batch only once the next one has taken it:
 
-- the buffer drops the records once `BatchReadyListener.handle` returns; a throw
-  leaves them in the buffer;
+- the buffer drops the records once every `BatchReadyListener` has returned; a
+  throw from any leaves them in the buffer, and all the listeners get the batch
+  again;
 - the writer leases a batch from the queue and completes the lease once the batch
   is written or parked; a stop that interrupts the write releases it.
 
