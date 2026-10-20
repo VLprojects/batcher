@@ -1,0 +1,15 @@
+sequenceDiagram
+    autonumber
+    participant W as Writer thread
+    participant BW as BatchWriter
+    participant F as WriteFallback
+
+    W->>BW: persist(batch of 500)
+    BW--xW: failure
+    Note over W,BW: retry the batch record by record
+    loop every record
+        W->>BW: persist(record)
+        BW--xW: failure
+        W->>F: handle(record)
+    end
+    Note over W,F: fallback failed too: ERROR log,<br/>record counted as lost

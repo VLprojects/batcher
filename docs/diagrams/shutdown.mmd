@@ -1,0 +1,17 @@
+sequenceDiagram
+    autonumber
+    participant S as Spring context
+    participant B as Batcher
+    participant BUF as RecordBuffer
+    participant W as Writer
+
+    S->>B: stop()
+    B->>BUF: shutdown()
+    Note over BUF: stops accepting,<br/>cancels the deadline thread
+    BUF-->>B: remaining records
+    B->>W: handle immediately, ahead of the queue
+    B->>W: shutdown(budget)
+    Note over W: drains the queue within the budget
+    W->>W: whatever is left goes to WriteFallback
+    W-->>B: stopped
+    B-->>S: stopped

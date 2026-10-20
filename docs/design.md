@@ -7,16 +7,16 @@ ClickHouse, but it knows nothing about ClickHouse: the write itself is your code
 Contents:
 
 1. [The problem](#1-the-problem)
-2. [How ClickHouse takes inserts](#2-how-clickhouse-takes-inserts)
-3. [Why `async_insert` is not always the answer](#3-why-async_insert-is-not-always-the-answer)
-4. [What the library does](#4-what-the-library-does)
-5. [Abstractions](#5-abstractions)
-6. [Extension points](#6-extension-points)
-7. [Failure handling](#7-failure-handling)
-8. [Lifecycle and shutdown](#8-lifecycle-and-shutdown)
-9. [Guarantees](#9-guarantees)
-10. [Configuration](#10-configuration)
-11. [Modules](#11-modules)
+2. [The library in brief](#2-the-library-in-brief)
+3. [How ClickHouse takes inserts](#3-how-clickhouse-takes-inserts)
+4. [Why `async_insert` is not always the answer](#4-why-async_insert-is-not-always-the-answer)
+5. [How it works](#5-how-it-works)
+6. [Abstractions](#6-abstractions)
+7. [Extension points](#7-extension-points)
+8. [Failure handling](#8-failure-handling)
+9. [Lifecycle and shutdown](#9-lifecycle-and-shutdown)
+10. [Guarantees](#10-guarantees)
+11. [Configuration](#11-configuration)
 12. [Metrics](#12-metrics)
 13. [Build and publishing](#13-build-and-publishing)
 14. [Out of scope for v1](#14-out-of-scope-for-v1)
@@ -29,7 +29,7 @@ one row per record gives you, in order of appearance:
 
 - a round trip to the database per record, so consumer threads spend their time
   waiting;
-- in ClickHouse, one data part per record (see the next section);
+- in ClickHouse, one data part per record (see section 3);
 - no place to put a record whose write failed, so the consumer either loses it
   or rejects the message and gets it again in a loop.
 
@@ -47,7 +47,91 @@ Writing in groups needs more than a list and a timer:
 Every service that writes to ClickHouse writes this code again. That is what
 this library is.
 
-## 2. How ClickHouse takes inserts
+## 2. The library in brief
+
+A batcher takes single records, holds them in memory, cuts a batch when it is
+full or when the oldest record has waited long enough, and writes batches on a
+thread of its own. Around the write it adds recovery, back pressure, metrics and
+an orderly shutdown. It never builds a query: what a write is stays in your code.
+
+What you get:
+
+- the producer thread does no I/O: `accept` appends to a buffer and returns;
+- memory is bounded, and a full queue has a defined outcome;
+- a failed batch is retried record by record, and what still fails goes to a
+  fallback, not to the floor;
+- shutdown drains the buffer within a budget;
+- metrics for every step, Micrometer out of the box;
+- several named batchers in one application, each with its own settings;
+- every part is an interface with a default, so you can replace one piece or
+  assemble the whole pipeline yourself.
+
+Four artifacts, group `pro.vlprojects`. Spring Boot is optional, and so is
+Micrometer:
+
+| Artifact | For | Depends on |
+| --- | --- | --- |
+| `batcher-core` | any JVM service, with or without Spring: the engine and every interface | `slf4j-api` |
+| `batcher-micrometer` | metrics without Spring | core, `micrometer-core` |
+| `batcher-spring-boot` | auto-configuration, configuration properties, lifecycle | core, Spring Boot; the Micrometer adapter if it is on the classpath |
+| `batcher-spring-boot-starter` | the usual way in: dependencies only | the three above |
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/modules-dark.svg">
+    <img alt="Modules and what depends on what" src="assets/modules-light.svg" width="620">
+  </picture>
+</p>
+
+The naming follows the Spring Boot reference: a module of your own is
+`<name>-spring-boot`, the starter is `<name>-spring-boot-starter`, and nothing
+starts with `spring-boot`. Configuration keys live under `batcher`, not under
+`spring`.
+
+The only thing you have to write is the batch write itself:
+
+```kotlin
+class HistoryWriter(private val history: HistoryService) : BatchWriter<HistoryRecord> {
+
+	override fun persist(batch: Batch<HistoryRecord>) = history.saveAll(batch.records)
+
+	override fun persist(record: HistoryRecord) = history.save(record)
+}
+```
+
+With the starter, a batcher is one bean and a few settings:
+
+```kotlin
+@Bean
+fun historyBatcher(batchers: BatcherFactory, writer: HistoryWriter): Batcher<HistoryRecord> =
+	batchers.create("history", writer)
+```
+
+```yaml
+batcher:
+  instances:
+    history:
+      batch-size: 2000
+      buffering-max-duration: 1s
+```
+
+Without Spring, the same thing is a builder:
+
+```kotlin
+val batcher = Batcher.builder<HistoryRecord>("history")
+	.batchSize(2000)
+	.bufferingMaxDuration(Duration.ofSeconds(1))
+	.writer(HistoryWriter(history))
+	.meter(MicrometerBatcherMeter("history", registry))
+	.build()
+
+batcher.start()
+```
+
+Both give the same object. The rest of this document is what it does and where
+you can get in between.
+
+## 3. How ClickHouse takes inserts
 
 Each INSERT into a MergeTree table creates one data part: its own directory with
 column files, indexes and metadata. Parts are merged in the background. Part
@@ -71,7 +155,7 @@ So 2000 records a second is either 2000 parts a second, which kills the table
 within minutes, or two inserts a second, which is normal load. The difference is
 only where the records waited.
 
-## 3. Why `async_insert` is not always the answer
+## 4. Why `async_insert` is not always the answer
 
 ClickHouse can batch on its own: with `async_insert=1` the server keeps incoming
 rows in memory and flushes them when a size, time or query-count threshold is
@@ -124,29 +208,16 @@ The two are not alternatives. Batch in the client to control size, latency and
 failures; leave `async_insert` on as a second line of defence if your server
 already has it.
 
-## 4. What the library does
+## 5. How it works
 
 One batcher is a short pipeline with two threads of its own.
 
-```mermaid
-flowchart LR
-    P["Producer<br/>consumer, handler, job"]
-
-    subgraph BATCHER["Batcher"]
-        direction LR
-        B["RecordBuffer<br/>cut by size or age"]
-        Q["Queue<br/>bounded"]
-        W["Writer thread"]
-    end
-
-    P -->|"accept(record)"| B
-    B -->|Batch| Q
-    Q --> W
-    W -->|"persist(batch)"| CH[("Storage")]
-    W -.->|batch failed| R["persist(record)<br/>one by one"]
-    R -.-> CH
-    R -.->|record failed| F["WriteFallback<br/>queue, file, log"]
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/pipeline-dark.svg">
+    <img alt="From accept to the storage" src="assets/pipeline-light.svg" width="100%">
+  </picture>
+</p>
 
 - `accept` takes the lock, appends to the buffer and returns. It does no I/O.
 - The record that fills the batch carries it out to the queue; nothing else
@@ -157,7 +228,7 @@ flowchart LR
   it applies the back-pressure policy.
 - One writer thread writes batches in order, one at a time.
 
-## 5. Abstractions
+## 6. Abstractions
 
 Everything in the pipeline above is an interface in `batcher-core`.
 
@@ -171,13 +242,13 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `BatchWriter<T>` | write a batch; write a single record | **yours**, there is no default |
 | `WriteFallback<T>` | take records that could not be written | none: log at ERROR and count |
 | `BackPressurePolicy` | what happens when the queue is full | hand the batch to the fallback |
-| `BatcherMeter` | report every state change | disabled in core, Micrometer in the Spring module |
+| `BatcherMeter` | report every state change | disabled in core, Micrometer in `batcher-micrometer` |
 
 `BatchWriter` is the only thing you must write. It gets a `Batch<T>` and does one
 insert; its single-record method is used only while recovering from a failed
 batch.
 
-## 6. Extension points
+## 7. Extension points
 
 Three ways to use the library, from least to most work.
 
@@ -203,28 +274,17 @@ keep the defaults while another one does not.
 buffer, the writer and the batcher yourself, or keep only the pieces you need
 and drive them from your own code.
 
-## 7. Failure handling
+## 8. Failure handling
 
 A write failure is not an exception for the producer. The batcher is already one
 thread away from it, so it recovers instead.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant W as Writer thread
-    participant BW as BatchWriter
-    participant F as WriteFallback
-
-    W->>BW: persist(batch of 500)
-    BW--xW: failure
-    Note over W: retry the batch record by record
-    loop every record
-        W->>BW: persist(record)
-        BW--xW: failure
-        W->>F: handle(record)
-    end
-    Note over W,F: fallback failed too → ERROR log,<br/>record counted as lost
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/recovery-dark.svg">
+    <img alt="A failed batch is retried record by record" src="assets/recovery-light.svg" width="760">
+  </picture>
+</p>
 
 Why one by one: a batch usually fails for one of two reasons. The storage is
 unavailable, and then every record fails and goes to the fallback, or one record
@@ -241,51 +301,28 @@ Records reach the fallback for four reasons, and each is a separate counter:
 | `WRITE_FAILED` | the write failed, and so did the per-record retry |
 | `WRITING_STOPPED` | shutdown ran out of its budget |
 
-## 8. Lifecycle and shutdown
+## 9. Lifecycle and shutdown
 
-```mermaid
-stateDiagram-v2
-    [*] --> NEW
-    NEW --> RUNNING: start, writer thread up
-    RUNNING --> STOPPING: stop
-    STOPPING --> STOPPED: queue drained or budget spent
-    STOPPED --> [*]
-
-    note right of RUNNING
-        accept allowed
-    end note
-    note right of STOPPING
-        accept rejected,
-        buffered records still written
-    end note
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/lifecycle-dark.svg">
+    <img alt="States of a batcher" src="assets/lifecycle-light.svg" width="560">
+  </picture>
+</p>
 
 Shutdown is the part that decides whether you lose data on every deploy.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant S as Spring context
-    participant B as Batcher
-    participant BUF as RecordBuffer
-    participant W as Writer
-
-    S->>B: stop()
-    B->>BUF: shutdown()
-    Note over BUF: stops accepting,<br/>cancels the deadline thread
-    BUF-->>B: remaining records
-    B->>W: handle immediately, ahead of the queue
-    B->>W: shutdown(budget)
-    Note over W: drains the queue within the budget
-    W->>W: whatever is left → WriteFallback
-    W-->>B: stopped
-    B-->>S: stopped
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/shutdown-dark.svg">
+    <img alt="What happens on stop" src="assets/shutdown-light.svg" width="860">
+  </picture>
+</p>
 
 The batcher stops in a late Spring phase, after the message listeners, so the
 sources stop producing before the buffer stops accepting.
 
-## 9. Guarantees
+## 10. Guarantees
 
 What holds:
 
@@ -307,7 +344,7 @@ What does not hold:
   `insert_deduplication_token`.
 - **Order between batchers.** Two named batchers are independent.
 
-## 10. Configuration
+## 11. Configuration
 
 Defaults apply to every batcher; `instances` names them and overrides what it
 needs.
@@ -341,30 +378,11 @@ that keeps inserts at roughly one per second per table.
 Each named instance gets its own metrics tag, its own threads and its own
 `BatchWriter` bean, resolved by qualifier.
 
-## 11. Modules
-
-```mermaid
-flowchart TD
-    S["batcher-spring-boot-starter<br/>dependencies only"] --> A["batcher-spring-boot<br/>auto-configuration, properties,<br/>Micrometer, lifecycle"]
-    A --> C["batcher-core<br/>engine and interfaces,<br/>no Spring"]
-    APP["your service"] --> S
-    OWN["your own wiring"] --> C
-```
-
-| Module | Contains | Depends on |
-| --- | --- | --- |
-| `batcher-core` | the pipeline and every interface | `slf4j-api` only |
-| `batcher-spring-boot` | auto-configuration, configuration properties, Micrometer meter, Spring lifecycle | core, Spring Boot, Micrometer as optional |
-| `batcher-spring-boot-starter` | nothing but dependencies | the two above and `spring-boot-starter` |
-
-The naming follows the Spring Boot reference: a module of your own is
-`<name>-spring-boot`, the starter is `<name>-spring-boot-starter`, and nothing
-starts with `spring-boot`. Configuration keys live under `batcher`, not under
-`spring`.
-
 ## 12. Metrics
 
-Micrometer, prefix `batcher`, every series tagged with the batcher name.
+Micrometer, prefix `batcher`, every series tagged with the batcher name. The
+adapter lives in `batcher-micrometer` and works without Spring; with the starter
+it is wired in when Micrometer is on the classpath.
 
 | Series | Type | Tags | Answers |
 | --- | --- | --- | --- |
@@ -385,8 +403,7 @@ and `batcher.buffer.age` near `buffering-max-duration` for minutes.
 As in `convertible`, the other published library: Gradle with the Kotlin DSL,
 one root build with shared settings, versions in `gradle.properties`.
 
-- group `pro.vlprojects`, artifacts `batcher-core`, `batcher-spring-boot`,
-  `batcher-spring-boot-starter`;
+- group `pro.vlprojects`, four artifacts as listed in section 2;
 - published to Maven Central through the Central Portal with the
   `com.vanniktech.maven.publish` plugin, signed, with sources and javadoc;
 - a GitHub Actions workflow on a `*.*.*` tag runs
@@ -404,3 +421,10 @@ one root build with shared settings, versions in `gradle.properties`.
 - **Persistence.** No write-ahead log. Durability stays with the source.
 - **Retries with a delay.** A failed record goes to the fallback immediately.
   Retry policy belongs to whatever reads the fallback.
+- **A ready-made fallback.** Parking records in RabbitMQ or Kafka is a few lines
+  against your own transport; the library ships the interface, not the binding.
+
+---
+
+The diagrams are generated from `diagrams/*.mmd` by `diagrams/render.sh`, in a
+light and a dark variant.
