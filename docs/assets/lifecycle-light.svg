@@ -4,9 +4,9 @@
   <rect x="132.0" y="44.0" width="328.0" height="32.0" rx="4" fill="#22C063"/>
   <text x="144.0" y="64.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#0B2915" text-anchor="start">running</text>
   <text x="212.0" y="64.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#0B2915" text-anchor="start">accept allowed</text>
-  <rect x="464.0" y="44.0" width="300.0" height="32.0" rx="4" fill="#FFB21E"/>
-  <text x="476.0" y="64.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#2B1D00" text-anchor="start">stopping</text>
-  <text x="552.0" y="64.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2B1D00" text-anchor="start">accept rejected, buffer drains</text>
+  <rect x="464.0" y="44.0" width="300.0" height="32.0" rx="4" fill="#FF9F2E"/>
+  <text x="476.0" y="64.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#2E1700" text-anchor="start">stopping</text>
+  <text x="552.0" y="64.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2E1700" text-anchor="start">accept rejected, buffer drains</text>
   <rect x="768.0" y="44.0" width="96.0" height="32.0" rx="4" fill="#7A8594"/>
   <text x="780.0" y="64.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#FFFFFF" text-anchor="start">stopped</text>
   <text x="130.0" y="28.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="middle">start</text>

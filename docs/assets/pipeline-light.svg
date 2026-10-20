@@ -118,13 +118,13 @@
   <rect x="810.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#22C063"/>
   <rect x="820.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#22C063"/>
   <rect x="830.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#22C063"/>
-  <rect x="624.0" y="172.0" width="96.0" height="60.0" rx="6" fill="#FFF1D1"/>
-  <rect x="655.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#FFB21E"/>
-  <rect x="669.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#FFB21E"/>
-  <rect x="683.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#FFB21E"/>
-  <path d="M672.0,132 L672.0,158" stroke="#F0384A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M668.0,157 L672.0,164 L676.0,157 Z" fill="#F0384A"/>
-  <text x="660.0" y="156.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#F0384A" text-anchor="end">write failed</text>
+  <rect x="624.0" y="172.0" width="96.0" height="60.0" rx="6" fill="#FFEEDC"/>
+  <rect x="655.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#FF9F2E"/>
+  <rect x="669.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#FF9F2E"/>
+  <rect x="683.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#FF9F2E"/>
+  <path d="M672.0,132 L672.0,158" stroke="#EE2D62" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M668.0,157 L672.0,164 L676.0,157 Z" fill="#EE2D62"/>
+  <text x="660.0" y="156.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#EE2D62" text-anchor="end">write failed</text>
   <text x="752.0" y="198.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">write fallback</text>
   <text x="752.0" y="216.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">queue, file, log</text>
 </svg>
