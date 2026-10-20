@@ -1,8 +1,0 @@
-flowchart TD
-    APP["Spring Boot service"] --> S["batcher-spring-boot-starter<br/>dependencies only"]
-    S --> A["batcher-spring-boot<br/>auto-configuration, properties,<br/>lifecycle"]
-    A --> C["batcher-core<br/>engine and interfaces,<br/>no Spring"]
-    A -.->|"optional"| M["batcher-micrometer<br/>metrics adapter"]
-    M --> C
-    PLAIN["plain JVM service"] --> C
-    PLAIN -.-> M
