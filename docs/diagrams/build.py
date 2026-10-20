@@ -32,6 +32,7 @@ PALETTE = {
 		"blue": "#1A7CFF", "green": "#22C063", "amber": "#FFB21E", "red": "#F0384A",
 		"sky": "#9DD1FF", "slate": "#7A8594",
 		"blue-plate": "#E3EFFF", "green-plate": "#DDF7E7", "amber-plate": "#FFF1D1", "red-plate": "#FFE4E7",
+		"green-soft": "#3A7550", "blue-soft": "#41679C",
 		"on-green": "#0B2915", "on-blue": "#FFFFFF", "on-amber": "#2B1D00", "on-sky": "#0B2340", "on-slate": "#FFFFFF",
 	},
 	"dark": {
@@ -39,7 +40,8 @@ PALETTE = {
 		"plate": "#161B22", "slot": "#2A313A", "line": "#4A525C",
 		"blue": "#4493F8", "green": "#3FB950", "amber": "#E3A21A", "red": "#F85149",
 		"sky": "#2F5F9E", "slate": "#545D68",
-		"blue-plate": "#132A4A", "green-plate": "#123120", "amber-plate": "#2E230B", "red-plate": "#331619",
+		"blue-plate": "#0F2F5C", "green-plate": "#0C3A24", "amber-plate": "#2E230B", "red-plate": "#331619",
+		"green-soft": "#8BCFA3", "blue-soft": "#94B9EE",
 		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#E6EDF3", "on-slate": "#E6EDF3",
 	},
 }
@@ -314,25 +316,27 @@ def modules(pal):
 	y1 = cy + 44
 	y2, y3 = y1 + h + gap, y1 + 2 * (h + gap)
 
-	def card(x, y, w, fill, title, note):
-		a.rect(x, y, w, h, fill, r=6)
-		a.label(x + 16, y + 24, title, note, mono=True)
+	def card(x, y, w, hue, title, note):
+		a.rect(x, y, w, h, hue + "-plate", r=6)
+		a.name(x + 16, y + 24, title, mono=True)
+		a.t(x + 16, y + 42, note, color=hue + "-soft")
 
-	card(ix, y1, iw, "green-plate", "batcher-spring-boot-starter", "one dependency, nothing of its own")
-	card(ix, y2, half, "blue-plate", "batcher-micrometer", "metrics, optional")
-	card(ix + half + gap, y2, half, "green-plate", "batcher-spring-boot", "auto-configuration, lifecycle")
-	card(ix, y3, iw, "blue-plate", "batcher-core", "the engine and every interface, no Spring")
+	card(ix, y1, iw, "green", "batcher-spring-boot-starter", "one dependency, nothing of its own")
+	card(ix, y2, half, "blue", "batcher-micrometer", "metrics, optional")
+	card(ix + half + gap, y2, half, "green", "batcher-spring-boot", "auto-configuration, lifecycle")
+	card(ix, y3, iw, "blue", "batcher-core", "the engine and every interface, no Spring")
 
 	def chip(y, fill, text):
 		a.rect(16, y - 16, 160, 32, fill, r=16)
 		a.t(96, y + 4.5, text, color="on-" + fill, weight="650", anchor="middle")
 
 	def head(x, y, color):
+		x -= 2
 		a.add(f'<path d="M{x - 7},{y - 4} L{x},{y} L{x - 7},{y + 4} Z" fill="{pal[color]}"/>')
 
 	c1, c2, c3 = y1 + h / 2, y2 + h / 2, y3 + h / 2
 	chip(c1, "green", "Spring Boot service")
-	a.path(f"M176,{c1} L{ix - 6},{c1}", "green", width=2)
+	a.path(f"M176,{c1} L{ix - 8},{c1}", "green", width=2)
 	head(ix, c1, "green")
 
 	cj, fx, r = (c2 + c3) / 2, 192, 8
@@ -340,7 +344,7 @@ def modules(pal):
 	a.path(f"M176,{cj} L{fx},{cj}", "blue", width=2)
 	for cy_ in (c2, c3):
 		sign = -1 if cy_ < cj else 1
-		a.path(f"M{fx},{cj} L{fx},{cy_ - sign * r} Q{fx},{cy_} {fx + r},{cy_} L{ix - 6},{cy_}", "blue", width=2)
+		a.path(f"M{fx},{cj} L{fx},{cy_ - sign * r} Q{fx},{cy_} {fx + r},{cy_} L{ix - 8},{cy_}", "blue", width=2)
 		head(ix, cy_, "blue")
 	return a
 
