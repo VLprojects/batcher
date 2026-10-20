@@ -198,12 +198,12 @@ def pipeline(pal):
 # ---------------------------------------------------------------------- 2
 def recovery(pal):
 	# the batch is a grid of records; a red spine follows the one record that keeps failing
-	a = Art(688, 308, pal)
-	gx, h, step = 248, 44, 80
-	ncol, nrow = 24, 3
+	a = Art(880, 308, pal)
+	gx, h, step = 296, 44, 80
+	ncol, nrow = 36, 3
 	gw = 16 * 2 + ncol * PITCH - (PITCH - REC)
 	ox = gx + gw + 24  # outcome column
-	bc, br = 17, 1  # where the bad record sits in the grid
+	bc, br = 24, 1  # where the bad record sits in the grid
 	rx = gx + 16 + bc * PITCH  # its x in every row
 
 	def grid(y, bad, fill="green"):
@@ -336,8 +336,8 @@ def shutdown(pal):
 def modules(pal):
 	# the group is one container: core underneath, the starter on top; a service on the left points
 	# at what it puts in its build
-	a = Art(704, 268, pal)
-	cx, cy, cw, ch = 208, 16, 480, 236
+	a = Art(880, 268, pal)
+	cx, cy, cw, ch = 208, 16, 656, 236
 	a.rect(cx, cy, cw, ch, "plate", r=14)  # outer radius = inner radius + padding
 	a.t(cx + 16, cy + 26, "group", color="soft")
 	a.name(cx + 60, cy + 26, "pro.vlprojects", mono=True)
