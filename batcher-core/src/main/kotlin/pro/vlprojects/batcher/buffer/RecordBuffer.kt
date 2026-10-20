@@ -35,8 +35,11 @@ public interface RecordBuffer<T : Any> {
      */
     public fun close(): Batch<T>?
 
+    /** The most records it holds: a batch is cut once [size] reaches it, if not earlier. */
+    public val capacity: Int
+
     /** Read by the gauges on every scrape, as is [oldestRecordAt]: has to be cheap, may be approximate. */
-    public val bufferedRecords: Int
+    public val size: Int
 
     /** Null while the buffer is empty. */
     public val oldestRecordAt: Instant?
