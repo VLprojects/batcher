@@ -1,24 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 34 880 104" width="880" height="104" role="img">
-  <path d="M32.00,84.00 L236.00,84.00" stroke="#CDD3DA" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
-  <path d="M236.00,84.00 L512.00,84.00" stroke="#1665D8" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
-  <path d="M512.00,84.00 L716.00,84.00" stroke="#1A9850" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
-  <path d="M716.00,84.00 L856.00,84.00" stroke="#CDD3DA" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
-  <rect x="32.0" y="75.0" width="6" height="18.0" fill="#CDD3DA"/>
-  <rect x="850.0" y="75.0" width="6" height="18.0" fill="#CDD3DA"/>
-  <rect x="112.0" y="74.5" width="44.1" height="19" rx="9.5" fill="#CDD3DA"/>
-  <text x="134.0" y="88.1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1F2328" text-anchor="middle">NEW</text>
-  <rect x="339.5" y="74.5" width="68.9" height="19" rx="9.5" fill="#1665D8"/>
-  <text x="374.0" y="88.1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">RUNNING</text>
-  <rect x="575.6" y="74.5" width="76.8" height="19" rx="9.5" fill="#1A9850"/>
-  <text x="614.0" y="88.1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">STOPPING</text>
-  <rect x="749.4" y="74.5" width="73.3" height="19" rx="9.5" fill="#CDD3DA"/>
-  <text x="786.0" y="88.1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1F2328" text-anchor="middle">STOPPED</text>
-  <rect x="229.00" y="77.00" width="14.00" height="14.00" rx="7.00" fill="#FFFFFF" stroke="#1F2328" stroke-width="3"/>
-  <text x="236.0" y="62.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1F2328" text-anchor="middle">start</text>
-  <rect x="505.00" y="77.00" width="14.00" height="14.00" rx="7.00" fill="#FFFFFF" stroke="#1F2328" stroke-width="3"/>
-  <text x="512.0" y="62.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1F2328" text-anchor="middle">stop</text>
-  <rect x="709.00" y="77.00" width="14.00" height="14.00" rx="7.00" fill="#FFFFFF" stroke="#1F2328" stroke-width="3"/>
-  <text x="716.0" y="62.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1F2328" text-anchor="middle">queue drained</text>
-  <text x="374.0" y="118.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#656D76" text-anchor="middle">accept allowed</text>
-  <text x="614.0" y="118.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#656D76" text-anchor="middle">accept rejected, buffer drains</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 12 880 100" width="880" height="100" role="img">
+  <path d="M32.00,78.00 L220.00,78.00" stroke="#BCC4CC" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="126.0" y="44.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#59636E" text-anchor="middle" letter-spacing="0.08em">NEW</text>
+  <path d="M220.00,78.00 L470.00,78.00" stroke="#1A7F37" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="345.0" y="44.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#1A7F37" text-anchor="middle" letter-spacing="0.08em">RUNNING</text>
+  <text x="345.0" y="62.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#59636E" text-anchor="middle">accept allowed</text>
+  <path d="M470.00,78.00 L760.00,78.00" stroke="#D18A00" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="615.0" y="44.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9A6700" text-anchor="middle" letter-spacing="0.08em">STOPPING</text>
+  <text x="615.0" y="62.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#59636E" text-anchor="middle">accept rejected, buffer drains</text>
+  <path d="M760.00,78.00 L856.00,78.00" stroke="#BCC4CC" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="808.0" y="44.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#59636E" text-anchor="middle" letter-spacing="0.08em">STOPPED</text>
+  <circle cx="220" cy="78" r="4.375" fill="#FFFFFF" stroke="#1F2328" stroke-width="2.25"/>
+  <text x="220.0" y="104.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="650" fill="#1F2328" text-anchor="middle">start</text>
+  <circle cx="470" cy="78" r="4.375" fill="#FFFFFF" stroke="#1F2328" stroke-width="2.25"/>
+  <text x="470.0" y="104.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="650" fill="#1F2328" text-anchor="middle">stop</text>
+  <circle cx="760" cy="78" r="4.375" fill="#FFFFFF" stroke="#1F2328" stroke-width="2.25"/>
+  <text x="760.0" y="104.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="650" fill="#1F2328" text-anchor="middle">queue drained</text>
 </svg>

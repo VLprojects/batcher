@@ -1,26 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 22 880 216" width="880" height="216" role="img">
-  <text x="116.0" y="92.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="650" fill="#E6EDF3" text-anchor="end">deadline thread</text>
-  <text x="116.0" y="104.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="650" fill="#E6EDF3" text-anchor="end">caller’s thread</text>
-  <text x="116.0" y="116.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="650" fill="#E6EDF3" text-anchor="end">writer thread</text>
-  <path d="M128.00,88.00 L372.00,88.00" stroke="#F5B73B" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
-  <path d="M128.00,100.00 L372.00,100.00" stroke="#4C9AFF" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
-  <path d="M128.00,112.00 L742.00,112.00" stroke="#3FB96B" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
-  <path d="M742.00,112.00 L808.00,112.00" stroke="#FF6A4D" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
-  <rect x="169.00" y="81.00" width="14.00" height="38.00" rx="7.00" fill="#0D1117" stroke="#E6EDF3" stroke-width="3"/>
-  <text x="176.0" y="51.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#E6EDF3" text-anchor="middle">stop arrives</text>
-  <text x="176.0" y="68.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#8D96A0" text-anchor="middle">after the message listeners</text>
-  <rect x="365.00" y="81.00" width="14.00" height="26.00" rx="7.00" fill="#0D1117" stroke="#E6EDF3" stroke-width="3"/>
-  <text x="372.0" y="51.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#E6EDF3" text-anchor="middle">buffer closes</text>
-  <text x="372.0" y="68.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#8D96A0" text-anchor="middle">deadline thread cancelled</text>
-  <rect x="485.00" y="105.00" width="14.00" height="14.00" rx="7.00" fill="#0D1117" stroke="#3FB96B" stroke-width="3"/>
-  <text x="492.0" y="146.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#E6EDF3" text-anchor="middle">remaining batch</text>
-  <text x="492.0" y="163.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#8D96A0" text-anchor="middle">goes ahead of the queue</text>
-  <rect x="641.00" y="105.00" width="14.00" height="14.00" rx="7.00" fill="#0D1117" stroke="#3FB96B" stroke-width="3"/>
-  <text x="648.0" y="146.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#E6EDF3" text-anchor="middle">writer drains</text>
-  <text x="648.0" y="163.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#8D96A0" text-anchor="middle">one batch at a time</text>
-  <rect x="801.00" y="105.00" width="14.00" height="14.00" rx="7.00" fill="#0D1117" stroke="#FF6A4D" stroke-width="3"/>
-  <text x="808.0" y="146.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#E6EDF3" text-anchor="middle">leftovers parked</text>
-  <text x="808.0" y="163.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#8D96A0" text-anchor="middle">WriteFallback</text>
-  <path d="M372,190 L372,196 L742,196 L742,190" stroke="#6E7681" stroke-width="1.25" fill="none"/>
-  <text x="557.0" y="218.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="400" fill="#E6EDF3" text-anchor="middle">shutdown-await-period</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 34 880 196" width="880" height="196" role="img">
+  <path d="M24.00,120.00 L104.00,120.00" stroke="#3FB950" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M104.00,120.00 L728.00,120.00" stroke="#E3A21A" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M728.00,120.00 L808.00,120.00" stroke="#F85149" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="104" cy="120" r="4.375" fill="#0D1117" stroke="#E6EDF3" stroke-width="2.25"/>
+  <text x="104.0" y="84.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="650" fill="#E6EDF3" text-anchor="middle">stop arrives</text>
+  <text x="104.0" y="101.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="middle">after the message listeners</text>
+  <circle cx="284" cy="120" r="4.375" fill="#0D1117" stroke="#E3A21A" stroke-width="2.25"/>
+  <text x="284.0" y="150.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="650" fill="#E6EDF3" text-anchor="middle">buffer closes</text>
+  <text x="284.0" y="167.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="middle">deadline thread cancelled</text>
+  <circle cx="464" cy="120" r="4.375" fill="#0D1117" stroke="#E3A21A" stroke-width="2.25"/>
+  <text x="464.0" y="84.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="650" fill="#E6EDF3" text-anchor="middle">remaining batch</text>
+  <text x="464.0" y="101.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="middle">goes ahead of the queue</text>
+  <circle cx="644" cy="120" r="4.375" fill="#0D1117" stroke="#E3A21A" stroke-width="2.25"/>
+  <text x="644.0" y="150.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="650" fill="#E6EDF3" text-anchor="middle">writer drains</text>
+  <text x="644.0" y="167.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="middle">one batch at a time</text>
+  <circle cx="808" cy="120" r="4.375" fill="#0D1117" stroke="#E3A21A" stroke-width="2.25"/>
+  <text x="808.0" y="84.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="650" fill="#E6EDF3" text-anchor="middle">leftovers parked</text>
+  <text x="808.0" y="101.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#9198A1" text-anchor="middle">WriteFallback</text>
+  <path d="M284,192 L284,198 L728,198 L728,192" stroke="#6E7681" stroke-width="1.25" fill="none"/>
+  <text x="506.0" y="220.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="400" fill="#E6EDF3" text-anchor="middle">shutdown-await-period</text>
 </svg>

@@ -79,7 +79,7 @@ Micrometer:
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/modules-dark.svg">
-    <img alt="Which modules a Spring Boot service and a plain JVM service take" src="assets/modules-light.svg" width="530">
+    <img alt="Modules, and which of them a Spring Boot or a plain JVM service takes" src="assets/modules-light.svg" width="600">
   </picture>
 </p>
 
@@ -215,7 +215,7 @@ One batcher is a short pipeline with two threads of its own.
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/pipeline-dark.svg">
-    <img alt="From accept to the storage: the caller, deadline and writer threads" src="assets/pipeline-light.svg" width="880">
+    <img alt="From accept to the storage" src="assets/pipeline-light.svg" width="880">
   </picture>
 </p>
 
