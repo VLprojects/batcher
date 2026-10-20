@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 504" width="880" height="504" role="img">
-  <rect x="16.0" y="68.0" width="352.0" height="176.0" rx="8" fill="#F2F4F6"/>
+  <rect x="16.0" y="68.0" width="352.0" height="176.0" rx="8" fill="#F5F7F9"/>
   <text x="32.0" y="92.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#59636E" text-anchor="start">producer thread</text>
-  <rect x="408.0" y="188.0" width="456.0" height="300.0" rx="8" fill="#F2F4F6"/>
+  <rect x="408.0" y="188.0" width="456.0" height="300.0" rx="8" fill="#F5F7F9"/>
   <text x="424.0" y="212.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#59636E" text-anchor="start">writer thread</text>
   <path d="M156,52 L156,244" stroke="#DDE2E7" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M273.0,52 L273.0,244" stroke="#DDE2E7" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -9,21 +9,21 @@
   <path d="M517.0,52 L517.0,488" stroke="#DDE2E7" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M664.0,52 L664.0,488" stroke="#DDE2E7" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M801.0,52 L801.0,488" stroke="#DDE2E7" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="118.0" y="16.0" width="76.0" height="36.0" rx="6" fill="#F2F4F6"/>
+  <rect x="118.0" y="16.0" width="76.0" height="36.0" rx="6" fill="#E3E8ED"/>
   <text x="156.0" y="39.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="middle">Batcher</text>
-  <rect x="215.0" y="16.0" width="116.0" height="36.0" rx="6" fill="#F2F4F6"/>
+  <rect x="215.0" y="16.0" width="116.0" height="36.0" rx="6" fill="#E3E8ED"/>
   <text x="273.0" y="39.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="middle">RecordBuffer</text>
-  <rect x="352.0" y="16.0" width="72.0" height="36.0" rx="6" fill="#F2F4F6"/>
+  <rect x="352.0" y="16.0" width="72.0" height="36.0" rx="6" fill="#E3E8ED"/>
   <text x="388.0" y="39.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="middle">queue</text>
-  <rect x="445.0" y="16.0" width="144.0" height="36.0" rx="6" fill="#F2F4F6"/>
+  <rect x="445.0" y="16.0" width="144.0" height="36.0" rx="6" fill="#E3E8ED"/>
   <text x="517.0" y="39.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="middle">recovering writer</text>
   <rect x="610.0" y="16.0" width="108.0" height="36.0" rx="6" fill="#DDF7E7"/>
   <text x="664.0" y="39.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="middle">BatchWriter</text>
   <rect x="739.0" y="16.0" width="124.0" height="36.0" rx="6" fill="#FFF1D1"/>
   <text x="801.0" y="39.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="middle">WriteFallback</text>
-  <rect x="152.0" y="112.0" width="8.0" height="116.0" rx="2" fill="#DDE2E7"/>
-  <rect x="269.0" y="148.0" width="8.0" height="56.0" rx="2" fill="#DDE2E7"/>
-  <rect x="513.0" y="236.0" width="8.0" height="236.0" rx="2" fill="#DDE2E7"/>
+  <rect x="152.0" y="112.0" width="8.0" height="116.0" rx="2" fill="#BEC7D0"/>
+  <rect x="269.0" y="148.0" width="8.0" height="56.0" rx="2" fill="#BEC7D0"/>
+  <rect x="513.0" y="236.0" width="8.0" height="236.0" rx="2" fill="#BEC7D0"/>
   <rect x="385.0" y="190.0" width="6.0" height="66.0" rx="1.5" fill="#1A7CFF"/>
   <rect x="661.0" y="270.0" width="6.0" height="52.0" rx="1.5" fill="#1A7CFF"/>
   <rect x="661.0" y="343.0" width="6.0" height="6.0" rx="1" fill="#22C063"/>

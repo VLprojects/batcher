@@ -29,6 +29,7 @@ PALETTE = {
 	"light": {
 		"bg": "#FFFFFF", "ink": "#1F2328", "soft": "#59636E", "mute": "#8C959F",
 		"plate": "#F2F4F6", "slot": "#DDE2E7", "line": "#AFB8C1",
+		"wash": "#F5F7F9", "card": "#E3E8ED", "bar": "#BEC7D0",
 		"blue": "#1A7CFF", "green": "#22C063", "amber": "#FFB21E", "red": "#F0384A",
 		"sky": "#9DD1FF", "slate": "#7A8594",
 		"blue-plate": "#E3EFFF", "green-plate": "#DDF7E7", "amber-plate": "#FFF1D1", "red-plate": "#FFE4E7",
@@ -38,6 +39,7 @@ PALETTE = {
 	"dark": {
 		"bg": "#0D1117", "ink": "#E6EDF3", "soft": "#9198A1", "mute": "#6E7681",
 		"plate": "#161B22", "slot": "#2A313A", "line": "#4A525C",
+		"wash": "#141920", "card": "#252D37", "bar": "#3D4650",
 		"blue": "#4493F8", "green": "#3FB950", "amber": "#E3A21A", "red": "#F85149",
 		"sky": "#2F5F9E", "slate": "#545D68",
 		"blue-plate": "#0F2F5C", "green-plate": "#0C3A24", "amber-plate": "#2E230B", "red-plate": "#331619",
@@ -376,7 +378,7 @@ def types(pal):
 
 	def card(i, y, title, lines, hue=None, tag=None):
 		x, w = xs[i], ws[i]
-		a.rect(x, y, w, h, (hue + "-plate") if hue else "plate", r=6)
+		a.rect(x, y, w, h, (hue + "-plate") if hue else ("card" if y == top else "wash"), r=6)
 		a.name(x + 16, y + 26, title, mono=True)
 		if tag:
 			a.t(x + w - 16, y + 26, tag, color=hue + "-text", weight="600", anchor="end")
@@ -413,7 +415,7 @@ def types(pal):
 		a.t(cx - 12, top + h + 28.5, text, color="red" if color == "red" else "soft", weight="600" if color == "red" else "400", anchor="end")
 
 	y = low + h + gap
-	a.rect(16, y, 848, 44, "plate", r=6)
+	a.rect(16, y, 848, 44, "wash", r=6)
 	a.name(32, y + 27, "BatcherMeter", mono=True)
 	a.t(xs[1] + 16, y + 27, "every type reports here; Micrometer in batcher-micrometer")
 	return a
@@ -425,8 +427,8 @@ def sequence(pal):
 	# each thread is a plate over the lifelines it uses, the queue belongs to neither and holds the batch
 	a = Art(880, 504, pal)
 	parts = [
-		("Batcher", 76, "plate", True), ("RecordBuffer", 116, "plate", True), ("queue", 72, "plate", False),
-		("recovering writer", 144, "plate", False), ("BatchWriter", 108, "green-plate", True),
+		("Batcher", 76, "card", True), ("RecordBuffer", 116, "card", True), ("queue", 72, "card", False),
+		("recovering writer", 144, "card", False), ("BatchWriter", 108, "green-plate", True),
 		("WriteFallback", 124, "amber-plate", True),
 	]
 	xs, x = [], 156
@@ -439,7 +441,7 @@ def sequence(pal):
 	pr, wr = Q - 20, Q + 20  # the thread plates stop short of the queue
 
 	def region(x1, y1, x2, y2, text):
-		a.rect(x1, y1, x2 - x1, y2 - y1, "plate", r=8)
+		a.rect(x1, y1, x2 - x1, y2 - y1, "wash", r=8)
 		a.t(x1 + 16, y1 + 24, text, color="soft", weight="600")
 
 	region(16, 68, pr, 244, "producer thread")
@@ -455,7 +457,7 @@ def sequence(pal):
 	# activation is grey structure; where something real is held, the bar is the thing itself:
 	# the batch in the queue and in the writer, the records written one by one, the record parked
 	for x, y1, y2 in ((BT, 112, 228), (RB, 148, 204), (W, 236, 472)):
-		a.rect(x - 4, y1, 8, y2 - y1, "slot", r=2)
+		a.rect(x - 4, y1, 8, y2 - y1, "bar", r=2)
 	a.bar(Q - BAR_W / 2, 190, h=66)
 	a.bar(BW - BAR_W / 2, 270, h=52)
 	for i in range(11):
