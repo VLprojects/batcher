@@ -4,18 +4,18 @@
     <rect x="208.0" y="16.0" width="480.0" height="236.0" rx="14" fill="#1D242D"/>
     <text x="224.0" y="42.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#9198A1" text-anchor="start">group</text>
     <text x="268.0" y="42.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#E6EDF3" text-anchor="start">pro.vlprojects</text>
-    <rect x="220.0" y="56.0" width="456.0" height="56.0" rx="6" fill="#0C3A24"/>
-    <text x="236.0" y="80.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#E6EDF3" text-anchor="start">batcher-spring-boot-starter</text>
-    <text x="236.0" y="98.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#8BCFA3" text-anchor="start">one dependency, nothing of its own</text>
-    <rect x="220.0" y="120.0" width="224.0" height="56.0" rx="6" fill="#0F2F5C"/>
-    <text x="236.0" y="144.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#E6EDF3" text-anchor="start">batcher-micrometer</text>
-    <text x="236.0" y="162.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#94B9EE" text-anchor="start">metrics, optional</text>
-    <rect x="452.0" y="120.0" width="224.0" height="56.0" rx="6" fill="#0C3A24"/>
-    <text x="468.0" y="144.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#E6EDF3" text-anchor="start">batcher-spring-boot</text>
-    <text x="468.0" y="162.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#8BCFA3" text-anchor="start">auto-configuration, lifecycle</text>
-    <rect x="220.0" y="184.0" width="456.0" height="56.0" rx="6" fill="#0F2F5C"/>
-    <text x="236.0" y="208.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#E6EDF3" text-anchor="start">batcher-core</text>
-    <text x="236.0" y="226.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#94B9EE" text-anchor="start">the engine and every interface, no Spring</text>
+    <rect x="220.0" y="56.0" width="456.0" height="56.0" rx="6" fill="#5BF08A"/>
+    <text x="236.0" y="80.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#03240E" text-anchor="start">batcher-spring-boot-starter</text>
+    <text x="236.0" y="98.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#0D5A26" text-anchor="start">one dependency, nothing of its own</text>
+    <rect x="220.0" y="120.0" width="224.0" height="56.0" rx="6" fill="#6E9BFF"/>
+    <text x="236.0" y="144.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#06173D" text-anchor="start">batcher-micrometer</text>
+    <text x="236.0" y="162.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1B3A80" text-anchor="start">metrics, optional</text>
+    <rect x="452.0" y="120.0" width="224.0" height="56.0" rx="6" fill="#5BF08A"/>
+    <text x="468.0" y="144.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#03240E" text-anchor="start">batcher-spring-boot</text>
+    <text x="468.0" y="162.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#0D5A26" text-anchor="start">auto-configuration, lifecycle</text>
+    <rect x="220.0" y="184.0" width="456.0" height="56.0" rx="6" fill="#6E9BFF"/>
+    <text x="236.0" y="208.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#06173D" text-anchor="start">batcher-core</text>
+    <text x="236.0" y="226.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1B3A80" text-anchor="start">the engine and every interface, no Spring</text>
     <rect x="16.0" y="68.0" width="160.0" height="32.0" rx="16" fill="#3FB950"/>
     <text x="32.0" y="88.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#0D1117" text-anchor="start">Spring Boot service</text>
     <text x="32.0" y="120.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#9198A1" text-anchor="start">gets all four through it</text>

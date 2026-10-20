@@ -8,8 +8,8 @@ Rules the drawings follow:
 - Plates, not frames: a group is a flat fill with no outline.
 - Colour means the same thing everywhere. Blue is data on the move, green is
   done or allowed, amber is waiting it out (draining, parked), red is a
-  failure, grey is structure. On the dark canvas the fallback plate is a
-  bright apricot with dark text: a dark orange there turns brown. States keep their colour wherever they appear:
+  failure, grey is structure. On the dark canvas coloured plates are bright
+  with dark text: dark orange, green or blue there turns muddy. States keep their colour wherever they appear:
   new light blue, running green, stopping amber, stopped slate. In the module
   map green is Spring and blue is plain JVM. Text on bright fills is dark.
 - Every line is solid; a lighter colour, never a dash, marks what is inactive.
@@ -41,7 +41,7 @@ PALETTE = {
 		"wash": "#FFFFFF", "card": "#E3E8ED", "bar": "#BEC7D0",
 		"blue": "#1A7CFF", "green": "#22C063", "amber": "#FF9F2E", "red": "#EE2D62",
 		"sky": "#9DD1FF", "slate": "#7A8594",
-		"blue-plate": "#E3EFFF", "green-plate": "#DDF7E7", "amber-plate": "#FFEEDC", "amber-ink": "#1F2328", "amber-glyph": "#FF9F2E",
+		"blue-plate": "#E3EFFF", "blue-ink": "#1F2328", "green-plate": "#DDF7E7", "green-ink": "#1F2328", "green-glyph": "#22C063", "amber-plate": "#FFEEDC", "amber-ink": "#1F2328", "amber-glyph": "#FF9F2E",
 		"green-soft": "#3A7550", "blue-soft": "#41679C", "amber-soft": "#8F4600", "green-text": "#12873F", "amber-text": "#B85300",
 		"on-green": "#0B2915", "on-blue": "#FFFFFF", "on-amber": "#2E1700", "on-sky": "#0B2340", "on-slate": "#FFFFFF",
 	},
@@ -50,10 +50,10 @@ PALETTE = {
 		"plate": "#1D242D", "slot": "#323B46", "line": "#515B66",
 		"wash": "#1D242D", "card": "#29313C", "bar": "#454F5A",
 		"blue": "#4493F8", "green": "#3FB950", "amber": "#FF9F4A", "red": "#FF4F7B",
-		"sky": "#2F5F9E", "slate": "#545D68",
-		"blue-plate": "#0F2F5C", "green-plate": "#0C3A24", "amber-plate": "#FFB46B", "amber-ink": "#1F1206", "amber-glyph": "#8A3F00",
-		"green-soft": "#8BCFA3", "blue-soft": "#94B9EE", "amber-soft": "#4A2808", "green-text": "#3FB950", "amber-text": "#FF9F4A",
-		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#E6EDF3", "on-slate": "#E6EDF3",
+		"sky": "#6E9BFF", "slate": "#545D68",
+		"blue-plate": "#6E9BFF", "blue-ink": "#06173D", "green-plate": "#5BF08A", "green-ink": "#03240E", "green-glyph": "#0D7A32", "amber-plate": "#FFB46B", "amber-ink": "#1F1206", "amber-glyph": "#8A3F00",
+		"green-soft": "#0D5A26", "blue-soft": "#1B3A80", "amber-soft": "#4A2808", "green-text": "#03240E", "amber-text": "#FF9F4A",
+		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#06173D", "on-slate": "#E6EDF3",
 	},
 }
 
@@ -134,7 +134,7 @@ class Art:
 
 def ink(hue):
 	"""Title colour on a plate of this hue: dark on the bright ones."""
-	return "amber-ink" if hue == "amber" else "ink"
+	return hue + "-ink" if hue in ("amber", "green", "blue") else "ink"
 
 
 # ---------------------------------------------------------------------- 1
@@ -180,7 +180,7 @@ def pipeline(pal):
 	a.plate(cx, top, cw, h, "green-plate")
 	ox = cx + (cw - (6 * BAR_PITCH - (BAR_PITCH - BAR_W))) / 2
 	for i in range(6):
-		a.bar(ox + i * BAR_PITCH, mid - BAR_H / 2, "green")
+		a.bar(ox + i * BAR_PITCH, mid - BAR_H / 2, "green-glyph")
 
 	# failure: straight down from the writer to the fallback
 	fy = top + h + 48
@@ -349,7 +349,7 @@ def modules(pal):
 
 	def card(x, y, w, hue, title, note):
 		a.rect(x, y, w, h, hue + "-plate", r=6)
-		a.name(x + 16, y + 24, title, mono=True)
+		a.name(x + 16, y + 24, title, mono=True, color=ink(hue))
 		a.t(x + 16, y + 42, note, color=hue + "-soft")
 
 	card(ix, y1, iw, "green", "batcher-spring-boot-starter", "one dependency, nothing of its own")
