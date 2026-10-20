@@ -1,32 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 300" width="1040" height="300" role="img">
-  <defs><marker id="head-accent" markerWidth="9" markerHeight="9" refX="7.4" refY="4.5" orient="auto"><path d="M0.5,1 L7.6,4.5 L0.5,8" fill="none" stroke="#7BA6FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="head-fail" markerWidth="9" markerHeight="9" refX="7.4" refY="4.5" orient="auto"><path d="M0.5,1 L7.6,4.5 L0.5,8" fill="none" stroke="#FF8A82" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="head-muted" markerWidth="9" markerHeight="9" refX="7.4" refY="4.5" orient="auto"><path d="M0.5,1 L7.6,4.5 L0.5,8" fill="none" stroke="#95A0AF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="head-hair" markerWidth="9" markerHeight="9" refX="7.4" refY="4.5" orient="auto"><path d="M0.5,1 L7.6,4.5 L0.5,8" fill="none" stroke="#2B3542" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-  <rect x="248" y="44" width="536" height="150" rx="14" fill="#121820"/>
-  <text x="268" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#95A0AF" text-anchor="start" letter-spacing="0.08em">ONE BATCHER</text>
-  <rect x="24" y="92" width="136" height="68" rx="10" fill="#151B23" stroke="#2B3542" stroke-width="1.25"/>
-  <text x="92.0" y="123.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="550" fill="#E8EDF4" text-anchor="middle">Producer</text>
-  <text x="92.0" y="143.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#95A0AF" text-anchor="middle">consumer, handler, job</text>
-  <rect x="268" y="92" width="136" height="68" rx="10" fill="#151B23" stroke="#2B3542" stroke-width="1.25"/>
-  <text x="336.0" y="123.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="550" fill="#E8EDF4" text-anchor="middle">RecordBuffer</text>
-  <text x="336.0" y="143.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#95A0AF" text-anchor="middle">cuts by size or age</text>
-  <rect x="448" y="92" width="136" height="68" rx="10" fill="#151B23" stroke="#2B3542" stroke-width="1.25"/>
-  <text x="516.0" y="123.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="550" fill="#E8EDF4" text-anchor="middle">Queue</text>
-  <text x="516.0" y="143.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#95A0AF" text-anchor="middle">bounded, holds batches</text>
-  <rect x="628" y="92" width="136" height="68" rx="10" fill="#151B23" stroke="#2B3542" stroke-width="1.25"/>
-  <text x="696.0" y="123.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="550" fill="#E8EDF4" text-anchor="middle">Writer thread</text>
-  <text x="696.0" y="143.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#95A0AF" text-anchor="middle">one batch at a time</text>
-  <rect x="872" y="92" width="144" height="68" rx="10" fill="#151B23" stroke="#2B3542" stroke-width="1.25"/>
-  <text x="944.0" y="123.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="550" fill="#E8EDF4" text-anchor="middle">Storage</text>
-  <text x="944.0" y="143.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#95A0AF" text-anchor="middle">ClickHouse, anything</text>
-  <rect x="872" y="216" width="144" height="60" rx="10" fill="#2E1B1B" stroke="#FF8A82" stroke-width="1.25"/>
-  <text x="944.0" y="243.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="550" fill="#E8EDF4" text-anchor="middle">WriteFallback</text>
-  <text x="944.0" y="263.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#95A0AF" text-anchor="middle">queue, file, log</text>
-  <path d="M166,126.0 L262,126.0" fill="none" stroke="#7BA6FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#head-accent)"/>
-  <text x="214" y="113.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#95A0AF" text-anchor="middle">accept(record)</text>
-  <path d="M410,126.0 L442,126.0" fill="none" stroke="#7BA6FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#head-accent)"/>
-  <text x="426" y="113.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#95A0AF" text-anchor="middle">batch</text>
-  <path d="M590,126.0 L622,126.0" fill="none" stroke="#7BA6FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#head-accent)"/>
-  <path d="M770,126.0 L866,126.0" fill="none" stroke="#7BA6FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#head-accent)"/>
-  <text x="818" y="113.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#95A0AF" text-anchor="middle">persist(batch)</text>
-  <path d="M696,160 L696,246 L866,246" fill="none" stroke="#FF8A82" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 5" marker-end="url(#head-fail)"/>
-  <text x="712" y="238" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#FF8A82" text-anchor="start">write failed</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 244" width="1040" height="244" role="img">
+  <defs><marker id="tip-ink" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0.8,1.2 L7.4,4.5 L0.8,7.8" fill="none" stroke="#E9EDF2" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="tip-soft" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0.8,1.2 L7.4,4.5 L0.8,7.8" fill="none" stroke="#9BA5B1" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="tip-mute" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0.8,1.2 L7.4,4.5 L0.8,7.8" fill="none" stroke="#6F7985" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="tip-hair" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0.8,1.2 L7.4,4.5 L0.8,7.8" fill="none" stroke="#39424D" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="tip-bad" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0.8,1.2 L7.4,4.5 L0.8,7.8" fill="none" stroke="#FF8177" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <text x="50" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6F7985" text-anchor="start" letter-spacing="0.1em">PRODUCER</text>
+  <text x="242" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6F7985" text-anchor="start" letter-spacing="0.1em">RECORD BUFFER</text>
+  <path d="M232,28 L232,133" stroke="#39424D" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+  <text x="486" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6F7985" text-anchor="start" letter-spacing="0.1em">QUEUE</text>
+  <path d="M476,28 L476,133" stroke="#39424D" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+  <text x="658" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6F7985" text-anchor="start" letter-spacing="0.1em">WRITER THREAD</text>
+  <path d="M648,28 L648,133" stroke="#39424D" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+  <text x="830" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6F7985" text-anchor="start" letter-spacing="0.1em">CLICKHOUSE</text>
+  <path d="M820,28 L820,133" stroke="#39424D" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+  <path d="M40,128 L1000,128" stroke="#39424D" stroke-width="1" fill="none" stroke-linecap="round" marker-end="url(#tip-hair)"/>
+  <path d="M72,128 L72,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M94,128 L94,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M116,128 L116,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M138,128 L138,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M160,128 L160,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M182,128 L182,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M204,128 L204,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <text x="136" y="92" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#9BA5B1" text-anchor="middle">records, one at a time</text>
+  <path d="M252,128 L252,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M258,128 L258,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M264,128 L264,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M270,128 L270,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M276,128 L276,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M282,128 L282,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M288,128 L288,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M294,128 L294,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M300,128 L300,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M306,128 L306,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M312,128 L312,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M318,128 L318,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M324,128 L324,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M330,128 L330,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M336,128 L336,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M342,128 L342,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M348,128 L348,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M354,128 L354,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M360,128 L360,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M366,128 L366,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M372,128 L372,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M378,128 L378,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M384,128 L384,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M390,128 L390,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M396,128 L396,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M402,128 L402,112" stroke="#9BA5B1" stroke-width="1.6" stroke-linecap="butt"/>
+  <path d="M252,102 L252,96 L402,96 L402,102" stroke="#39424D" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="327" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#9BA5B1" text-anchor="middle">500 of them, or one second</text>
+  <path d="M424,128 L424,100" stroke="#E9EDF2" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  <text x="424" y="92" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#E9EDF2" text-anchor="middle">cut</text>
+  <rect x="498" y="112" width="32" height="16" fill="#6F7985" opacity="1.0"/>
+  <rect x="542" y="112" width="32" height="16" fill="#6F7985" opacity="1.0"/>
+  <rect x="586" y="112" width="32" height="16" fill="#6F7985" opacity="1.0"/>
+  <text x="564" y="92" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#9BA5B1" text-anchor="middle">batches wait, at most 16</text>
+  <rect x="690" y="112" width="32" height="16" fill="#E9EDF2" opacity="1.0"/>
+  <text x="706" y="92" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#E9EDF2" text-anchor="middle">one write at a time</text>
+  <rect x="876" y="106" width="56" height="22" fill="none" stroke="#E9EDF2" stroke-width="1"/>
+  <text x="904" y="92" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#9BA5B1" text-anchor="middle">one part per write</text>
+  <path d="M706,136 L706,186 L862,186" stroke="#FF8177" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 4" marker-end="url(#tip-bad)"/>
+  <text x="718" y="178" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#FF8177" text-anchor="start">write failed</text>
+  <text x="876" y="191" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="550" fill="#FF8177" text-anchor="start">WriteFallback</text>
+  <text x="876" y="209" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#6F7985" text-anchor="start">queue, file, log</text>
 </svg>
