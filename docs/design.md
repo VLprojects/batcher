@@ -252,7 +252,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | --- | --- | --- |
 | `Batcher<T>` | entry point: `accept(record)`, `accept(records)`, start, stop | the only implementation |
 | `Batch<T>` | records plus the arrival time of the first one | value type |
-| `RecordBuffer<T>` | hold accepted records, cut batches, report a full or deadlined batch | buffer with a deadline thread |
+| `RecordBuffer<T>` | hold accepted records, cut batches, report a full or deadlined batch | buffer with its own daemon thread |
 | `BatchingPolicy` | when the buffer's content becomes a batch | size and max age |
 | `BatchReadyListener<T>` | takes a cut batch from the buffer | the recovering writer |
 | `BatchWriter<T>` | write a batch; write a single record | **yours**, there is no default |
