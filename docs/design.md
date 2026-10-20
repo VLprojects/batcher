@@ -282,7 +282,7 @@ thread away from it, so it recovers instead.
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/recovery-dark.svg">
-    <img alt="A failed batch is retried record by record" src="assets/recovery-light.svg" width="680">
+    <img alt="A failed batch is retried record by record" src="assets/recovery-light.svg" width="688">
   </picture>
 </p>
 

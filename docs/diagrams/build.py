@@ -161,10 +161,26 @@ def pipeline(pal):
 
 # ---------------------------------------------------------------------- 2
 def recovery(pal):
-	a = Art(680, 272, pal)
-	x, step, y0 = 16, 68, 36
-	ox = 280  # outcome column
-	full = 160  # 500 records
+	# the batch is a grid of records; a red spine follows the one record that keeps failing
+	a = Art(688, 308, pal)
+	gx, h, step = 248, 44, 80
+	ncol, nrow = 24, 3
+	gw = 16 * 2 + ncol * PITCH - (PITCH - REC)
+	ox = gx + gw + 24  # outcome column
+	bc, br = 17, 1  # where the bad record sits in the grid
+	rx = gx + 16 + bc * PITCH  # its x in every row
+
+	def grid(y, bad, fill="green"):
+		a.plate(gx, y, gw, h)
+		oy = y + (h - (nrow * PITCH - (PITCH - REC))) / 2
+		for c in range(ncol):
+			for r in range(nrow):
+				a.record(gx + 16 + c * PITCH, oy + r * PITCH, bad if (c, r) == (bc, br) else fill)
+
+	def down(y1, y2):
+		a.path(f"M{rx + REC / 2},{y1} L{rx + REC / 2},{y2 - 6}", "red")
+		a.add(f'<path d="M{rx + REC / 2 - 4},{y2 - 7} L{rx + REC / 2},{y2} L{rx + REC / 2 + 4},{y2 - 7} Z" fill="{pal["red"]}"/>')
+
 	rows = [
 		("persist(batch)", "the whole batch, one write", "500 records written"),
 		("persist(record)", "the same batch, record by record", "499 written, 1 still fails"),
@@ -172,90 +188,91 @@ def recovery(pal):
 		("lost", "the fallback failed as well", "ERROR in the log, a metric"),
 	]
 	for i, (title, note, outcome) in enumerate(rows):
-		y = y0 + i * step
+		y = 16 + i * step
 		last = i == len(rows) - 1
-		a.label(x + 20, y, title, note, mono=not last, color="red" if last else "ink")
-		a.add(f'<circle cx="{x + 4}" cy="{y - 5}" r="4" fill="{pal["red" if last else "ink"]}"/>')
-		if not last:
-			a.path(f"M{x + 4},{y + 6} L{x + 4},{y + step - 16}", "red")
-		mid = y - 5
-		bad = ox + full + 4
-		if i == 0:
-			a.rect(ox, mid - 5, full + 4 + REC, 10, "green", r=2)
-		elif i == 1:
-			a.rect(ox, mid - 5, full, 10, "green", r=2)
-			a.rect(bad, mid - 5, REC, 10, "red", r=1)
-		elif i == 2:
-			a.rect(bad, mid - 5, REC, 10, "amber", r=1)
-		else:
-			a.rect(bad, mid - 5, REC, 10, "red", r=1)
-		a.t(bad + REC + 16, y, outcome, color="red" if last else "ink", weight="600" if last else "400", size=NOTE + 0.5)
+		a.label(16, y + 18, title, note, mono=not last, color="red" if last else "ink")
+		a.t(ox, y + h / 2 + 4.5, outcome, color="red" if last else "ink", weight="600" if last else "400")
+
+	y1, y2, y3, y4 = (16 + i * step for i in range(4))
+	grid(y1, "blue", fill="blue")
+	grid(y2, "red")
+	a.plate(rx + REC / 2 - 22, y3, 44, h, "amber-plate")
+	a.record(rx, y3 + h / 2 - REC / 2, "amber")
+	a.record(rx, y4 + h / 2 - REC / 2, "red")
+	down(y1 + h + 6, y2 - 6)
+	down(y2 + h + 6, y3 - 6)
+	down(y3 + h + 6, y4 + h / 2 - REC / 2 - 6)
+	for y in (y1, y3):
+		a.t(rx - 8, y + h + 22, "fails", color="red", anchor="end")
 	return a
 
 
 # ---------------------------------------------------------------------- 3
 def lifecycle(pal):
-	a = Art(880, 112, pal)
-	top, h = 44, 32
+	a = Art(880, 92, pal)
+	top, h, gap = 44, 32, 4
 	segments = [
-		(16, 150, "plate", "ink", "NEW", None),
-		(170, 330, "green", "on-green", "RUNNING", "accept allowed"),
-		(504, 236, "amber", "on-amber", "STOPPING", "accept rejected, buffer drains"),
-		(744, 120, "plate", "ink", "STOPPED", None),
+		(112, "plate", "ink", "soft", "NEW", None),
+		(328, "green", "on-green", "on-green", "RUNNING", "accept allowed"),
+		(300, "amber", "on-amber", "on-amber", "STOPPING", "accept rejected, buffer drains"),
+		(96, "plate", "ink", "soft", "STOPPED", None),
 	]
-	for x, w, fill, text, state, note in segments:
+	x, cuts = 16, []
+	for w, fill, ink, soft, state, note in segments:
 		a.rect(x, top, w, h, fill, r=4)
-		a.t(x + 12, top + h / 2 + 4.5, state, color=text, weight="650", size=NOTE)
+		a.t(x + 12, top + h / 2 + 4.5, state, color=ink, weight="650")
 		if note:
-			a.t(x + 12, top + h + 24, note)
-	for x, event in ((168, "start"), (502, "stop"), (742, "queue drained")):
-		a.t(x, top - 14, event, color="ink", weight="600", anchor="middle")
+			a.t(x + 12 + len(state) * 9.2 + 12, top + h / 2 + 4.5, note, color=soft)
+		x += w + gap
+		cuts.append(x - gap / 2)
+	for cx, event in zip(cuts, ("start", "stop", "queue drained")):
+		a.name(cx, 28, event, anchor="middle")
+		a.path(f"M{cx},{34} L{cx},{top - 4}", "line")
 	return a
 
 
 # ---------------------------------------------------------------------- 4
 def shutdown(pal):
-	a = Art(880, 268, pal)
+	a = Art(880, 260, pal)
 	lx = 120  # lanes start
-	lane_h, buf_y, wr_y = 32, 76, 124
-	stop, closes, budget, end = 300, 352, 712, 864
+	lane_h, buf_y, wr_y = 32, 64, 112
+	stop, budget, end = 336, 712, 864
 
 	a.name(lx - 16, buf_y + 21, "buffer", anchor="end")
 	a.name(lx - 16, wr_y + 21, "writer", anchor="end")
 
-	# buffer: accepts until stop, cuts the remaining batch, then is closed
+	# buffer: accepts until stop, closed after it
 	a.rect(lx, buf_y, stop - lx - 2, lane_h, "green", r=4)
 	a.t(lx + 12, buf_y + 20.5, "accepts", color="on-green", weight="600")
-	a.rect(stop, buf_y, closes - stop, lane_h, "amber", r=4)
-	a.rect(closes + 2, buf_y, end - closes - 2, lane_h, "plate", r=4)
-	a.t(closes + 14, buf_y + 20.5, "rejects", color="soft", weight="600")
+	a.rect(stop + 2, buf_y, end - stop - 2, lane_h, "plate", r=4)
+	a.t(stop + 14, buf_y + 20.5, "rejects", color="soft", weight="600")
 
-	# writer: batches one at a time; after the cut, the remaining batch first, then the queue
+	# writer: a batch now and then; after stop the remaining batch, then the queue back to back
 	a.rect(lx, wr_y, end - lx, lane_h, "plate", r=4)
-	by = wr_y + 6
-	bh = lane_h - 12
+	by, bh = wr_y + 6, lane_h - 12
 	for x in range(lx + 20, stop - 10, 34):
 		a.bar(x, by, h=bh)
-	a.bar(closes + 10, by, "blue", h=bh)  # the remaining batch, set apart from the queue
-	for x in range(closes + 10 + 2 * BAR_PITCH, budget - 6, BAR_PITCH):
+	rest = stop + 14
+	a.bar(rest, by, h=bh)
+	drain = rest + 3 * BAR_PITCH
+	for x in range(drain, budget - 6, BAR_PITCH):
 		a.bar(x, by, h=bh)
-	for x in range(budget + 10, budget + 10 + 4 * BAR_PITCH, BAR_PITCH):
+	for x in range(budget + 12, budget + 12 + 4 * BAR_PITCH, BAR_PITCH):
 		a.bar(x, by, "amber", h=bh)
 
-	a.path(f"M{stop},{buf_y - 8} L{stop},{wr_y + lane_h + 8}", "ink", width=1.5)
-	a.label(stop - 6, 36, "stop arrives", "after the message listeners", anchor="end")
-	a.path(f"M{closes},{buf_y - 8} L{closes},{buf_y + lane_h}", "ink", width=1.5)
-	a.label(closes + 6, 36, "buffer closes", "deadline thread cancelled")
-	a.path(f"M{budget},{wr_y - 8} L{budget},{wr_y + lane_h + 8}", "ink", width=1.5)
+	a.path(f"M{stop},{buf_y - 8} L{stop},{wr_y + lane_h + 8}", "ink")
+	a.label(stop - 12, 24, "stop arrives", "after the message listeners", anchor="end")
+	a.label(stop + 12, 24, "buffer closes", "deadline thread cancelled")
+	a.path(f"M{budget},{wr_y - 8} L{budget},{wr_y + lane_h + 8}", "ink")
 
 	ly = wr_y + lane_h + 30
-	a.label(closes + 6, ly, "remaining batch", "goes ahead of the queue")
-	a.label(closes + 170, ly, "writer drains", "one batch at a time")
-	a.label(budget + 6, ly, "leftovers parked", "WriteFallback", note_mono=True)
+	a.label(rest - 2, ly, "remaining batch", "goes ahead of the queue")
+	a.label(drain + 168, ly, "writer drains", "one batch at a time")
+	a.label(budget + 12, ly, "leftovers parked", "WriteFallback", note_mono=True)
 
-	by2 = ly + 44
-	a.path(f"M{closes},{by2 - 6} L{closes},{by2} L{budget},{by2} L{budget},{by2 - 6}", "mute", width=1.25)
-	a.t((closes + budget) / 2, by2 + 20, "shutdown-await-period", color="ink", mono=True, size=CODE, anchor="middle")
+	by2 = ly + 40
+	a.path(f"M{stop},{by2 - 6} L{stop},{by2} L{budget},{by2} L{budget},{by2 - 6}", "mute", width=1.25)
+	a.t((stop + budget) / 2, by2 + 20, "shutdown-await-period", color="ink", mono=True, size=CODE, anchor="middle")
 	return a
 
 
