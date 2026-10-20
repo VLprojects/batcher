@@ -14,6 +14,18 @@ public interface RecordBuffer<T : Any> {
     /** Records outlive the process, so the source may acknowledge one as soon as [add] returns. */
     public val isDurable: Boolean
 
+    /** The most records it holds: a batch is cut once [size] reaches it, if [maxAge] is not up first. */
+    public val capacity: Int
+
+    /** The longest the first record waits: a batch is cut once it is up, however few records it holds. */
+    public val maxAge: Duration
+
+    /** Read by the gauges on every scrape, as is [firstRecordAt]: has to be cheap, may be approximate. */
+    public val size: Int
+
+    /** When the first record still collecting arrived, as the cut batch will carry it; null while empty. */
+    public val firstRecordAt: Instant?
+
     /**
      * From any thread, at any time; counts from the next cut batch. A batch goes to every listener in
      * the order they were added, and the records are let go only once all of them have returned. A
@@ -41,16 +53,4 @@ public interface RecordBuffer<T : Any> {
      * place, or null: nothing was, or the buffer is durable and keeps it for the next start.
      */
     public fun close(): Batch<T>?
-
-    /** The most records it holds: a batch is cut once [size] reaches it, if [maxAge] is not up first. */
-    public val capacity: Int
-
-    /** The longest the first record waits: a batch is cut once it is up, however few records it holds. */
-    public val maxAge: Duration
-
-    /** Read by the gauges on every scrape, as is [firstRecordAt]: has to be cheap, may be approximate. */
-    public val size: Int
-
-    /** When the first record still collecting arrived, as the cut batch will carry it; null while empty. */
-    public val firstRecordAt: Instant?
 }
