@@ -244,7 +244,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/types-dark.svg">
-    <img alt="The types of batcher-core and how they refer to each other" src="assets/types-light.svg" width="880">
+    <img alt="The types of batcher-core and how they refer to each other" src="assets/types-light.svg" width="560">
   </picture>
 </p>
 

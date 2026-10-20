@@ -364,109 +364,127 @@ def modules(pal):
 
 # ---------------------------------------------------------------------- 6
 def types(pal):
-	# class diagram: the pipeline left to right, what each type asks on the row below
-	a = Art(880, 316, pal)
-	h = 78
-	y1, y2 = 16, 150
-	A, B, C, D = (16, 176), (244, 152), (448, 188), (688, 176)
+	# class diagram: the flow runs down the left column, each type's collaborator sits to its right;
+	# what travels between types is drawn as the thing itself, a record or a batch
+	a = Art(560, 560, pal)
+	mx, mw, sx, sw, h, step = 16, 220, 332, 212, 76, 128
+	rows = [16 + i * step for i in range(4)]
 
-	def card(col, y, title, lines, hue=None, tag=None):
-		x, w = col
+	def card(x, y, w, title, lines, hue=None, tag=None):
 		a.rect(x, y, w, h, (hue + "-plate") if hue else "plate", r=6)
-		a.name(x + 12, y + 24, title, mono=True)
+		a.name(x + 16, y + 26, title, mono=True)
 		if tag:
-			a.t(x + w - 12, y + 24, tag, color=hue + "-text", weight="600", anchor="end")
-		for i, line in enumerate(lines):
-			a.t(x + 12, y + 46 + i * 18, line, color=(hue + "-soft") if hue else "soft", mono=line.endswith(")"))
+			a.t(x + w - 16, y + 26, tag, color=hue + "-text", weight="600", anchor="end")
+		for i, (line, mono) in enumerate(lines):
+			a.t(x + 16, y + 48 + i * 18, line, color=(hue + "-soft") if hue else "soft", mono=mono)
 
-	card(A, y1, "Batcher<T>", ["accept(record)", "start(), stop()"])
-	card(B, y1, "RecordBuffer<T>", ["holds records,", "cuts batches"])
-	card(C, y1, "BatchReadyListener<T>", ["takes a cut batch;", "default: recovering writer"])
-	card(D, y1, "BatchWriter<T>", ["persist(batch)", "persist(record)"], "green", "yours")
-	card(A, y2, "BackPressurePolicy", ["the queue is full;", "default: to the fallback"])
-	card(B, y2, "BatchingPolicy", ["when to cut;", "size and max age"])
-	card(C, y2, "Batch<T>", ["records and the arrival", "time of the first one"], "blue")
-	card(D, y2, "WriteFallback<T>", ["failed records;", "default: log at ERROR"], "amber")
+	r1, r2, r3, r4 = rows
+	card(mx, r1, mw, "Batcher<T>", [("accept(record)", True), ("start(), stop()", True)])
+	card(mx, r2, mw, "RecordBuffer<T>", [("holds records,", False), ("cuts batches", False)])
+	card(mx, r3, mw, "BatchReadyListener<T>", [("takes each batch;", False), ("default: recovering writer", False)])
+	card(mx, r4, mw, "BatchWriter<T>", [("persist(batch)", True), ("persist(record)", True)], "green", "yours")
 
-	mid = y1 + h / 2
-	for (x0, w0), (x1, _), label, color in ((A, B, "adds", "line"), (B, C, "a batch", "blue"), (C, D, "writes", "line")):
-		a.harrow(x0 + w0 + 8, mid, x1 - 8, color)
-		a.t((x0 + w0 + x1) / 2, mid - 10, label, color="blue" if color == "blue" else "soft", anchor="middle")
+	card(sx, r1, sw, "BackPressurePolicy", [("the queue is full;", False), ("default: to the fallback", False)])
+	card(sx, r2, sw, "BatchingPolicy", [("when to cut a batch;", False), ("size and max age", False)])
+	card(sx, r3, sw, "Batch<T>", [("records, and the arrival", False), ("time of the first one", False)], "blue")
+	a.rect(sx + sw - 16 - BAR_W, r3 + 13, BAR_W, 16, "blue", r=1.5)  # the same glyph the arrows carry
+	card(sx, r4, sw, "WriteFallback<T>", [("what could not be written;", False), ("default: log at ERROR", False)], "amber")
 
-	# Batch<T> is what travels on the arrow between the buffer and the listener
-	bx = (B[0] + B[1] + C[0]) / 2
-	a.path(f"M{bx},{mid} L{bx},{y2 + h / 2 - 8} Q{bx},{y2 + h / 2} {bx + 8},{y2 + h / 2} L{C[0] - 4},{y2 + h / 2}", "blue")
+	# down the flow: what travels, as a glyph and its type
+	ax = mx + 32
+	for y, glyph, text in ((r1, "record", "records"), (r2, "bar", "Batch<T>"), (r3, "bar", "Batch<T>")):
+		a.varrow(ax, y + h + 8, y + step - 8)
+		gy = y + h + (step - h) / 2
+		if glyph == "record":
+			a.record(ax + 16, gy - REC / 2)
+		else:
+			a.rect(ax + 16, gy - 8, BAR_W, 16, "blue", r=1.5)
+		a.t(ax + 32, gy + 4.5, text, color="blue", mono=text.startswith("Batch"))
 
-	for (x0, w0), label in ((A, "asks"), (B, "asks")):
-		cx = x0 + 32
-		a.varrow(cx, y1 + h + 8, y2 - 8)
-		a.t(cx + 10, (y1 + h + y2) / 2 + 4, label)
+	# to the side: whom each type asks
+	for y in (r1, r2):
+		a.harrow(mx + mw + 8, y + h / 2, sx - 8)
+		a.t((mx + mw + sx) / 2, y + h / 2 - 10, "asks", anchor="middle")
 
-	# what the retry could not write goes down to the fallback
-	fx, fy = C[0] + C[1] + 26, y2 + h / 2
-	a.path(f"M{C[0] + C[1] + 8},{y1 + h - 16} L{fx - 8},{y1 + h - 16} Q{fx},{y1 + h - 16} {fx},{y1 + h - 8} L{fx},{fy - 8} Q{fx},{fy} {fx + 8},{fy}", "red")
-	a.harrow(fx + 8, fy, D[0] - 8, "red")
-	a.t(fx + 10, (y1 + h + y2) / 2 + 4, "what fails", color="red")
+	# the recovering writer parks what it could not write
+	fx, y0, y1 = mx + mw + 48, r3 + h / 2 + 12, r4 + h / 2
+	a.path(f"M{mx + mw + 8},{y0} L{fx - 8},{y0} Q{fx},{y0} {fx},{y0 + 8} L{fx},{y1 - 8} Q{fx},{y1} {fx + 8},{y1}", "red")
+	a.harrow(fx + 8, y1, sx - 8, "red")
+	a.t(fx + 10, r3 + h + (step - h) / 2 + 4.5, "write failed", color="red", weight="600")
 
-	y3 = y2 + h + 24
-	a.rect(16, y3, 848, 44, "plate", r=6)
-	a.name(28, y3 + 27, "BatcherMeter", mono=True)
-	a.t(150, y3 + 27, "every part reports its state changes here; disabled in core, Micrometer in batcher-micrometer")
+	y5 = r4 + h + 24
+	a.rect(16, y5, sx + sw - 16, 44, "plate", r=6)
+	a.name(32, y5 + 27, "BatcherMeter", mono=True)
+	a.t(152, y5 + 27, "every part reports here; Micrometer in batcher-micrometer")
 	return a
 
 
 # ---------------------------------------------------------------------- 7
 def sequence(pal):
-	# sequence diagram: one record on the producer thread, then a batch that fails once on the writer thread
-	a = Art(880, 500, pal)
+	# sequence diagram: one record on the producer thread, then a batch that fails once on the writer thread;
+	# each thread is a plate over the lifelines it uses, the queue between them holds the batch as a blue bar
+	a = Art(880, 568, pal)
 	parts = [
-		("producer", None, False), ("Batcher", "plate", True), ("RecordBuffer", "plate", True), ("queue", "plate", False),
-		("writer thread", "plate", False), ("BatchWriter", "green-plate", True), ("WriteFallback", "amber-plate", True),
+		("Batcher", 76, "plate", True), ("RecordBuffer", 116, "plate", True), ("queue", 72, "plate", False),
+		("recovering writer", 144, "plate", False), ("BatchWriter", 108, "green-plate", True),
+		("WriteFallback", 124, "amber-plate", True),
 	]
-	xs = [80 + i * 120 for i in range(len(parts))]
-	P, BT, RB, Q, W, BW, WF = xs
-	end = 488
+	xs, x = [], 156
+	for i, (_, w, _, _) in enumerate(parts):
+		if i:
+			x += parts[i - 1][1] / 2 + 21 + w / 2
+		xs.append(x)
+	BT, RB, Q, W, BW, WF = xs
+	P, end = 32, 552  # the producer is the thread itself: its calls start at the plate's edge
+
+	def region(x1, y1, x2, y2, tx, text):
+		a.rect(x1, y1, x2 - x1, y2 - y1, "plate", r=8)
+		a.t(tx, y1 + 24, text, color="soft", weight="600")
+
+	region(16, 68, Q + 40, 244, P, "producer thread")
+	region(Q - 24, 260, 864, end, Q + 16, "writer thread")
+
+	# a lifeline ends with its thread's plate
 	for x in xs:
-		a.path(f"M{x},52 L{x},{end}", "slot", width=1.5)
-	for x, (name, fill, mono) in zip(xs, parts):
-		if fill:
-			a.rect(x - 56, 16, 112, 36, fill, r=6)
-		else:
-			a.rect(x - 56, 16, 112, 36, "bg", r=6)
+		a.path(f"M{x},52 L{x},{244 if x < Q else end}", "slot", width=1.5)
+	for x, (name, w, fill, mono) in zip(xs, parts):
+		a.rect(x - w / 2, 16, w, 36, fill, r=6)
 		a.name(x, 39, name, anchor="middle", mono=mono)
 
-	def section(y, text):
-		a.rect(12, y - 16, len(text) * 7.4 + 8, 22, "bg", r=0)
-		a.t(16, y, text, color="soft", weight="600")
+	# activation: who is busy when; the queue holds the batch until the writer takes it
+	for x, y1, y2 in ((BT, 112, 228), (RB, 148, 204), (W, 300, 536), (BW, 332, 388), (BW, 404, 492), (WF, 516, 536)):
+		a.rect(x - 4, y1, 8, y2 - y1, "line", r=2)
+	a.rect(Q - 3, 190, 6, 132, "blue", r=1.5)
 
-	def msg(x1, x2, y, label, color="ink", mono=False):
-		a.harrow(x1 + (3 if x2 > x1 else -3), y, x2 - (3 if x2 > x1 else -3), color)
-		tx = x1 + 10 if x2 > x1 else x1 - 10
+	def msg(x1, x2, y, label, color="ink", mono=False, glyph=None, edge=5):
+		d = 1 if x2 > x1 else -1
+		a.harrow(x1 + d * edge, y, x2 - d * 5, color)
+		tx = x1 + d * 12
 		text = {"ink": "ink", "line": "soft", "green": "green-text", "amber": "amber-text"}.get(color, color)
-		a.t(tx, y - 8, label, color=text, mono=mono, size=12 if mono else NOTE, anchor="start" if x2 > x1 else "end")
+		if glyph:
+			a.record(tx if d > 0 else tx - REC, y - 15, color)
+			tx += d * 14
+		a.t(tx, y - 9, label, color=text, mono=mono, size=12 if mono else NOTE, anchor="start" if d > 0 else "end")
 
-	section(84, "on the producer thread")
-	msg(P, BT, 112, "accept(record)", mono=True)
-	msg(BT, RB, 144, "append")
-	msg(RB, Q, 176, "a full batch", "blue")
-	msg(BT, P, 208, "returns, no I/O", "line")
+	a.add(f'<circle cx="{P}" cy="132" r="3.5" fill="{pal["ink"]}"/>')
+	msg(P, BT, 132, "accept(record)", mono=True, edge=0)
+	msg(BT, RB, 164, "append")
+	msg(RB, Q, 196, "a full batch", "blue")
+	msg(BT, P, 220, "returns, no I/O", "line", edge=5)
 
-	section(248, "on the writer thread")
-	msg(Q, W, 276, "next batch", "blue")
-	msg(W, BW, 308, "persist(batch)", mono=True)
-	msg(BW, W, 340, "throws", "red")
+	msg(Q, W, 316, "next batch", "blue")
+	msg(W, BW, 348, "persist(batch)", mono=True)
+	msg(BW, W, 380, "throws", "red")
 
-	# the retry, one record at a time
-	ly1, ly2 = 356, 444
-	bx = W - 14
-	a.path(f"M{bx + 6},{ly1} L{bx},{ly1} L{bx},{ly2} L{bx + 6},{ly2}", "mute", width=1.25)
-	a.rect(bx - 112, (ly1 + ly2) / 2 - 14, 104, 22, "bg", r=0)
-	a.t(bx - 10, (ly1 + ly2) / 2 + 2, "for each record", color="soft", anchor="end")
-	msg(W, BW, 372, "persist(record)", mono=True)
-	msg(BW, W, 404, "499 written", "green")
-	msg(BW, W, 436, "1 throws", "red")
+	# the retry: a bracket and a count instead of a loop frame
+	a.rect(W - 18, 404, 2, 88, "line", r=1)
+	a.t(W - 28, 444, "for each of", anchor="end")
+	a.t(W - 28, 462, "500 records", anchor="end")
+	msg(W, BW, 420, "persist(record)", mono=True)
+	msg(BW, W, 452, "499 written", "green")
+	msg(BW, W, 484, "1 throws", "red")
 
-	msg(W, WF, 472, "the record that failed", "amber")
+	msg(W, WF, 528, "the record that failed", "amber", glyph="record")
 	return a
 
 
