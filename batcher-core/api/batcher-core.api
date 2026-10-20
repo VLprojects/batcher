@@ -1,5 +1,6 @@
 public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
 	public abstract fun add (Ljava/lang/Object;)V
+	public fun add (Ljava/util/Collection;)V
 	public abstract fun addListener (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
 	public abstract fun close ()Lpro/vlprojects/batcher/model/Batch;
 	public abstract fun getCapacity ()I

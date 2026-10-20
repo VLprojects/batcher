@@ -30,6 +30,14 @@ public interface RecordBuffer<T : Any> {
     public fun add(record: T)
 
     /**
+     * One by one by default; a buffer may take them in one go instead. A throw leaves the caller the
+     * record it came on and those after it.
+     */
+    public fun add(records: Collection<T>) {
+        records.forEach(::add)
+    }
+
+    /**
      * Stops taking records and cutting batches. Returns what was still collecting for the caller to
      * place, or null: nothing was, or the buffer is durable and keeps it for the next start.
      */
