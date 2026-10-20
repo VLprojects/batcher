@@ -8,7 +8,8 @@ Rules the drawings follow:
 - Plates, not frames: a group is a flat fill with no outline.
 - Colour means the same thing everywhere. Blue is data on the move, green is
   done or allowed, amber is waiting it out (draining, parked), red is a
-  failure, grey is structure. States keep their colour wherever they appear:
+  failure, grey is structure. The fallback plate is a bright apricot with dark
+  text in both themes: a dark orange turns brown on a dark canvas. States keep their colour wherever they appear:
   new light blue, running green, stopping amber, stopped slate. In the module
   map green is Spring and blue is plain JVM. Text on bright fills is dark.
 - Every line is solid; a lighter colour, never a dash, marks what is inactive.
@@ -18,7 +19,9 @@ Rules the drawings follow:
 - Every part is named in plain lowercase words, types included (batch writer,
   write fallback). Only what one would type is monospaced: calls, artifacts,
   config keys. Product names keep their capitals.
-- All diagrams share one scale and are embedded at their native width.
+- All diagrams share one scale and are embedded at their native width. Each
+  sits on its own rounded surface, the colour of a GitHub code block, so it
+  reads as one piece whatever the page behind it.
 - README.md embeds each one twice, with #gh-light-mode-only and
   #gh-dark-mode-only: GitHub hides one by its own theme setting, while a
   <picture> media query would follow the OS instead.
@@ -33,28 +36,29 @@ MONO = "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace"
 
 PALETTE = {
 	"light": {
-		"bg": "#FFFFFF", "ink": "#1F2328", "soft": "#59636E", "mute": "#8C959F",
-		"plate": "#F2F4F6", "slot": "#DDE2E7", "line": "#AFB8C1",
-		"wash": "#F5F7F9", "card": "#E3E8ED", "bar": "#BEC7D0",
+		"bg": "#F6F8FA", "ink": "#1F2328", "soft": "#59636E", "mute": "#8C959F",
+		"plate": "#FFFFFF", "slot": "#DDE2E7", "line": "#AFB8C1",
+		"wash": "#FFFFFF", "card": "#E3E8ED", "bar": "#BEC7D0",
 		"blue": "#1A7CFF", "green": "#22C063", "amber": "#FF9F2E", "red": "#EE2D62",
 		"sky": "#9DD1FF", "slate": "#7A8594",
-		"blue-plate": "#E3EFFF", "green-plate": "#DDF7E7", "amber-plate": "#FFEEDC", "red-plate": "#FFE4EB",
-		"green-soft": "#3A7550", "blue-soft": "#41679C", "amber-soft": "#8F4600", "green-text": "#12873F", "amber-text": "#B85300",
+		"blue-plate": "#E3EFFF", "green-plate": "#DDF7E7", "amber-plate": "#FFB46B", "amber-ink": "#1F1206", "amber-glyph": "#8A3F00",
+		"green-soft": "#3A7550", "blue-soft": "#41679C", "amber-soft": "#4A2808", "green-text": "#12873F", "amber-text": "#B85300",
 		"on-green": "#0B2915", "on-blue": "#FFFFFF", "on-amber": "#2E1700", "on-sky": "#0B2340", "on-slate": "#FFFFFF",
 	},
 	"dark": {
-		"bg": "#0D1117", "ink": "#E6EDF3", "soft": "#9198A1", "mute": "#6E7681",
-		"plate": "#161B22", "slot": "#2A313A", "line": "#4A525C",
-		"wash": "#141920", "card": "#252D37", "bar": "#3D4650",
+		"bg": "#151B23", "ink": "#E6EDF3", "soft": "#9198A1", "mute": "#6E7681",
+		"plate": "#1D242D", "slot": "#323B46", "line": "#515B66",
+		"wash": "#1D242D", "card": "#29313C", "bar": "#454F5A",
 		"blue": "#4493F8", "green": "#3FB950", "amber": "#FF9F4A", "red": "#FF4F7B",
 		"sky": "#2F5F9E", "slate": "#545D68",
-		"blue-plate": "#0F2F5C", "green-plate": "#0C3A24", "amber-plate": "#3A1E10", "red-plate": "#3D1626",
-		"green-soft": "#8BCFA3", "blue-soft": "#94B9EE", "amber-soft": "#FFC08F", "green-text": "#3FB950", "amber-text": "#FF9F4A",
+		"blue-plate": "#0F2F5C", "green-plate": "#0C3A24", "amber-plate": "#FFB46B", "amber-ink": "#1F1206", "amber-glyph": "#8A3F00",
+		"green-soft": "#8BCFA3", "blue-soft": "#94B9EE", "amber-soft": "#4A2808", "green-text": "#3FB950", "amber-text": "#FF9F4A",
 		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#E6EDF3", "on-slate": "#E6EDF3",
 	},
 }
 
 NAME, NOTE, CODE = 14, 12.5, 13
+PAD = 12  # surface around the drawing, on top of its own 16 px margin
 REC, PITCH = 6, 8  # record square and its pitch
 BAR_W, BAR_H, BAR_PITCH = 6, 28, 10  # batch bar
 
@@ -119,11 +123,18 @@ class Art:
 		self.add(f'<path d="M{x - 4},{y2 - 7} L{x},{y2} L{x + 4},{y2 - 7} Z" fill="{self.p[color]}"/>')
 
 	def svg(self):
-		body = "\n  ".join(self.parts)
+		w, h = self.w + 2 * PAD, self.h + 2 * PAD
+		body = "\n    ".join(self.parts)
 		return (
-			f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {self.w} {self.h}" '
-			f'width="{self.w}" height="{self.h}" role="img">\n  {body}\n</svg>\n'
+			f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img">\n'
+			f'  <rect width="{w}" height="{h}" rx="12" fill="{self.p["bg"]}"/>\n'
+			f'  <g transform="translate({PAD},{PAD})">\n    {body}\n  </g>\n</svg>\n'
 		)
+
+
+def ink(hue):
+	"""Title colour on a plate of this hue: dark on the bright ones."""
+	return "amber-ink" if hue == "amber" else "ink"
 
 
 # ---------------------------------------------------------------------- 1
@@ -175,7 +186,7 @@ def pipeline(pal):
 	fy = top + h + 48
 	a.plate(wx, fy, ww, h, "amber-plate")
 	for i in range(3):
-		a.record(wx + ww / 2 - 17 + i * 14, fy + h / 2 - REC / 2, "amber")
+		a.record(wx + ww / 2 - 17 + i * 14, fy + h / 2 - REC / 2, "amber-glyph")
 	wm = wx + ww / 2
 	a.path(f"M{wm},{top + h + 8} L{wm},{fy - 14}", "red")
 	a.add(f'<path d="M{wm - 4},{fy - 15} L{wm},{fy - 8} L{wm + 4},{fy - 15} Z" fill="{pal["red"]}"/>')
@@ -222,7 +233,7 @@ def recovery(pal):
 	grid(y1, "blue", fill="blue")
 	grid(y2, "red")
 	a.plate(rx + REC / 2 - 22, y3, 44, h, "amber-plate")
-	a.record(rx, y3 + h / 2 - REC / 2, "amber")
+	a.record(rx, y3 + h / 2 - REC / 2, "amber-glyph")
 	a.record(rx, y4 + h / 2 - REC / 2, "red")
 	down(y1 + h + 6, y2 - 6)
 	down(y2 + h + 6, y3 - 6)
@@ -385,7 +396,7 @@ def types(pal):
 	def card(i, y, title, lines, hue=None, tag=None):
 		x, w = xs[i], ws[i]
 		a.rect(x, y, w, h, (hue + "-plate") if hue else ("card" if y == top else "wash"), r=6)
-		a.name(x + 16, y + 26, title)
+		a.name(x + 16, y + 26, title, color=ink(hue))
 		if tag:
 			a.t(x + w - 16, y + 26, tag, color=hue + "-text", weight="600", anchor="end")
 		for j, (line, mono) in enumerate(lines):
@@ -461,7 +472,7 @@ def sequence(pal):
 		a.path(f"M{x},52 L{x},{y2}", "slot", width=1.5)
 	for x, (name, w, fill) in zip(xs, parts):
 		a.rect(x - w / 2, 16, w, 36, fill, r=6)
-		a.name(x, 39, name, anchor="middle")
+		a.name(x, 39, name, anchor="middle", color=ink(fill.split("-")[0]))
 
 	# activation is grey structure; where something real is held, the bar is the thing itself:
 	# the batch in the queue and in the writer, the records written one by one, the record parked
