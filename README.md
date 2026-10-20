@@ -49,6 +49,9 @@ this library is.
 
 ## 2. The library in brief
 
+![Modules, and which of them a Spring Boot or a plain JVM service takes](docs/assets/modules-light.svg#gh-light-mode-only)
+![Modules, and which of them a Spring Boot or a plain JVM service takes](docs/assets/modules-dark.svg#gh-dark-mode-only)
+
 A batcher takes single records, holds them in memory, cuts a batch when it is
 full or when the oldest record has waited long enough, and writes batches on a
 thread of its own. Around the write it adds recovery, back pressure, metrics and
@@ -75,9 +78,6 @@ Micrometer:
 | `batcher-micrometer` | metrics without Spring | core, `micrometer-core` |
 | `batcher-spring-boot` | auto-configuration, configuration properties, lifecycle | core, Spring Boot; the Micrometer adapter if it is on the classpath |
 | `batcher-spring-boot-starter` | the usual way in: dependencies only | the three above |
-
-![Modules, and which of them a Spring Boot or a plain JVM service takes](docs/assets/modules-light.svg#gh-light-mode-only)
-![Modules, and which of them a Spring Boot or a plain JVM service takes](docs/assets/modules-dark.svg#gh-dark-mode-only)
 
 The naming follows the Spring Boot reference: a module of your own is
 `<name>-spring-boot`, the starter is `<name>-spring-boot-starter`, and nothing
