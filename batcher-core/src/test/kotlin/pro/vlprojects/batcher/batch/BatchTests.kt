@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher
+package pro.vlprojects.batcher.batch
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals

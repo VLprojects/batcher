@@ -1,4 +1,4 @@
-public final class pro/vlprojects/batcher/Batch {
+public final class pro/vlprojects/batcher/batch/Batch {
 	public fun <init> (Ljava/util/List;Ljava/time/Instant;)V
 	public fun <init> (Ljava/util/List;Ljava/time/Instant;Ljava/lang/String;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -10,13 +10,8 @@ public final class pro/vlprojects/batcher/Batch {
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class pro/vlprojects/batcher/BatchWriter {
-	public abstract fun persist (Ljava/lang/Object;)V
-	public abstract fun persist (Lpro/vlprojects/batcher/Batch;)V
-}
-
 public abstract interface class pro/vlprojects/batcher/buffer/BatchReadyListener {
-	public abstract fun handle (Lpro/vlprojects/batcher/Batch;)V
+	public abstract fun handle (Lpro/vlprojects/batcher/batch/Batch;)V
 }
 
 public final class pro/vlprojects/batcher/buffer/BufferSnapshot {
@@ -33,7 +28,7 @@ public final class pro/vlprojects/batcher/buffer/BufferSnapshot$Companion {
 
 public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
 	public abstract fun add (Ljava/lang/Object;)V
-	public abstract fun close ()Lpro/vlprojects/batcher/Batch;
+	public abstract fun close ()Lpro/vlprojects/batcher/batch/Batch;
 	public abstract fun isDurable ()Z
 	public abstract fun open (Lpro/vlprojects/batcher/buffer/BatchReadyListener;)V
 	public abstract fun snapshot ()Lpro/vlprojects/batcher/buffer/BufferSnapshot;
@@ -124,7 +119,7 @@ public final class pro/vlprojects/batcher/metric/WriteMode : java/lang/Enum {
 
 public abstract interface class pro/vlprojects/batcher/queue/BatchLease {
 	public abstract fun complete ()V
-	public abstract fun getBatch ()Lpro/vlprojects/batcher/Batch;
+	public abstract fun getBatch ()Lpro/vlprojects/batcher/batch/Batch;
 	public abstract fun release ()V
 }
 
@@ -134,7 +129,7 @@ public abstract interface class pro/vlprojects/batcher/queue/BatchQueue {
 	public abstract fun getSize ()Ljava/lang/Integer;
 	public abstract fun isDurable ()Z
 	public abstract fun isExhausted ()Z
-	public abstract fun offer (Lpro/vlprojects/batcher/Batch;Ljava/time/Duration;)Lpro/vlprojects/batcher/queue/OfferResult;
+	public abstract fun offer (Lpro/vlprojects/batcher/batch/Batch;Ljava/time/Duration;)Lpro/vlprojects/batcher/queue/OfferResult;
 	public abstract fun poll (Ljava/time/Duration;)Lpro/vlprojects/batcher/queue/BatchLease;
 }
 
@@ -145,5 +140,10 @@ public final class pro/vlprojects/batcher/queue/OfferResult : java/lang/Enum {
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/queue/OfferResult;
 	public static fun values ()[Lpro/vlprojects/batcher/queue/OfferResult;
+}
+
+public abstract interface class pro/vlprojects/batcher/writer/BatchWriter {
+	public abstract fun persist (Ljava/lang/Object;)V
+	public abstract fun persist (Lpro/vlprojects/batcher/batch/Batch;)V
 }
 

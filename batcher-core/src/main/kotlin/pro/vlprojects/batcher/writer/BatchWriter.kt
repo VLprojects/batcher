@@ -1,4 +1,6 @@
-package pro.vlprojects.batcher
+package pro.vlprojects.batcher.writer
+
+import pro.vlprojects.batcher.batch.Batch
 
 /**
  * The insert itself, and the only part a service has to write: one statement per call, a throw if

@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.buffer
 
-import pro.vlprojects.batcher.Batch
+import pro.vlprojects.batcher.batch.Batch
 
 /**
  * Takes a batch the buffer has cut. The buffer lets go of the records only once this returns; a

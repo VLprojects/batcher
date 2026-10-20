@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher
+package pro.vlprojects.batcher.batch
 
 import java.time.Instant
 import java.util.UUID
