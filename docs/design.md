@@ -228,9 +228,25 @@ One batcher is a short pipeline with two threads of its own.
   it applies the back-pressure policy.
 - One writer thread writes batches in order, one at a time.
 
+The same in time, for one record and for a batch that fails once:
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/sequence-dark.svg">
+    <img alt="Calls on the producer thread and on the writer thread" src="assets/sequence-light.svg" width="880">
+  </picture>
+</p>
+
 ## 6. Abstractions
 
 Everything in the pipeline above is an interface in `batcher-core`.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/types-dark.svg">
+    <img alt="The types of batcher-core and how they refer to each other" src="assets/types-light.svg" width="880">
+  </picture>
+</p>
 
 | Type | Responsibility | Default |
 | --- | --- | --- |

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 316" width="880" height="316" role="img">
+  <rect x="16.0" y="16.0" width="176.0" height="78.0" rx="6" fill="#F2F4F6"/>
+  <text x="28.0" y="40.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">Batcher&lt;T&gt;</text>
+  <text x="28.0" y="62.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">accept(record)</text>
+  <text x="28.0" y="80.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">start(), stop()</text>
+  <rect x="244.0" y="16.0" width="152.0" height="78.0" rx="6" fill="#F2F4F6"/>
+  <text x="256.0" y="40.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">RecordBuffer&lt;T&gt;</text>
+  <text x="256.0" y="62.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">holds records,</text>
+  <text x="256.0" y="80.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">cuts batches</text>
+  <rect x="448.0" y="16.0" width="188.0" height="78.0" rx="6" fill="#F2F4F6"/>
+  <text x="460.0" y="40.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">BatchReadyListener&lt;T&gt;</text>
+  <text x="460.0" y="62.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">takes a cut batch;</text>
+  <text x="460.0" y="80.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">default: recovering writer</text>
+  <rect x="688.0" y="16.0" width="176.0" height="78.0" rx="6" fill="#DDF7E7"/>
+  <text x="700.0" y="40.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">BatchWriter&lt;T&gt;</text>
+  <text x="852.0" y="40.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#12873F" text-anchor="end">yours</text>
+  <text x="700.0" y="62.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#3A7550" text-anchor="start">persist(batch)</text>
+  <text x="700.0" y="80.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#3A7550" text-anchor="start">persist(record)</text>
+  <rect x="16.0" y="150.0" width="176.0" height="78.0" rx="6" fill="#F2F4F6"/>
+  <text x="28.0" y="174.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">BackPressurePolicy</text>
+  <text x="28.0" y="196.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">the queue is full;</text>
+  <text x="28.0" y="214.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">default: to the fallback</text>
+  <rect x="244.0" y="150.0" width="152.0" height="78.0" rx="6" fill="#F2F4F6"/>
+  <text x="256.0" y="174.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">BatchingPolicy</text>
+  <text x="256.0" y="196.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">when to cut;</text>
+  <text x="256.0" y="214.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">size and max age</text>
+  <rect x="448.0" y="150.0" width="188.0" height="78.0" rx="6" fill="#E3EFFF"/>
+  <text x="460.0" y="174.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">Batch&lt;T&gt;</text>
+  <text x="460.0" y="196.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#41679C" text-anchor="start">records and the arrival</text>
+  <text x="460.0" y="214.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#41679C" text-anchor="start">time of the first one</text>
+  <rect x="688.0" y="150.0" width="176.0" height="78.0" rx="6" fill="#FFF1D1"/>
+  <text x="700.0" y="174.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">WriteFallback&lt;T&gt;</text>
+  <text x="700.0" y="196.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#7A5A12" text-anchor="start">failed records;</text>
+  <text x="700.0" y="214.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#7A5A12" text-anchor="start">default: log at ERROR</text>
+  <path d="M200,55.0 L230,55.0" stroke="#AFB8C1" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M229,51.0 L236,55.0 L229,59.0 Z" fill="#AFB8C1"/>
+  <text x="218.0" y="45.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="middle">adds</text>
+  <path d="M404,55.0 L434,55.0" stroke="#1A7CFF" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M433,51.0 L440,55.0 L433,59.0 Z" fill="#1A7CFF"/>
+  <text x="422.0" y="45.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1A7CFF" text-anchor="middle">a batch</text>
+  <path d="M644,55.0 L674,55.0" stroke="#AFB8C1" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M673,51.0 L680,55.0 L673,59.0 Z" fill="#AFB8C1"/>
+  <text x="662.0" y="45.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="middle">writes</text>
+  <path d="M422.0,55.0 L422.0,181.0 Q422.0,189.0 430.0,189.0 L444,189.0" stroke="#1A7CFF" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M48,102 L48,136" stroke="#AFB8C1" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M44,135 L48,142 L52,135 Z" fill="#AFB8C1"/>
+  <text x="58.0" y="126.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">asks</text>
+  <path d="M276,102 L276,136" stroke="#AFB8C1" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M272,135 L276,142 L280,135 Z" fill="#AFB8C1"/>
+  <text x="286.0" y="126.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">asks</text>
+  <path d="M644,78 L654,78 Q662,78 662,86 L662,181.0 Q662,189.0 670,189.0" stroke="#F0384A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M670,189.0 L674,189.0" stroke="#F0384A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M673,185.0 L680,189.0 L673,193.0 Z" fill="#F0384A"/>
+  <text x="672.0" y="126.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#F0384A" text-anchor="start">what fails</text>
+  <rect x="16.0" y="252.0" width="848.0" height="44.0" rx="6" fill="#F2F4F6"/>
+  <text x="28.0" y="279.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">BatcherMeter</text>
+  <text x="150.0" y="279.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">every part reports its state changes here; disabled in core, Micrometer in batcher-micrometer</text>
+</svg>

@@ -32,7 +32,7 @@ PALETTE = {
 		"blue": "#1A7CFF", "green": "#22C063", "amber": "#FFB21E", "red": "#F0384A",
 		"sky": "#9DD1FF", "slate": "#7A8594",
 		"blue-plate": "#E3EFFF", "green-plate": "#DDF7E7", "amber-plate": "#FFF1D1", "red-plate": "#FFE4E7",
-		"green-soft": "#3A7550", "blue-soft": "#41679C",
+		"green-soft": "#3A7550", "blue-soft": "#41679C", "amber-soft": "#7A5A12", "green-text": "#12873F", "amber-text": "#A86500",
 		"on-green": "#0B2915", "on-blue": "#FFFFFF", "on-amber": "#2B1D00", "on-sky": "#0B2340", "on-slate": "#FFFFFF",
 	},
 	"dark": {
@@ -41,7 +41,7 @@ PALETTE = {
 		"blue": "#4493F8", "green": "#3FB950", "amber": "#E3A21A", "red": "#F85149",
 		"sky": "#2F5F9E", "slate": "#545D68",
 		"blue-plate": "#0F2F5C", "green-plate": "#0C3A24", "amber-plate": "#2E230B", "red-plate": "#331619",
-		"green-soft": "#8BCFA3", "blue-soft": "#94B9EE",
+		"green-soft": "#8BCFA3", "blue-soft": "#94B9EE", "amber-soft": "#E2C27A", "green-text": "#3FB950", "amber-text": "#E3A21A",
 		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#E6EDF3", "on-slate": "#E6EDF3",
 	},
 }
@@ -60,6 +60,7 @@ class Art:
 
 	# text -------------------------------------------------------------
 	def t(self, x, y, s, size=NOTE, color="soft", anchor="start", weight="400", mono=False):
+		s = s.replace("<", "&lt;").replace(">", "&gt;")
 		self.add(
 			f'<text x="{x:.1f}" y="{y:.1f}" font-family="{MONO if mono else FONT}" font-size="{size}" '
 			f'font-weight="{weight}" fill="{self.p[color]}" text-anchor="{anchor}">{s}</text>'
@@ -97,6 +98,17 @@ class Art:
 		"""Horizontal arrow with a solid head that ends at x2."""
 		self.path(f"M{x1},{y} L{x2 - 6},{y}", color)
 		self.add(f'<path d="M{x2 - 7},{y - 4} L{x2},{y} L{x2 - 7},{y + 4} Z" fill="{self.p[color]}"/>')
+
+	def harrow(self, x1, y, x2, color="line", width=1.5):
+		"""Horizontal arrow from x1 to x2 in either direction, the head touching x2."""
+		d = 1 if x2 > x1 else -1
+		self.path(f"M{x1},{y} L{x2 - d * 6},{y}", color, width)
+		self.add(f'<path d="M{x2 - d * 7},{y - 4} L{x2},{y} L{x2 - d * 7},{y + 4} Z" fill="{self.p[color]}"/>')
+
+	def varrow(self, x, y1, y2, color="line", width=1.5):
+		"""Vertical arrow pointing down to y2."""
+		self.path(f"M{x},{y1} L{x},{y2 - 6}", color, width)
+		self.add(f'<path d="M{x - 4},{y2 - 7} L{x},{y2} L{x + 4},{y2 - 7} Z" fill="{self.p[color]}"/>')
 
 	def svg(self):
 		body = "\n  ".join(self.parts)
@@ -350,7 +362,118 @@ def modules(pal):
 	return a
 
 
-DIAGRAMS = {"pipeline": pipeline, "recovery": recovery, "lifecycle": lifecycle, "shutdown": shutdown, "modules": modules}
+# ---------------------------------------------------------------------- 6
+def types(pal):
+	# class diagram: the pipeline left to right, what each type asks on the row below
+	a = Art(880, 316, pal)
+	h = 78
+	y1, y2 = 16, 150
+	A, B, C, D = (16, 176), (244, 152), (448, 188), (688, 176)
+
+	def card(col, y, title, lines, hue=None, tag=None):
+		x, w = col
+		a.rect(x, y, w, h, (hue + "-plate") if hue else "plate", r=6)
+		a.name(x + 12, y + 24, title, mono=True)
+		if tag:
+			a.t(x + w - 12, y + 24, tag, color=hue + "-text", weight="600", anchor="end")
+		for i, line in enumerate(lines):
+			a.t(x + 12, y + 46 + i * 18, line, color=(hue + "-soft") if hue else "soft", mono=line.endswith(")"))
+
+	card(A, y1, "Batcher<T>", ["accept(record)", "start(), stop()"])
+	card(B, y1, "RecordBuffer<T>", ["holds records,", "cuts batches"])
+	card(C, y1, "BatchReadyListener<T>", ["takes a cut batch;", "default: recovering writer"])
+	card(D, y1, "BatchWriter<T>", ["persist(batch)", "persist(record)"], "green", "yours")
+	card(A, y2, "BackPressurePolicy", ["the queue is full;", "default: to the fallback"])
+	card(B, y2, "BatchingPolicy", ["when to cut;", "size and max age"])
+	card(C, y2, "Batch<T>", ["records and the arrival", "time of the first one"], "blue")
+	card(D, y2, "WriteFallback<T>", ["failed records;", "default: log at ERROR"], "amber")
+
+	mid = y1 + h / 2
+	for (x0, w0), (x1, _), label, color in ((A, B, "adds", "line"), (B, C, "a batch", "blue"), (C, D, "writes", "line")):
+		a.harrow(x0 + w0 + 8, mid, x1 - 8, color)
+		a.t((x0 + w0 + x1) / 2, mid - 10, label, color="blue" if color == "blue" else "soft", anchor="middle")
+
+	# Batch<T> is what travels on the arrow between the buffer and the listener
+	bx = (B[0] + B[1] + C[0]) / 2
+	a.path(f"M{bx},{mid} L{bx},{y2 + h / 2 - 8} Q{bx},{y2 + h / 2} {bx + 8},{y2 + h / 2} L{C[0] - 4},{y2 + h / 2}", "blue")
+
+	for (x0, w0), label in ((A, "asks"), (B, "asks")):
+		cx = x0 + 32
+		a.varrow(cx, y1 + h + 8, y2 - 8)
+		a.t(cx + 10, (y1 + h + y2) / 2 + 4, label)
+
+	# what the retry could not write goes down to the fallback
+	fx, fy = C[0] + C[1] + 26, y2 + h / 2
+	a.path(f"M{C[0] + C[1] + 8},{y1 + h - 16} L{fx - 8},{y1 + h - 16} Q{fx},{y1 + h - 16} {fx},{y1 + h - 8} L{fx},{fy - 8} Q{fx},{fy} {fx + 8},{fy}", "red")
+	a.harrow(fx + 8, fy, D[0] - 8, "red")
+	a.t(fx + 10, (y1 + h + y2) / 2 + 4, "what fails", color="red")
+
+	y3 = y2 + h + 24
+	a.rect(16, y3, 848, 44, "plate", r=6)
+	a.name(28, y3 + 27, "BatcherMeter", mono=True)
+	a.t(150, y3 + 27, "every part reports its state changes here; disabled in core, Micrometer in batcher-micrometer")
+	return a
+
+
+# ---------------------------------------------------------------------- 7
+def sequence(pal):
+	# sequence diagram: one record on the producer thread, then a batch that fails once on the writer thread
+	a = Art(880, 500, pal)
+	parts = [
+		("producer", None, False), ("Batcher", "plate", True), ("RecordBuffer", "plate", True), ("queue", "plate", False),
+		("writer thread", "plate", False), ("BatchWriter", "green-plate", True), ("WriteFallback", "amber-plate", True),
+	]
+	xs = [80 + i * 120 for i in range(len(parts))]
+	P, BT, RB, Q, W, BW, WF = xs
+	end = 488
+	for x in xs:
+		a.path(f"M{x},52 L{x},{end}", "slot", width=1.5)
+	for x, (name, fill, mono) in zip(xs, parts):
+		if fill:
+			a.rect(x - 56, 16, 112, 36, fill, r=6)
+		else:
+			a.rect(x - 56, 16, 112, 36, "bg", r=6)
+		a.name(x, 39, name, anchor="middle", mono=mono)
+
+	def section(y, text):
+		a.rect(12, y - 16, len(text) * 7.4 + 8, 22, "bg", r=0)
+		a.t(16, y, text, color="soft", weight="600")
+
+	def msg(x1, x2, y, label, color="ink", mono=False):
+		a.harrow(x1 + (3 if x2 > x1 else -3), y, x2 - (3 if x2 > x1 else -3), color)
+		tx = x1 + 10 if x2 > x1 else x1 - 10
+		text = {"ink": "ink", "line": "soft", "green": "green-text", "amber": "amber-text"}.get(color, color)
+		a.t(tx, y - 8, label, color=text, mono=mono, size=12 if mono else NOTE, anchor="start" if x2 > x1 else "end")
+
+	section(84, "on the producer thread")
+	msg(P, BT, 112, "accept(record)", mono=True)
+	msg(BT, RB, 144, "append")
+	msg(RB, Q, 176, "a full batch", "blue")
+	msg(BT, P, 208, "returns, no I/O", "line")
+
+	section(248, "on the writer thread")
+	msg(Q, W, 276, "next batch", "blue")
+	msg(W, BW, 308, "persist(batch)", mono=True)
+	msg(BW, W, 340, "throws", "red")
+
+	# the retry, one record at a time
+	ly1, ly2 = 356, 444
+	bx = W - 14
+	a.path(f"M{bx + 6},{ly1} L{bx},{ly1} L{bx},{ly2} L{bx + 6},{ly2}", "mute", width=1.25)
+	a.rect(bx - 112, (ly1 + ly2) / 2 - 14, 104, 22, "bg", r=0)
+	a.t(bx - 10, (ly1 + ly2) / 2 + 2, "for each record", color="soft", anchor="end")
+	msg(W, BW, 372, "persist(record)", mono=True)
+	msg(BW, W, 404, "499 written", "green")
+	msg(BW, W, 436, "1 throws", "red")
+
+	msg(W, WF, 472, "the record that failed", "amber")
+	return a
+
+
+DIAGRAMS = {
+	"pipeline": pipeline, "recovery": recovery, "lifecycle": lifecycle, "shutdown": shutdown, "modules": modules,
+	"types": types, "sequence": sequence,
+}
 
 if __name__ == "__main__":
 	OUT.mkdir(parents=True, exist_ok=True)
