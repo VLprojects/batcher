@@ -8,14 +8,20 @@ Rules the drawings follow:
 - Plates, not frames: a group is a flat fill with no outline.
 - Colour means the same thing everywhere. Blue is data on the move, green is
   done or allowed, amber is waiting it out (draining, parked), red is a
-  failure, grey is structure. States keep their colour wherever they appear:
-  NEW light blue, RUNNING green, STOPPING amber, STOPPED slate. In the module
+  failure, grey is structure. On the dark canvas coloured plates are bright
+  with dark text: dark orange, green or blue there turns muddy. States keep their colour wherever they appear:
+  new light blue, running green, stopping amber, stopped slate. In the module
   map green is Spring and blue is plain JVM. Text on bright fills is dark.
 - Every line is solid; a lighter colour, never a dash, marks what is inactive.
 - One grid of 4 px. Space inside a group is smaller than space between groups.
 - Two text sizes: the name in bold, the explanation in grey below it, both
-  aligned to the left edge of what they label. Code identifiers are monospaced.
-- All diagrams share one scale and are embedded at their native width.
+  aligned to the left edge of what they label.
+- Every part is named in plain lowercase words, types included (batch writer,
+  write fallback). Only what one would type is monospaced: calls, artifacts,
+  config keys. Product names keep their capitals.
+- All diagrams share one scale and are embedded at their native width. Each
+  sits on its own rounded surface, the colour of a GitHub code block, so it
+  reads as one piece whatever the page behind it.
 - README.md embeds each one twice, with #gh-light-mode-only and
   #gh-dark-mode-only: GitHub hides one by its own theme setting, while a
   <picture> media query would follow the OS instead.
@@ -30,28 +36,29 @@ MONO = "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace"
 
 PALETTE = {
 	"light": {
-		"bg": "#FFFFFF", "ink": "#1F2328", "soft": "#59636E", "mute": "#8C959F",
-		"plate": "#F2F4F6", "slot": "#DDE2E7", "line": "#AFB8C1",
-		"wash": "#F5F7F9", "card": "#E3E8ED", "bar": "#BEC7D0",
-		"blue": "#1A7CFF", "green": "#22C063", "amber": "#FFB21E", "red": "#F0384A",
-		"sky": "#9DD1FF", "slate": "#7A8594",
-		"blue-plate": "#E3EFFF", "green-plate": "#DDF7E7", "amber-plate": "#FFF1D1", "red-plate": "#FFE4E7",
-		"green-soft": "#3A7550", "blue-soft": "#41679C", "amber-soft": "#8F5800", "green-text": "#12873F", "amber-text": "#A86500",
-		"on-green": "#0B2915", "on-blue": "#FFFFFF", "on-amber": "#2B1D00", "on-sky": "#0B2340", "on-slate": "#FFFFFF",
+		"bg": "#F6F8FA", "ink": "#1F2328", "soft": "#59636E", "mute": "#8C959F",
+		"plate": "#FFFFFF", "slot": "#DDE2E7", "line": "#AFB8C1",
+		"wash": "#FFFFFF", "card": "#E3E8ED", "bar": "#BEC7D0",
+		"blue": "#1A7CFF", "green": "#22C063", "amber": "#FF9F2E", "red": "#EE2D62",
+		"sky": "#9DD1FF", "slate": "#7A8594", "lime": "#22C063",
+		"blue-plate": "#E3EFFF", "blue-ink": "#1F2328", "green-plate": "#DDF7E7", "green-ink": "#1F2328", "green-glyph": "#22C063", "amber-plate": "#FFEEDC", "amber-ink": "#1F2328", "amber-glyph": "#FF9F2E",
+		"green-soft": "#3A7550", "blue-soft": "#41679C", "amber-soft": "#8F4600", "green-text": "#12873F", "amber-text": "#B85300",
+		"on-green": "#0B2915", "on-blue": "#FFFFFF", "on-amber": "#2E1700", "on-sky": "#0B2340", "on-slate": "#FFFFFF", "on-lime": "#0B2915",
 	},
 	"dark": {
-		"bg": "#0D1117", "ink": "#E6EDF3", "soft": "#9198A1", "mute": "#6E7681",
-		"plate": "#161B22", "slot": "#2A313A", "line": "#4A525C",
-		"wash": "#141920", "card": "#252D37", "bar": "#3D4650",
-		"blue": "#4493F8", "green": "#3FB950", "amber": "#E3A21A", "red": "#F85149",
-		"sky": "#2F5F9E", "slate": "#545D68",
-		"blue-plate": "#0F2F5C", "green-plate": "#0C3A24", "amber-plate": "#2E230B", "red-plate": "#331619",
-		"green-soft": "#8BCFA3", "blue-soft": "#94B9EE", "amber-soft": "#EDBE62", "green-text": "#3FB950", "amber-text": "#E3A21A",
-		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#E6EDF3", "on-slate": "#E6EDF3",
+		"bg": "#151B23", "ink": "#E6EDF3", "soft": "#9198A1", "mute": "#6E7681",
+		"plate": "#1D242D", "slot": "#323B46", "line": "#515B66",
+		"wash": "#1D242D", "card": "#29313C", "bar": "#454F5A",
+		"blue": "#4493F8", "green": "#3FB950", "amber": "#FF9F4A", "red": "#FF4F7B",
+		"sky": "#6E9BFF", "slate": "#545D68", "lime": "#5BF08A",
+		"blue-plate": "#6E9BFF", "blue-ink": "#06173D", "green-plate": "#5BF08A", "green-ink": "#03240E", "green-glyph": "#0D7A32", "amber-plate": "#FFB46B", "amber-ink": "#1F1206", "amber-glyph": "#8A3F00",
+		"green-soft": "#0D5A26", "blue-soft": "#1B3A80", "amber-soft": "#4A2808", "green-text": "#03240E", "amber-text": "#FF9F4A",
+		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#06173D", "on-slate": "#E6EDF3", "on-lime": "#03240E",
 	},
 }
 
 NAME, NOTE, CODE = 14, 12.5, 13
+PAD = 12  # surface around the drawing, on top of its own 16 px margin
 REC, PITCH = 6, 8  # record square and its pitch
 BAR_W, BAR_H, BAR_PITCH = 6, 28, 10  # batch bar
 
@@ -116,11 +123,18 @@ class Art:
 		self.add(f'<path d="M{x - 4},{y2 - 7} L{x},{y2} L{x + 4},{y2 - 7} Z" fill="{self.p[color]}"/>')
 
 	def svg(self):
-		body = "\n  ".join(self.parts)
+		w, h = self.w + 2 * PAD, self.h + 2 * PAD
+		body = "\n    ".join(self.parts)
 		return (
-			f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {self.w} {self.h}" '
-			f'width="{self.w}" height="{self.h}" role="img">\n  {body}\n</svg>\n'
+			f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img">\n'
+			f'  <rect width="{w}" height="{h}" rx="12" fill="{self.p["bg"]}"/>\n'
+			f'  <g transform="translate({PAD},{PAD})">\n    {body}\n  </g>\n</svg>\n'
 		)
+
+
+def ink(hue):
+	"""Title colour on a plate of this hue: dark on the bright ones."""
+	return hue + "-ink" if hue in ("amber", "green", "blue") else "ink"
 
 
 # ---------------------------------------------------------------------- 1
@@ -166,18 +180,18 @@ def pipeline(pal):
 	a.plate(cx, top, cw, h, "green-plate")
 	ox = cx + (cw - (6 * BAR_PITCH - (BAR_PITCH - BAR_W))) / 2
 	for i in range(6):
-		a.bar(ox + i * BAR_PITCH, mid - BAR_H / 2, "green")
+		a.bar(ox + i * BAR_PITCH, mid - BAR_H / 2, "green-glyph")
 
 	# failure: straight down from the writer to the fallback
 	fy = top + h + 48
 	a.plate(wx, fy, ww, h, "amber-plate")
 	for i in range(3):
-		a.record(wx + ww / 2 - 17 + i * 14, fy + h / 2 - REC / 2, "amber")
+		a.record(wx + ww / 2 - 17 + i * 14, fy + h / 2 - REC / 2, "amber-glyph")
 	wm = wx + ww / 2
 	a.path(f"M{wm},{top + h + 8} L{wm},{fy - 14}", "red")
 	a.add(f'<path d="M{wm - 4},{fy - 15} L{wm},{fy - 8} L{wm + 4},{fy - 15} Z" fill="{pal["red"]}"/>')
 	a.t(wm - 12, top + h + 32, "write failed", color="red", weight="600", anchor="end")
-	a.label(cx, fy + h / 2 - 4, "WriteFallback", "queue, file, log", mono=True)
+	a.label(cx, fy + h / 2 - 4, "write fallback", "queue, file, log")
 	return a
 
 
@@ -206,20 +220,20 @@ def recovery(pal):
 	rows = [
 		("persist(batch)", "the whole batch, one write", "500 records written"),
 		("persist(record)", "the same batch, record by record", "499 written, 1 still fails"),
-		("WriteFallback", "whatever the retry could not write", "1 record parked"),
+		("write fallback", "whatever the retry could not write", "1 record parked"),
 		("lost", "the fallback failed as well", "ERROR in the log, a metric"),
 	]
 	for i, (title, note, outcome) in enumerate(rows):
 		y = 16 + i * step
 		last = i == len(rows) - 1
-		a.label(16, y + 18, title, note, mono=not last, color="red" if last else "ink")
+		a.label(16, y + 18, title, note, mono="(" in title, color="red" if last else "ink")
 		a.t(ox, y + h / 2 + 4.5, outcome, color="red" if last else "ink", weight="600" if last else "400")
 
 	y1, y2, y3, y4 = (16 + i * step for i in range(4))
 	grid(y1, "blue", fill="blue")
 	grid(y2, "red")
 	a.plate(rx + REC / 2 - 22, y3, 44, h, "amber-plate")
-	a.record(rx, y3 + h / 2 - REC / 2, "amber")
+	a.record(rx, y3 + h / 2 - REC / 2, "amber-glyph")
 	a.record(rx, y4 + h / 2 - REC / 2, "red")
 	down(y1 + h + 6, y2 - 6)
 	down(y2 + h + 6, y3 - 6)
@@ -231,10 +245,10 @@ def recovery(pal):
 
 # ---------------------------------------------------------------------- 3
 STATES = {  # state: fill, text
-	"NEW": ("sky", "on-sky"),
-	"RUNNING": ("green", "on-green"),
-	"STOPPING": ("amber", "on-amber"),
-	"STOPPED": ("slate", "on-slate"),
+	"new": ("sky", "on-sky"),
+	"running": ("lime", "on-lime"),  # the green of the plates, not of the lines
+	"stopping": ("amber", "on-amber"),
+	"stopped": ("slate", "on-slate"),
 }
 
 
@@ -243,17 +257,17 @@ def state_bar(a, x, y, w, h, state, note=None):
 	a.rect(x, y, w, h, fill, r=4)
 	a.t(x + 12, y + h / 2 + 4.5, state, color=ink, weight="650")
 	if note:
-		a.t(x + 12 + len(state) * 9.2 + 12, y + h / 2 + 4.5, note, color=ink)
+		a.t(x + 12 + len(state) * 8 + 12, y + h / 2 + 4.5, note, color=ink)
 
 
 def lifecycle(pal):
 	a = Art(880, 92, pal)
 	top, h, gap = 44, 32, 4
 	segments = [
-		(112, "NEW", None),
-		(328, "RUNNING", "accept allowed"),
-		(300, "STOPPING", "accept rejected, buffer drains"),
-		(96, "STOPPED", None),
+		(112, "new", None),
+		(328, "running", "accept allowed"),
+		(300, "stopping", "accept rejected, buffer drains"),
+		(96, "stopped", None),
 	]
 	x, cuts = 16, []
 	for w, state, note in segments:
@@ -276,9 +290,9 @@ def shutdown(pal):
 	stop, budget, done, end = 336, 696, 776, 864
 	bottom = wr_y + lane_h
 
-	state_bar(a, lx, st_y, stop - lx - 2, st_h, "RUNNING")
-	state_bar(a, stop + 2, st_y, done - stop - 4, st_h, "STOPPING")
-	state_bar(a, done + 2, st_y, end - done - 2, st_h, "STOPPED")
+	state_bar(a, lx, st_y, stop - lx - 2, st_h, "running")
+	state_bar(a, stop + 2, st_y, done - stop - 4, st_h, "stopping")
+	state_bar(a, done + 2, st_y, end - done - 2, st_h, "stopped")
 
 	a.name(lx - 16, buf_y + 25, "buffer", anchor="end")
 	a.name(lx - 16, wr_y + 25, "writer", anchor="end")
@@ -310,7 +324,7 @@ def shutdown(pal):
 	ly = bottom + 30
 	a.label(rest - 4, ly, "remaining batch", "goes ahead of the queue")
 	a.label(rest + 176, ly, "writer drains", "one batch at a time")
-	a.label(budget + 12, ly, "leftovers parked", "WriteFallback", note_mono=True)
+	a.label(budget + 12, ly, "leftovers parked", "in the write fallback")
 
 	by2 = ly + 40
 	a.path(f"M{stop},{by2 - 6} L{stop},{by2} L{budget},{by2} L{budget},{by2 - 6}", "mute", width=1.25)
@@ -335,7 +349,7 @@ def modules(pal):
 
 	def card(x, y, w, hue, title, note):
 		a.rect(x, y, w, h, hue + "-plate", r=6)
-		a.name(x + 16, y + 24, title, mono=True)
+		a.name(x + 16, y + 24, title, mono=True, color=ink(hue))
 		a.t(x + 16, y + 42, note, color=hue + "-soft")
 
 	card(ix, y1, iw, "green", "batcher-spring-boot-starter", "one dependency, nothing of its own")
@@ -382,21 +396,21 @@ def types(pal):
 	def card(i, y, title, lines, hue=None, tag=None):
 		x, w = xs[i], ws[i]
 		a.rect(x, y, w, h, (hue + "-plate") if hue else ("card" if y == top else "wash"), r=6)
-		a.name(x + 16, y + 26, title, mono=True)
+		a.name(x + 16, y + 26, title, color=ink(hue))
 		if tag:
 			a.t(x + w - 16, y + 26, tag, color=hue + "-text", weight="600", anchor="end")
 		for j, (line, mono) in enumerate(lines):
 			a.t(x + 16, y + 48 + j * 18, line, color=(hue + "-soft") if hue else "soft", mono=mono, size=12 if mono else NOTE)
 
-	card(0, top, "Batcher", [("accept(record)", True), ("start(), stop()", True)])
-	card(1, top, "RecordBuffer", [("holds records and", False), ("cuts them into batches", False)])
-	card(2, top, "BatchReadyListener", [("takes each batch;", False), ("default: recovering writer", False)])
-	card(3, top, "BatchWriter", [("persist(batch)", True), ("persist(record)", True)], "green", "yours")
+	card(0, top, "batcher", [("accept(record)", True), ("start(), stop()", True)])
+	card(1, top, "record buffer", [("holds records and", False), ("cuts them into batches", False)])
+	card(2, top, "batch ready listener", [("takes each batch;", False), ("default: recovering writer", False)])
+	card(3, top, "batch writer", [("persist(batch)", True), ("persist(record)", True)], "green", "yours")
 
-	card(0, low, "BackPressurePolicy", [("the queue is full;", False), ("default: to the fallback", False)])
-	card(1, low, "BatchingPolicy", [("when to cut a batch:", False), ("size or max age", False)])
-	card(2, low, "WriteFallback", [("what could not be written;", False), ("default: log at ERROR", False)], "amber")
-	card(3, low, "Batch", [("records and the arrival", False), ("time of the first one", False)])
+	card(0, low, "back pressure policy", [("the queue is full;", False), ("default: to the fallback", False)])
+	card(1, low, "batching policy", [("when to cut a batch:", False), ("size or max age", False)])
+	card(2, low, "write fallback", [("what could not be written;", False), ("default: log at ERROR", False)], "amber")
+	card(3, low, "batch", [("records and the arrival", False), ("time of the first one", False)])
 	a.bar(xs[3] + ws[3] - 16 - BAR_W, low + 13, h=16)
 
 	# along the chain: an arrow and what it carries, centred in the gap
@@ -419,8 +433,10 @@ def types(pal):
 
 	y = low + h + gap
 	a.rect(16, y, 848, 44, "wash", r=6)
-	a.name(32, y + 27, "BatcherMeter", mono=True)
-	a.t(xs[1] + 16, y + 27, "every type reports here; Micrometer in batcher-micrometer")
+	a.name(32, y + 27, "batcher meter")
+	a.t(xs[1] + 16, y + 27, "every type reports here")
+	a.t(848, y + 27, "batcher-micrometer", mono=True, size=12, anchor="end")
+	a.t(848 - 18 * 7.2 - 8, y + 27, "Micrometer is in", anchor="end")
 	return a
 
 
@@ -430,12 +446,12 @@ def sequence(pal):
 	# writes a batch that fails once; each thread is a plate over the lifelines it uses, the queue belongs to none
 	a = Art(880, 504, pal)
 	parts = [
-		("Batcher", 76, "card", True), ("RecordBuffer", 116, "card", True), ("queue", 72, "card", False),
-		("recovering writer", 144, "card", False), ("BatchWriter", 108, "green-plate", True),
-		("WriteFallback", 124, "amber-plate", True),
+		("batcher", 76, "card"), ("record buffer", 116, "card"), ("queue", 72, "card"),
+		("recovering writer", 144, "card"), ("batch writer", 108, "green-plate"),
+		("write fallback", 124, "amber-plate"),
 	]
 	xs, x = [], 156
-	for i, (_, w, _, _) in enumerate(parts):
+	for i, (_, w, _) in enumerate(parts):
 		if i:
 			x += parts[i - 1][1] / 2 + 21 + w / 2
 		xs.append(x)
@@ -454,9 +470,9 @@ def sequence(pal):
 	# a lifeline ends with its thread's plate
 	for x, y2 in zip(xs, (244, 372, 400, end, end, end)):
 		a.path(f"M{x},52 L{x},{y2}", "slot", width=1.5)
-	for x, (name, w, fill, mono) in zip(xs, parts):
+	for x, (name, w, fill) in zip(xs, parts):
 		a.rect(x - w / 2, 16, w, 36, fill, r=6)
-		a.name(x, 39, name, anchor="middle", mono=mono)
+		a.name(x, 39, name, anchor="middle", color=ink(fill.split("-")[0]))
 
 	# activation is grey structure; where something real is held, the bar is the thing itself:
 	# the batch in the queue and in the writer, the records written one by one, the record parked
