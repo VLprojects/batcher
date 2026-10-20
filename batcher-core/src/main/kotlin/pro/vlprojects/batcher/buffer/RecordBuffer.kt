@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.buffer
 
-import pro.vlprojects.batcher.batch.Batch
+import pro.vlprojects.batcher.model.Batch
 
 /**
  * Collects records and cuts them into batches by a rule of its own: size, age, bytes, a key. A cut

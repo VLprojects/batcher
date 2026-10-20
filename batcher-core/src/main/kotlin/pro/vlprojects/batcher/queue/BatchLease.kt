@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.queue
 
-import pro.vlprojects.batcher.batch.Batch
+import pro.vlprojects.batcher.model.Batch
 
 /** A batch out of the queue but still the queue's to answer for, until one of these two is called. */
 public interface BatchLease<out T : Any> {
