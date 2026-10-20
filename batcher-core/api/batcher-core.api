@@ -1,18 +1,14 @@
 public final class pro/vlprojects/batcher/Batch {
-	public static final field Companion Lpro/vlprojects/batcher/Batch$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/time/Instant;)V
+	public fun <init> (Ljava/util/List;Ljava/time/Instant;)V
+	public fun <init> (Ljava/util/List;Ljava/time/Instant;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/time/Instant;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFirstRecordAt ()Ljava/time/Instant;
 	public final fun getId ()Ljava/lang/String;
 	public final fun getRecords ()Ljava/util/List;
 	public final fun getSize ()I
 	public fun hashCode ()I
-	public static final fun of (Ljava/util/List;Ljava/time/Instant;)Lpro/vlprojects/batcher/Batch;
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class pro/vlprojects/batcher/Batch$Companion {
-	public final fun of (Ljava/util/List;Ljava/time/Instant;)Lpro/vlprojects/batcher/Batch;
 }
 
 public abstract interface class pro/vlprojects/batcher/BatchWriter {

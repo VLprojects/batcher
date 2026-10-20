@@ -12,17 +12,17 @@ class BatchTests {
 
     @Test
     fun `a batch holds at least one record`() {
-        assertThrows<IllegalArgumentException> { Batch("id", emptyList<String>(), at) }
+        assertThrows<IllegalArgumentException> { Batch(emptyList<String>(), at) }
     }
 
     @Test
     fun `every new batch gets an id of its own`() {
-        assertNotEquals(Batch.of(listOf("record"), at).id, Batch.of(listOf("record"), at).id)
+        assertNotEquals(Batch(listOf("record"), at).id, Batch(listOf("record"), at).id)
     }
 
     @Test
     fun `the log line of a batch carries no records`() {
-        val batch = Batch("id", listOf("secret"), at)
+        val batch = Batch(listOf("secret"), at)
 
         assertFalse("secret" in batch.toString())
     }
