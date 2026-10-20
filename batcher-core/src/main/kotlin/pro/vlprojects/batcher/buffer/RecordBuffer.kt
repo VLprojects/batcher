@@ -2,6 +2,7 @@ package pro.vlprojects.batcher.buffer
 
 import pro.vlprojects.batcher.listener.BatchReadyListener
 import pro.vlprojects.batcher.model.Batch
+import java.time.Duration
 import java.time.Instant
 
 /**
@@ -41,8 +42,11 @@ public interface RecordBuffer<T : Any> {
      */
     public fun close(): Batch<T>?
 
-    /** The most records it holds: a batch is cut once [size] reaches it, if not earlier. */
+    /** The most records it holds: a batch is cut once [size] reaches it, if [maxAge] is not up first. */
     public val capacity: Int
+
+    /** The longest the first record waits: a batch is cut once it is up, however few records it holds. */
+    public val maxAge: Duration
 
     /** Read by the gauges on every scrape, as is [firstRecordAt]: has to be cheap, may be approximate. */
     public val size: Int
