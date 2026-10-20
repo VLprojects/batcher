@@ -2,24 +2,13 @@ public abstract interface class pro/vlprojects/batcher/buffer/BatchReadyListener
 	public abstract fun handle (Lpro/vlprojects/batcher/model/Batch;)V
 }
 
-public final class pro/vlprojects/batcher/buffer/BufferSnapshot {
-	public static final field Companion Lpro/vlprojects/batcher/buffer/BufferSnapshot$Companion;
-	public static final field EMPTY Lpro/vlprojects/batcher/buffer/BufferSnapshot;
-	public fun <init> (ILjava/time/Instant;)V
-	public final fun getOldestRecordAt ()Ljava/time/Instant;
-	public final fun getRecords ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class pro/vlprojects/batcher/buffer/BufferSnapshot$Companion {
-}
-
 public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
 	public abstract fun add (Ljava/lang/Object;)V
 	public abstract fun close ()Lpro/vlprojects/batcher/model/Batch;
+	public abstract fun getBufferedRecords ()I
+	public abstract fun getOldestRecordAt ()Ljava/time/Instant;
 	public abstract fun isDurable ()Z
 	public abstract fun open (Lpro/vlprojects/batcher/buffer/BatchReadyListener;)V
-	public abstract fun snapshot ()Lpro/vlprojects/batcher/buffer/BufferSnapshot;
 }
 
 public final class pro/vlprojects/batcher/fallback/FallbackCause {

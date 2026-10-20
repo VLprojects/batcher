@@ -1,6 +1,7 @@
 package pro.vlprojects.batcher.buffer
 
 import pro.vlprojects.batcher.model.Batch
+import java.time.Instant
 
 /**
  * Collects records and cuts them into batches by a rule of its own: size, age, bytes, a key. A cut
@@ -23,6 +24,9 @@ public interface RecordBuffer<T : Any> {
      */
     public fun close(): Batch<T>?
 
-    /** Read by the gauges on every scrape: has to be cheap, may be approximate. */
-    public fun snapshot(): BufferSnapshot
+    /** Read by the gauges on every scrape, as is [oldestRecordAt]: has to be cheap, may be approximate. */
+    public val bufferedRecords: Int
+
+    /** Null while the buffer is empty. */
+    public val oldestRecordAt: Instant?
 }
