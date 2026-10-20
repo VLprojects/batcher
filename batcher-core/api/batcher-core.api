@@ -3,7 +3,7 @@ public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
 	public abstract fun addListener (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
 	public abstract fun close ()Lpro/vlprojects/batcher/model/Batch;
 	public abstract fun getCapacity ()I
-	public abstract fun getFirstRecordAt ()Ljava/time/Instant;
+	public abstract fun getSince ()Ljava/time/Instant;
 	public abstract fun getSize ()I
 	public abstract fun isDurable ()Z
 	public abstract fun removeListener (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
