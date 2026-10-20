@@ -16,6 +16,9 @@ Rules the drawings follow:
 - Two text sizes: the name in bold, the explanation in grey below it, both
   aligned to the left edge of what they label. Code identifiers are monospaced.
 - All diagrams share one scale and are embedded at their native width.
+- README.md embeds each one twice, with #gh-light-mode-only and
+  #gh-dark-mode-only: GitHub hides one by its own theme setting, while a
+  <picture> media query would follow the OS instead.
 """
 
 import pathlib
