@@ -125,6 +125,6 @@
   <path d="M672.0,132 L672.0,158" stroke="#F0384A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M668.0,157 L672.0,164 L676.0,157 Z" fill="#F0384A"/>
   <text x="660.0" y="156.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#F0384A" text-anchor="end">write failed</text>
-  <text x="752.0" y="198.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">WriteFallback</text>
+  <text x="752.0" y="198.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">write fallback</text>
   <text x="752.0" y="216.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">queue, file, log</text>
 </svg>

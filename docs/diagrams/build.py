@@ -9,12 +9,15 @@ Rules the drawings follow:
 - Colour means the same thing everywhere. Blue is data on the move, green is
   done or allowed, amber is waiting it out (draining, parked), red is a
   failure, grey is structure. States keep their colour wherever they appear:
-  NEW light blue, RUNNING green, STOPPING amber, STOPPED slate. In the module
+  new light blue, running green, stopping amber, stopped slate. In the module
   map green is Spring and blue is plain JVM. Text on bright fills is dark.
 - Every line is solid; a lighter colour, never a dash, marks what is inactive.
 - One grid of 4 px. Space inside a group is smaller than space between groups.
 - Two text sizes: the name in bold, the explanation in grey below it, both
-  aligned to the left edge of what they label. Code identifiers are monospaced.
+  aligned to the left edge of what they label.
+- Every part is named in plain lowercase words, types included (batch writer,
+  write fallback). Only what one would type is monospaced: calls, artifacts,
+  config keys. Product names keep their capitals.
 - All diagrams share one scale and are embedded at their native width.
 - README.md embeds each one twice, with #gh-light-mode-only and
   #gh-dark-mode-only: GitHub hides one by its own theme setting, while a
@@ -177,7 +180,7 @@ def pipeline(pal):
 	a.path(f"M{wm},{top + h + 8} L{wm},{fy - 14}", "red")
 	a.add(f'<path d="M{wm - 4},{fy - 15} L{wm},{fy - 8} L{wm + 4},{fy - 15} Z" fill="{pal["red"]}"/>')
 	a.t(wm - 12, top + h + 32, "write failed", color="red", weight="600", anchor="end")
-	a.label(cx, fy + h / 2 - 4, "WriteFallback", "queue, file, log", mono=True)
+	a.label(cx, fy + h / 2 - 4, "write fallback", "queue, file, log")
 	return a
 
 
@@ -206,13 +209,13 @@ def recovery(pal):
 	rows = [
 		("persist(batch)", "the whole batch, one write", "500 records written"),
 		("persist(record)", "the same batch, record by record", "499 written, 1 still fails"),
-		("WriteFallback", "whatever the retry could not write", "1 record parked"),
+		("write fallback", "whatever the retry could not write", "1 record parked"),
 		("lost", "the fallback failed as well", "ERROR in the log, a metric"),
 	]
 	for i, (title, note, outcome) in enumerate(rows):
 		y = 16 + i * step
 		last = i == len(rows) - 1
-		a.label(16, y + 18, title, note, mono=not last, color="red" if last else "ink")
+		a.label(16, y + 18, title, note, mono="(" in title, color="red" if last else "ink")
 		a.t(ox, y + h / 2 + 4.5, outcome, color="red" if last else "ink", weight="600" if last else "400")
 
 	y1, y2, y3, y4 = (16 + i * step for i in range(4))
@@ -231,10 +234,10 @@ def recovery(pal):
 
 # ---------------------------------------------------------------------- 3
 STATES = {  # state: fill, text
-	"NEW": ("sky", "on-sky"),
-	"RUNNING": ("green", "on-green"),
-	"STOPPING": ("amber", "on-amber"),
-	"STOPPED": ("slate", "on-slate"),
+	"new": ("sky", "on-sky"),
+	"running": ("green", "on-green"),
+	"stopping": ("amber", "on-amber"),
+	"stopped": ("slate", "on-slate"),
 }
 
 
@@ -243,17 +246,17 @@ def state_bar(a, x, y, w, h, state, note=None):
 	a.rect(x, y, w, h, fill, r=4)
 	a.t(x + 12, y + h / 2 + 4.5, state, color=ink, weight="650")
 	if note:
-		a.t(x + 12 + len(state) * 9.2 + 12, y + h / 2 + 4.5, note, color=ink)
+		a.t(x + 12 + len(state) * 8 + 12, y + h / 2 + 4.5, note, color=ink)
 
 
 def lifecycle(pal):
 	a = Art(880, 92, pal)
 	top, h, gap = 44, 32, 4
 	segments = [
-		(112, "NEW", None),
-		(328, "RUNNING", "accept allowed"),
-		(300, "STOPPING", "accept rejected, buffer drains"),
-		(96, "STOPPED", None),
+		(112, "new", None),
+		(328, "running", "accept allowed"),
+		(300, "stopping", "accept rejected, buffer drains"),
+		(96, "stopped", None),
 	]
 	x, cuts = 16, []
 	for w, state, note in segments:
@@ -276,9 +279,9 @@ def shutdown(pal):
 	stop, budget, done, end = 336, 696, 776, 864
 	bottom = wr_y + lane_h
 
-	state_bar(a, lx, st_y, stop - lx - 2, st_h, "RUNNING")
-	state_bar(a, stop + 2, st_y, done - stop - 4, st_h, "STOPPING")
-	state_bar(a, done + 2, st_y, end - done - 2, st_h, "STOPPED")
+	state_bar(a, lx, st_y, stop - lx - 2, st_h, "running")
+	state_bar(a, stop + 2, st_y, done - stop - 4, st_h, "stopping")
+	state_bar(a, done + 2, st_y, end - done - 2, st_h, "stopped")
 
 	a.name(lx - 16, buf_y + 25, "buffer", anchor="end")
 	a.name(lx - 16, wr_y + 25, "writer", anchor="end")
@@ -310,7 +313,7 @@ def shutdown(pal):
 	ly = bottom + 30
 	a.label(rest - 4, ly, "remaining batch", "goes ahead of the queue")
 	a.label(rest + 176, ly, "writer drains", "one batch at a time")
-	a.label(budget + 12, ly, "leftovers parked", "WriteFallback", note_mono=True)
+	a.label(budget + 12, ly, "leftovers parked", "in the write fallback")
 
 	by2 = ly + 40
 	a.path(f"M{stop},{by2 - 6} L{stop},{by2} L{budget},{by2} L{budget},{by2 - 6}", "mute", width=1.25)
@@ -382,21 +385,21 @@ def types(pal):
 	def card(i, y, title, lines, hue=None, tag=None):
 		x, w = xs[i], ws[i]
 		a.rect(x, y, w, h, (hue + "-plate") if hue else ("card" if y == top else "wash"), r=6)
-		a.name(x + 16, y + 26, title, mono=True)
+		a.name(x + 16, y + 26, title)
 		if tag:
 			a.t(x + w - 16, y + 26, tag, color=hue + "-text", weight="600", anchor="end")
 		for j, (line, mono) in enumerate(lines):
 			a.t(x + 16, y + 48 + j * 18, line, color=(hue + "-soft") if hue else "soft", mono=mono, size=12 if mono else NOTE)
 
-	card(0, top, "Batcher", [("accept(record)", True), ("start(), stop()", True)])
-	card(1, top, "RecordBuffer", [("holds records and", False), ("cuts them into batches", False)])
-	card(2, top, "BatchReadyListener", [("takes each batch;", False), ("default: recovering writer", False)])
-	card(3, top, "BatchWriter", [("persist(batch)", True), ("persist(record)", True)], "green", "yours")
+	card(0, top, "batcher", [("accept(record)", True), ("start(), stop()", True)])
+	card(1, top, "record buffer", [("holds records and", False), ("cuts them into batches", False)])
+	card(2, top, "batch ready listener", [("takes each batch;", False), ("default: recovering writer", False)])
+	card(3, top, "batch writer", [("persist(batch)", True), ("persist(record)", True)], "green", "yours")
 
-	card(0, low, "BackPressurePolicy", [("the queue is full;", False), ("default: to the fallback", False)])
-	card(1, low, "BatchingPolicy", [("when to cut a batch:", False), ("size or max age", False)])
-	card(2, low, "WriteFallback", [("what could not be written;", False), ("default: log at ERROR", False)], "amber")
-	card(3, low, "Batch", [("records and the arrival", False), ("time of the first one", False)])
+	card(0, low, "back pressure policy", [("the queue is full;", False), ("default: to the fallback", False)])
+	card(1, low, "batching policy", [("when to cut a batch:", False), ("size or max age", False)])
+	card(2, low, "write fallback", [("what could not be written;", False), ("default: log at ERROR", False)], "amber")
+	card(3, low, "batch", [("records and the arrival", False), ("time of the first one", False)])
 	a.bar(xs[3] + ws[3] - 16 - BAR_W, low + 13, h=16)
 
 	# along the chain: an arrow and what it carries, centred in the gap
@@ -419,8 +422,10 @@ def types(pal):
 
 	y = low + h + gap
 	a.rect(16, y, 848, 44, "wash", r=6)
-	a.name(32, y + 27, "BatcherMeter", mono=True)
-	a.t(xs[1] + 16, y + 27, "every type reports here; Micrometer in batcher-micrometer")
+	a.name(32, y + 27, "batcher meter")
+	a.t(xs[1] + 16, y + 27, "every type reports here")
+	a.t(848, y + 27, "batcher-micrometer", mono=True, size=12, anchor="end")
+	a.t(848 - 18 * 7.2 - 8, y + 27, "Micrometer is in", anchor="end")
 	return a
 
 
@@ -430,12 +435,12 @@ def sequence(pal):
 	# writes a batch that fails once; each thread is a plate over the lifelines it uses, the queue belongs to none
 	a = Art(880, 504, pal)
 	parts = [
-		("Batcher", 76, "card", True), ("RecordBuffer", 116, "card", True), ("queue", 72, "card", False),
-		("recovering writer", 144, "card", False), ("BatchWriter", 108, "green-plate", True),
-		("WriteFallback", 124, "amber-plate", True),
+		("batcher", 76, "card"), ("record buffer", 116, "card"), ("queue", 72, "card"),
+		("recovering writer", 144, "card"), ("batch writer", 108, "green-plate"),
+		("write fallback", 124, "amber-plate"),
 	]
 	xs, x = [], 156
-	for i, (_, w, _, _) in enumerate(parts):
+	for i, (_, w, _) in enumerate(parts):
 		if i:
 			x += parts[i - 1][1] / 2 + 21 + w / 2
 		xs.append(x)
@@ -454,9 +459,9 @@ def sequence(pal):
 	# a lifeline ends with its thread's plate
 	for x, y2 in zip(xs, (244, 372, 400, end, end, end)):
 		a.path(f"M{x},52 L{x},{y2}", "slot", width=1.5)
-	for x, (name, w, fill, mono) in zip(xs, parts):
+	for x, (name, w, fill) in zip(xs, parts):
 		a.rect(x - w / 2, 16, w, 36, fill, r=6)
-		a.name(x, 39, name, anchor="middle", mono=mono)
+		a.name(x, 39, name, anchor="middle")
 
 	# activation is grey structure; where something real is held, the bar is the thing itself:
 	# the batch in the queue and in the writer, the records written one by one, the record parked

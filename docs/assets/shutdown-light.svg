@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300" width="880" height="300" role="img">
   <rect x="112.0" y="64.0" width="222.0" height="28.0" rx="4" fill="#22C063"/>
-  <text x="124.0" y="82.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#0B2915" text-anchor="start">RUNNING</text>
+  <text x="124.0" y="82.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#0B2915" text-anchor="start">running</text>
   <rect x="338.0" y="64.0" width="436.0" height="28.0" rx="4" fill="#FFB21E"/>
-  <text x="350.0" y="82.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#2B1D00" text-anchor="start">STOPPING</text>
+  <text x="350.0" y="82.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#2B1D00" text-anchor="start">stopping</text>
   <rect x="778.0" y="64.0" width="86.0" height="28.0" rx="4" fill="#7A8594"/>
-  <text x="790.0" y="82.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#FFFFFF" text-anchor="start">STOPPED</text>
+  <text x="790.0" y="82.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#FFFFFF" text-anchor="start">stopped</text>
   <text x="96.0" y="125.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="end">buffer</text>
   <text x="96.0" y="169.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="end">writer</text>
   <rect x="112.0" y="100.0" width="752.0" height="40.0" rx="6" fill="#F2F4F6"/>
@@ -73,7 +73,7 @@
   <text x="528.0" y="214.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">writer drains</text>
   <text x="528.0" y="232.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">one batch at a time</text>
   <text x="708.0" y="214.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">leftovers parked</text>
-  <text x="708.0" y="232.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">WriteFallback</text>
+  <text x="708.0" y="232.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">in the write fallback</text>
   <path d="M336,248 L336,254 L696,254 L696,248" stroke="#8C959F" stroke-width="1.25" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <text x="516.0" y="274.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="400" fill="#1F2328" text-anchor="middle">shutdown-await-period</text>
 </svg>
