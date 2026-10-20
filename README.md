@@ -398,8 +398,12 @@ one root build with shared settings, versions in `gradle.properties`.
   `publishAndReleaseToMavenCentral`, with the signing key and portal credentials
   from repository secrets;
 - Apache 2.0, JVM toolchain 17;
+- Kotlin language and API version 2.1, so a service on Kotlin 2.1 or newer can
+  take it whatever compiler the library is built with;
 - `explicitApi()` and a checked-in API dump, so a breaking change shows up in the
-  diff of a pull request.
+  diff of a pull request: `./gradlew updateKotlinAbi` rewrites the dump;
+- every pull request runs `./gradlew build`: compilation, ktlint, the API check
+  and the tests.
 
 ## 14. Out of scope for v1
 
