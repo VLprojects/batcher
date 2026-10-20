@@ -8,7 +8,7 @@ public class BufferSnapshot(
     public val oldestRecordAt: Instant?,
 ) {
 
-    override fun toString(): String = "BufferSnapshot(records=$records, oldestRecordAt=$oldestRecordAt)"
+    override fun toString(): String = "BufferSnapshot[records: $records, oldestRecordAt: $oldestRecordAt]"
 
     public companion object {
 

@@ -1,7 +1,6 @@
 public final class pro/vlprojects/batcher/Batch {
 	public fun <init> (Ljava/util/List;Ljava/time/Instant;)V
 	public fun <init> (Ljava/util/List;Ljava/time/Instant;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/util/List;Ljava/time/Instant;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFirstRecordAt ()Ljava/time/Instant;
 	public final fun getId ()Ljava/lang/String;

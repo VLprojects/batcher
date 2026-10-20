@@ -6,5 +6,5 @@ public class FallbackCause(
     public val error: Throwable?,
 ) {
 
-    override fun toString(): String = "FallbackCause(reason=$reason, error=$error)"
+    override fun toString(): String = "FallbackCause[reason: $reason, error: $error]"
 }
