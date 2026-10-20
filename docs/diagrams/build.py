@@ -40,20 +40,20 @@ PALETTE = {
 		"plate": "#FFFFFF", "slot": "#DDE2E7", "line": "#AFB8C1",
 		"wash": "#FFFFFF", "card": "#E3E8ED", "bar": "#BEC7D0",
 		"blue": "#1A7CFF", "green": "#22C063", "amber": "#FF9F2E", "red": "#EE2D62",
-		"sky": "#9DD1FF", "slate": "#7A8594",
+		"sky": "#9DD1FF", "slate": "#7A8594", "lime": "#22C063",
 		"blue-plate": "#E3EFFF", "blue-ink": "#1F2328", "green-plate": "#DDF7E7", "green-ink": "#1F2328", "green-glyph": "#22C063", "amber-plate": "#FFEEDC", "amber-ink": "#1F2328", "amber-glyph": "#FF9F2E",
 		"green-soft": "#3A7550", "blue-soft": "#41679C", "amber-soft": "#8F4600", "green-text": "#12873F", "amber-text": "#B85300",
-		"on-green": "#0B2915", "on-blue": "#FFFFFF", "on-amber": "#2E1700", "on-sky": "#0B2340", "on-slate": "#FFFFFF",
+		"on-green": "#0B2915", "on-blue": "#FFFFFF", "on-amber": "#2E1700", "on-sky": "#0B2340", "on-slate": "#FFFFFF", "on-lime": "#0B2915",
 	},
 	"dark": {
 		"bg": "#151B23", "ink": "#E6EDF3", "soft": "#9198A1", "mute": "#6E7681",
 		"plate": "#1D242D", "slot": "#323B46", "line": "#515B66",
 		"wash": "#1D242D", "card": "#29313C", "bar": "#454F5A",
 		"blue": "#4493F8", "green": "#3FB950", "amber": "#FF9F4A", "red": "#FF4F7B",
-		"sky": "#6E9BFF", "slate": "#545D68",
+		"sky": "#6E9BFF", "slate": "#545D68", "lime": "#5BF08A",
 		"blue-plate": "#6E9BFF", "blue-ink": "#06173D", "green-plate": "#5BF08A", "green-ink": "#03240E", "green-glyph": "#0D7A32", "amber-plate": "#FFB46B", "amber-ink": "#1F1206", "amber-glyph": "#8A3F00",
 		"green-soft": "#0D5A26", "blue-soft": "#1B3A80", "amber-soft": "#4A2808", "green-text": "#03240E", "amber-text": "#FF9F4A",
-		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#06173D", "on-slate": "#E6EDF3",
+		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#06173D", "on-slate": "#E6EDF3", "on-lime": "#03240E",
 	},
 }
 
@@ -246,7 +246,7 @@ def recovery(pal):
 # ---------------------------------------------------------------------- 3
 STATES = {  # state: fill, text
 	"new": ("sky", "on-sky"),
-	"running": ("green", "on-green"),
+	"running": ("lime", "on-lime"),  # the green of the plates, not of the lines
 	"stopping": ("amber", "on-amber"),
 	"stopped": ("slate", "on-slate"),
 }
