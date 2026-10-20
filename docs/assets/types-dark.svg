@@ -26,12 +26,12 @@
   <text x="248.0" y="206.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#9198A1" text-anchor="start">size or max age</text>
   <rect x="444.0" y="140.0" width="200.0" height="76.0" rx="6" fill="#2E230B"/>
   <text x="460.0" y="166.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#E6EDF3" text-anchor="start">WriteFallback</text>
-  <text x="460.0" y="188.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#E2C27A" text-anchor="start">what could not be written;</text>
-  <text x="460.0" y="206.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#E2C27A" text-anchor="start">default: log at ERROR</text>
-  <rect x="684.0" y="140.0" width="180.0" height="76.0" rx="6" fill="#0F2F5C"/>
+  <text x="460.0" y="188.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#EDBE62" text-anchor="start">what could not be written;</text>
+  <text x="460.0" y="206.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#EDBE62" text-anchor="start">default: log at ERROR</text>
+  <rect x="684.0" y="140.0" width="180.0" height="76.0" rx="6" fill="#161B22"/>
   <text x="700.0" y="166.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#E6EDF3" text-anchor="start">Batch</text>
-  <text x="700.0" y="188.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#94B9EE" text-anchor="start">records and the arrival</text>
-  <text x="700.0" y="206.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#94B9EE" text-anchor="start">time of the first one</text>
+  <text x="700.0" y="188.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#9198A1" text-anchor="start">records and the arrival</text>
+  <text x="700.0" y="206.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#9198A1" text-anchor="start">time of the first one</text>
   <rect x="842.0" y="153.0" width="6.0" height="16.0" rx="1.5" fill="#4493F8"/>
   <path d="M200,62.0 L218,62.0" stroke="#4A525C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M217,58.0 L224,62.0 L217,66.0 Z" fill="#4A525C"/>

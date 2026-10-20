@@ -32,7 +32,7 @@ PALETTE = {
 		"blue": "#1A7CFF", "green": "#22C063", "amber": "#FFB21E", "red": "#F0384A",
 		"sky": "#9DD1FF", "slate": "#7A8594",
 		"blue-plate": "#E3EFFF", "green-plate": "#DDF7E7", "amber-plate": "#FFF1D1", "red-plate": "#FFE4E7",
-		"green-soft": "#3A7550", "blue-soft": "#41679C", "amber-soft": "#7A5A12", "green-text": "#12873F", "amber-text": "#A86500",
+		"green-soft": "#3A7550", "blue-soft": "#41679C", "amber-soft": "#8F5800", "green-text": "#12873F", "amber-text": "#A86500",
 		"on-green": "#0B2915", "on-blue": "#FFFFFF", "on-amber": "#2B1D00", "on-sky": "#0B2340", "on-slate": "#FFFFFF",
 	},
 	"dark": {
@@ -41,7 +41,7 @@ PALETTE = {
 		"blue": "#4493F8", "green": "#3FB950", "amber": "#E3A21A", "red": "#F85149",
 		"sky": "#2F5F9E", "slate": "#545D68",
 		"blue-plate": "#0F2F5C", "green-plate": "#0C3A24", "amber-plate": "#2E230B", "red-plate": "#331619",
-		"green-soft": "#8BCFA3", "blue-soft": "#94B9EE", "amber-soft": "#E2C27A", "green-text": "#3FB950", "amber-text": "#E3A21A",
+		"green-soft": "#8BCFA3", "blue-soft": "#94B9EE", "amber-soft": "#EDBE62", "green-text": "#3FB950", "amber-text": "#E3A21A",
 		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#E6EDF3", "on-slate": "#E6EDF3",
 	},
 }
@@ -391,7 +391,7 @@ def types(pal):
 	card(0, low, "BackPressurePolicy", [("the queue is full;", False), ("default: to the fallback", False)])
 	card(1, low, "BatchingPolicy", [("when to cut a batch:", False), ("size or max age", False)])
 	card(2, low, "WriteFallback", [("what could not be written;", False), ("default: log at ERROR", False)], "amber")
-	card(3, low, "Batch", [("records and the arrival", False), ("time of the first one", False)], "blue")
+	card(3, low, "Batch", [("records and the arrival", False), ("time of the first one", False)])
 	a.bar(xs[3] + ws[3] - 16 - BAR_W, low + 13, h=16)
 
 	# along the chain: an arrow and what it carries, centred in the gap
@@ -452,19 +452,21 @@ def sequence(pal):
 		a.rect(x - w / 2, 16, w, 36, fill, r=6)
 		a.name(x, 39, name, anchor="middle", mono=mono)
 
-	# activation: who is busy when; the queue holds the batch until the writer takes it
-	for x, y1, y2 in ((BT, 112, 228), (RB, 148, 204), (W, 236, 472), (BW, 268, 324), (BW, 340, 428), (WF, 452, 472)):
-		a.rect(x - 4, y1, 8, y2 - y1, "line", r=2)
-	a.rect(Q - 3, 190, 6, 66, "blue", r=1.5)
+	# activation is grey structure; where something real is held, the bar is the thing itself:
+	# the batch in the queue and in the writer, the records written one by one, the record parked
+	for x, y1, y2 in ((BT, 112, 228), (RB, 148, 204), (W, 236, 472)):
+		a.rect(x - 4, y1, 8, y2 - y1, "slot", r=2)
+	a.bar(Q - BAR_W / 2, 190, h=66)
+	a.bar(BW - BAR_W / 2, 270, h=52)
+	for i in range(11):
+		a.record(BW - REC / 2, 343 + i * PITCH, "red" if i == 9 else "green")
+	a.record(WF - REC / 2, 459, "amber")
 
-	def msg(x1, x2, y, label, color="ink", mono=False, glyph=None, edge=5, tx=None):
+	def msg(x1, x2, y, label, color="ink", mono=False, edge=5, tx=None):
 		d = 1 if x2 > x1 else -1
 		a.harrow(x1 + d * edge, y, x2 - d * 5, color)
 		tx = tx or x1 + d * 12
-		text = {"ink": "ink", "line": "soft", "green": "green-text", "amber": "amber-text"}.get(color, color)
-		if glyph:
-			a.record(tx if d > 0 else tx - REC, y - 15, color)
-			tx += d * 14
+		text = {"ink": "ink", "line": "soft", "amber": "amber-text"}.get(color, color)
 		a.t(tx, y - 9, label, color=text, mono=mono, size=12 if mono else NOTE, anchor="start" if d > 0 else "end")
 
 	a.add(f'<circle cx="{P}" cy="132" r="3.5" fill="{pal["ink"]}"/>')
@@ -482,10 +484,10 @@ def sequence(pal):
 	a.t(W - 28, 380, "for each of", anchor="end")
 	a.t(W - 28, 398, "500 records", anchor="end")
 	msg(W, BW, 356, "persist(record)", mono=True)
-	msg(BW, W, 388, "499 written", "green")
+	msg(BW, W, 388, "499 written", "line")
 	msg(BW, W, 420, "1 throws", "red")
 
-	msg(W, WF, 464, "the record that failed", "amber", glyph="record")
+	msg(W, WF, 464, "the record that failed", "amber")
 	return a
 
 
