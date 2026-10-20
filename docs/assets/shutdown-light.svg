@@ -28,6 +28,8 @@
     <rect x="280.0" y="152.0" width="6.0" height="24.0" rx="1.5" fill="#1A7CFF"/>
     <rect x="316.0" y="152.0" width="6.0" height="24.0" rx="1.5" fill="#1A7CFF"/>
     <rect x="352.0" y="152.0" width="6.0" height="24.0" rx="1.5" fill="#1A7CFF"/>
+    <rect x="362.0" y="152.0" width="6.0" height="24.0" rx="1.5" fill="#1A7CFF"/>
+    <rect x="372.0" y="152.0" width="6.0" height="24.0" rx="1.5" fill="#1A7CFF"/>
     <rect x="382.0" y="152.0" width="6.0" height="24.0" rx="1.5" fill="#1A7CFF"/>
     <rect x="392.0" y="152.0" width="6.0" height="24.0" rx="1.5" fill="#1A7CFF"/>
     <rect x="402.0" y="152.0" width="6.0" height="24.0" rx="1.5" fill="#1A7CFF"/>
@@ -69,11 +71,9 @@
     <text x="324.0" y="24.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="end">stop arrives</text>
     <text x="324.0" y="42.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="end">after the message listeners</text>
     <text x="348.0" y="24.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">buffer closes</text>
-    <text x="348.0" y="42.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">deadline thread cancelled</text>
-    <text x="348.0" y="214.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">remaining batch</text>
-    <text x="348.0" y="232.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">goes ahead of the queue</text>
-    <text x="528.0" y="214.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">writer drains</text>
-    <text x="528.0" y="232.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">one batch at a time</text>
+    <text x="348.0" y="42.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">its last batch joins the queue</text>
+    <text x="348.0" y="214.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">writer drains the queue</text>
+    <text x="348.0" y="232.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">one batch at a time, while the budget lasts</text>
     <text x="708.0" y="214.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">leftovers parked</text>
     <text x="708.0" y="232.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">in the write fallback</text>
     <path d="M336,248 L336,254 L696,254 L696,248" stroke="#8C959F" stroke-width="1.25" fill="none" stroke-linecap="round" stroke-linejoin="round"/>

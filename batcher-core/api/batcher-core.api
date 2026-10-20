@@ -1,0 +1,154 @@
+public final class pro/vlprojects/batcher/Batch {
+	public static final field Companion Lpro/vlprojects/batcher/Batch$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/time/Instant;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFirstRecordAt ()Ljava/time/Instant;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getRecords ()Ljava/util/List;
+	public final fun getSize ()I
+	public fun hashCode ()I
+	public static final fun of (Ljava/util/List;Ljava/time/Instant;)Lpro/vlprojects/batcher/Batch;
+	public final fun slice (II)Lpro/vlprojects/batcher/Batch;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class pro/vlprojects/batcher/Batch$Companion {
+	public final fun of (Ljava/util/List;Ljava/time/Instant;)Lpro/vlprojects/batcher/Batch;
+}
+
+public abstract interface class pro/vlprojects/batcher/BatchWriter {
+	public abstract fun persist (Lpro/vlprojects/batcher/Batch;)V
+}
+
+public abstract interface class pro/vlprojects/batcher/buffer/BatchReadyListener {
+	public abstract fun handle (Lpro/vlprojects/batcher/Batch;)V
+}
+
+public final class pro/vlprojects/batcher/buffer/BufferSnapshot {
+	public static final field Companion Lpro/vlprojects/batcher/buffer/BufferSnapshot$Companion;
+	public static final field EMPTY Lpro/vlprojects/batcher/buffer/BufferSnapshot;
+	public fun <init> (ILjava/time/Instant;)V
+	public final fun getOldestRecordAt ()Ljava/time/Instant;
+	public final fun getRecords ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class pro/vlprojects/batcher/buffer/BufferSnapshot$Companion {
+}
+
+public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
+	public abstract fun add (Ljava/lang/Object;)V
+	public abstract fun close ()Lpro/vlprojects/batcher/Batch;
+	public abstract fun isDurable ()Z
+	public abstract fun open (Lpro/vlprojects/batcher/buffer/BatchReadyListener;)V
+	public abstract fun snapshot ()Lpro/vlprojects/batcher/buffer/BufferSnapshot;
+}
+
+public final class pro/vlprojects/batcher/fallback/FallbackCause {
+	public fun <init> (Lpro/vlprojects/batcher/fallback/FallbackReason;Ljava/lang/Throwable;)V
+	public final fun getError ()Ljava/lang/Throwable;
+	public final fun getReason ()Lpro/vlprojects/batcher/fallback/FallbackReason;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class pro/vlprojects/batcher/fallback/FallbackReason : java/lang/Enum {
+	public static final field BATCH_REJECTED Lpro/vlprojects/batcher/fallback/FallbackReason;
+	public static final field ENQUEUE_FAILED Lpro/vlprojects/batcher/fallback/FallbackReason;
+	public static final field WRITE_FAILED Lpro/vlprojects/batcher/fallback/FallbackReason;
+	public static final field WRITING_STOPPED Lpro/vlprojects/batcher/fallback/FallbackReason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/fallback/FallbackReason;
+	public static fun values ()[Lpro/vlprojects/batcher/fallback/FallbackReason;
+}
+
+public abstract interface class pro/vlprojects/batcher/fallback/WriteFallback {
+	public abstract fun handle (Lpro/vlprojects/batcher/Batch;Lpro/vlprojects/batcher/fallback/FallbackCause;)V
+}
+
+public final class pro/vlprojects/batcher/metric/AcceptanceResult : java/lang/Enum {
+	public static final field ACCEPTED Lpro/vlprojects/batcher/metric/AcceptanceResult;
+	public static final field REJECTED Lpro/vlprojects/batcher/metric/AcceptanceResult;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/metric/AcceptanceResult;
+	public static fun values ()[Lpro/vlprojects/batcher/metric/AcceptanceResult;
+}
+
+public final class pro/vlprojects/batcher/metric/BatchDispatchReason : java/lang/Enum {
+	public static final field BUFFER_DEADLINE Lpro/vlprojects/batcher/metric/BatchDispatchReason;
+	public static final field BUFFER_FULL Lpro/vlprojects/batcher/metric/BatchDispatchReason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/metric/BatchDispatchReason;
+	public static fun values ()[Lpro/vlprojects/batcher/metric/BatchDispatchReason;
+}
+
+public abstract interface class pro/vlprojects/batcher/metric/BatcherGauges {
+	public abstract fun bufferedRecords ()I
+	public abstract fun oldestRecordWait ()Ljava/time/Duration;
+	public abstract fun queuedBatches ()Ljava/lang/Integer;
+}
+
+public abstract interface class pro/vlprojects/batcher/metric/BatcherMeter {
+	public fun onBatchDispatched (Lpro/vlprojects/batcher/metric/BatchDispatchReason;)V
+	public fun onBatchWritten (Lpro/vlprojects/batcher/metric/WriteMode;Ljava/time/Duration;)V
+	public fun onDeadlineChecked (Lpro/vlprojects/batcher/metric/DeadlineCheckResult;)V
+	public fun onRecordsAccepting (ILpro/vlprojects/batcher/metric/AcceptanceResult;)V
+	public fun onRecordsWritten (ILpro/vlprojects/batcher/metric/RecordWriteResult;)V
+	public fun watch (Lpro/vlprojects/batcher/metric/BatcherGauges;)V
+}
+
+public final class pro/vlprojects/batcher/metric/DeadlineCheckResult : java/lang/Enum {
+	public static final field BATCH_DISPATCHED Lpro/vlprojects/batcher/metric/DeadlineCheckResult;
+	public static final field CHECK_FAILED Lpro/vlprojects/batcher/metric/DeadlineCheckResult;
+	public static final field CHECK_RESCHEDULED Lpro/vlprojects/batcher/metric/DeadlineCheckResult;
+	public static final field NOTHING_BUFFERED Lpro/vlprojects/batcher/metric/DeadlineCheckResult;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/metric/DeadlineCheckResult;
+	public static fun values ()[Lpro/vlprojects/batcher/metric/DeadlineCheckResult;
+}
+
+public final class pro/vlprojects/batcher/metric/DisabledBatcherMeter : pro/vlprojects/batcher/metric/BatcherMeter {
+	public static final field INSTANCE Lpro/vlprojects/batcher/metric/DisabledBatcherMeter;
+}
+
+public final class pro/vlprojects/batcher/metric/RecordWriteResult : java/lang/Enum {
+	public static final field FALLBACK Lpro/vlprojects/batcher/metric/RecordWriteResult;
+	public static final field LOST Lpro/vlprojects/batcher/metric/RecordWriteResult;
+	public static final field WRITTEN Lpro/vlprojects/batcher/metric/RecordWriteResult;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/metric/RecordWriteResult;
+	public static fun values ()[Lpro/vlprojects/batcher/metric/RecordWriteResult;
+}
+
+public final class pro/vlprojects/batcher/metric/WriteMode : java/lang/Enum {
+	public static final field BATCH Lpro/vlprojects/batcher/metric/WriteMode;
+	public static final field ONE_BY_ONE Lpro/vlprojects/batcher/metric/WriteMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/metric/WriteMode;
+	public static fun values ()[Lpro/vlprojects/batcher/metric/WriteMode;
+}
+
+public abstract interface class pro/vlprojects/batcher/queue/BatchLease {
+	public abstract fun complete ()V
+	public abstract fun getBatch ()Lpro/vlprojects/batcher/Batch;
+	public abstract fun release ()V
+}
+
+public abstract interface class pro/vlprojects/batcher/queue/BatchQueue {
+	public abstract fun close ()V
+	public abstract fun drain ()Ljava/util/List;
+	public abstract fun getSize ()Ljava/lang/Integer;
+	public abstract fun isDurable ()Z
+	public abstract fun isExhausted ()Z
+	public abstract fun offer (Lpro/vlprojects/batcher/Batch;Ljava/time/Duration;)Lpro/vlprojects/batcher/queue/OfferResult;
+	public abstract fun poll (Ljava/time/Duration;)Lpro/vlprojects/batcher/queue/BatchLease;
+}
+
+public final class pro/vlprojects/batcher/queue/OfferResult : java/lang/Enum {
+	public static final field ACCEPTED Lpro/vlprojects/batcher/queue/OfferResult;
+	public static final field CLOSED Lpro/vlprojects/batcher/queue/OfferResult;
+	public static final field FULL Lpro/vlprojects/batcher/queue/OfferResult;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/queue/OfferResult;
+	public static fun values ()[Lpro/vlprojects/batcher/queue/OfferResult;
+}
+

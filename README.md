@@ -67,7 +67,8 @@ What you get:
 - metrics for every step, Micrometer out of the box;
 - several named batchers in one application, each with its own settings;
 - every part is an interface with a default, so you can replace one piece or
-  assemble the whole pipeline yourself.
+  assemble the whole pipeline yourself; the buffer and the queue are in memory
+  by default, and their contracts leave room for durable ones.
 
 Four artifacts, group `pro.vlprojects`. Spring Boot is optional, and so is
 Micrometer:
@@ -90,8 +91,6 @@ The only thing you have to write is the batch write itself:
 class HistoryWriter(private val history: HistoryService) : BatchWriter<HistoryRecord> {
 
     override fun persist(batch: Batch<HistoryRecord>) = history.saveAll(batch.records)
-
-    override fun persist(record: HistoryRecord) = history.save(record)
 }
 ```
 
@@ -206,7 +205,8 @@ already has it.
 
 ## 5. How it works
 
-One batcher is a short pipeline with two threads of its own.
+One batcher is a short pipeline. With the default in-memory buffer and queue it
+has two threads of its own.
 
 ![From accept to the storage](docs/assets/pipeline-light.svg#gh-light-mode-only)
 ![From accept to the storage](docs/assets/pipeline-dark.svg#gh-dark-mode-only)
@@ -216,8 +216,8 @@ One batcher is a short pipeline with two threads of its own.
   happens on the consumer thread.
 - The buffer thread, a daemon, watches the age of the oldest record and cuts a
   batch when the deadline passes.
-- The queue is bounded. When it is full the batcher does not block the consumer:
-  it applies the back-pressure policy.
+- The queue is bounded. When it is full the batcher applies the back-pressure
+  setting: park the batch, reject the record, or wait for room.
 - One writer thread writes batches in order, one at a time.
 
 The same in time: a batch cut by size, one cut by age, and a write that fails once:
@@ -235,18 +235,35 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | Type | Responsibility | Default |
 | --- | --- | --- |
 | `Batcher<T>` | entry point: `accept(record)`, `accept(records)`, start, stop | the only implementation |
-| `Batch<T>` | records plus the arrival time of the first one | value type |
-| `RecordBuffer<T>` | hold accepted records, cut batches, report a full or deadlined batch | buffer with its own daemon thread |
-| `BatchingPolicy` | when the buffer's content becomes a batch | size and max age |
-| `BatchReadyListener<T>` | takes a cut batch from the buffer | the recovering writer |
-| `BatchWriter<T>` | write a batch; write a single record | **yours**, there is no default |
-| `WriteFallback<T>` | take records that could not be written | none: log at ERROR and count |
-| `BackPressurePolicy` | what happens when the queue is full | hand the batch to the fallback |
-| `BatcherMeter` | report every state change | disabled in core, Micrometer in `batcher-micrometer` |
+| `Batch<T>` | records, an id, the arrival of the first one; `slice` for writing it in parts | value type |
+| `BatchWriter<T>` | one insert of one batch | **yours**, there is no default |
+| `RecordBuffer<T>` | collect records and cut batches by a rule of its own | in memory, cut by size or by age on a daemon thread |
+| `BatchReadyListener<T>` | take a batch the buffer has cut | the batcher, which offers it to the queue |
+| `BatchQueue<T>` | hold cut batches until the writer leases one | in memory, bounded |
+| `BatchLease<T>` | a batch out of the queue: `complete()` or `release()` | — |
+| `WriteFallback<T>` | keep what could not be written, with a `FallbackCause` | none: log at ERROR and count |
+| `BatcherMeter` | report every event; each method does nothing by default | disabled in core, Micrometer in `batcher-micrometer` |
 
 `BatchWriter` is the only thing you must write. It gets a `Batch<T>` and does one
-insert; its single-record method is used only while recovering from a failed
-batch.
+insert. A failed batch comes back to it in slices, down to single records, so
+there is no separate per-record method. `Batch.id` can go to the storage as a
+deduplication token: it stays the same when a durable queue delivers the batch
+again, and a slice derives its id from its parent's.
+
+### Handing a batch on
+
+A stage lets go of a batch only once the next one has taken it:
+
+- the buffer drops the records once `BatchReadyListener.handle` returns; a throw
+  leaves them in the buffer;
+- the writer leases a batch from the queue and completes the lease once the batch
+  is written or parked; a stop that interrupts the write releases it.
+
+In memory this costs nothing. For a durable buffer or queue it is the point
+where it commits, so a crash between the two steps repeats a batch instead of
+losing it. Both declare `isDurable`: a durable buffer lets the source
+acknowledge a record as soon as `accept` returns, and on stop a durable stage
+keeps what it holds instead of handing it to the fallback.
 
 ## 7. Extension points
 
@@ -264,11 +281,13 @@ keep the defaults while another one does not.
 | Seam | Replace it when |
 | --- | --- |
 | `BatchWriter<T>` | always: this is your insert |
-| `WriteFallback<T>` | failed records must go somewhere: a queue, a file, another table |
-| `BatchingPolicy` | size and age are not your rule, for example a byte budget |
-| `BackPressurePolicy` | a full queue must reject the record and let the source redeliver it, not park it |
+| `WriteFallback<T>` | failed records must go somewhere: a log, a table, back to a queue |
+| `RecordBuffer<T>` | size and age are not your rule (a byte budget, a key per table), or records must survive a restart, for example in Redis |
+| `BatchQueue<T>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
 | `BatcherMeter` | your observability is not Micrometer |
-| `RecordBuffer<T>` | records must be grouped on the way in, for example per table |
+
+What happens when the queue is full is a setting, not a type: see
+`back-pressure` in section 11.
 
 **Assemble your own.** `batcher-core` has no Spring dependency. Construct the
 buffer, the writer and the batcher yourself, or keep only the pieces you need
@@ -288,14 +307,17 @@ is bad, and then only that one does and the other 499 land. Without the second
 pass you cannot tell those apart, and you lose good records because of a bad
 neighbour.
 
-Records reach the fallback for four reasons, and each is a separate counter:
+The retry is `persist` again, on slices of the failed batch. A record parked
+reaches the fallback as a slice too, with a `FallbackCause`: one of four reasons
+and the error, if there was one. The reason tells a fallback what a replay
+would do:
 
-| Reason | Meaning |
-| --- | --- |
-| `BATCH_REJECTED` | the queue was full |
-| `ENQUEUE_FAILED` | the batch could not be queued |
-| `WRITE_FAILED` | the write failed, and so did the per-record retry |
-| `WRITING_STOPPED` | shutdown ran out of its budget |
+| Reason | Meaning | A replay |
+| --- | --- | --- |
+| `BATCH_REJECTED` | the queue had no room | writes it |
+| `ENQUEUE_FAILED` | the queue failed to take the batch | writes it |
+| `WRITE_FAILED` | the write failed, and so did the retry of these records | fails again: a bad record |
+| `WRITING_STOPPED` | the stop ran out of its budget | writes it |
 
 ## 9. Lifecycle and shutdown
 
@@ -307,12 +329,24 @@ Shutdown is the part that decides whether you lose data on every deploy.
 ![What happens on stop](docs/assets/shutdown-light.svg#gh-light-mode-only)
 ![What happens on stop](docs/assets/shutdown-dark.svg#gh-dark-mode-only)
 
+In order:
+
+1. The batcher stops accepting, and the buffer closes. What it still holds is
+   offered to the queue, waiting for room within the budget.
+2. The queue closes. The writer works through what is in it until it is empty
+   or the budget is spent.
+3. A write still running at the end of the budget is interrupted and its lease
+   released. Whatever the queue still holds goes to the fallback as
+   `WRITING_STOPPED`.
+
+A durable buffer or queue keeps what it holds instead, for the next start.
+
 The batcher stops in a late Spring phase, after the message listeners, so the
 sources stop producing before the buffer stops accepting.
 
 ## 10. Guarantees
 
-What holds:
+With the default in-memory buffer and queue, what holds:
 
 - Records are written in arrival order, by one thread, one batch at a time.
 - A record is accepted or it is not: `accept` either returns, meaning the record
@@ -332,6 +366,16 @@ What does not hold:
   `insert_deduplication_token`.
 - **Order between batchers.** Two named batchers are independent.
 
+A durable buffer and queue move the line:
+
+- **Durability holds** as far as the stores do: a record is safe once `accept`
+  returns, and a hard kill loses nothing either one has committed.
+- **At least once, not at most once.** A crash between a write and its lease
+  completing writes the batch again. Pass `Batch.id` as the
+  `insert_deduplication_token`.
+- **Order** holds only as far as the queue keeps it, and not at all across
+  several instances writing from one queue.
+
 ## 11. Configuration
 
 Defaults apply to every batcher; `instances` names them and overrides what it
@@ -345,7 +389,7 @@ batcher:
     write-queue-capacity: 16     # batches in flight before back pressure
     shutdown-await-period: 15s   # budget for draining on stop
     slow-write-duration: 5s      # a write slower than this is logged
-    back-pressure: fallback      # fallback | reject
+    back-pressure: fallback      # fallback | reject | block
   instances:
     history:
       batch-size: 2000
@@ -359,6 +403,17 @@ Two numbers set the shape of the load: `batch-size` and
 `batch-size / buffering-max-duration`, and that is also the worst-case delay
 before a record is queryable. Pick the delay you can live with, then the size
 that keeps inserts at roughly one per second per table.
+
+`back-pressure` decides what a full queue means:
+
+- `fallback` parks the batch and returns;
+- `reject` checks for room before the record goes into the buffer and throws
+  from `accept` when there is none, so the source keeps the record and
+  redelivers it. A batch that is already cut is never thrown back: its records
+  belong to callers that have returned;
+- `block` makes the thread that cut the batch wait for room, up to a timeout,
+  then parks it. A message listener that waits stops acknowledging, and the
+  broker stops delivering.
 
 `write-queue-capacity` is the memory bound:
 `batch-size * (write-queue-capacity + 1)` records at most.
@@ -410,8 +465,11 @@ one root build with shared settings, versions in `gradle.properties`.
 
 - **An adaptive window.** `buffering-max-duration` could be derived from the
   measured arrival rate, so that batches stay close to `batch-size` under any
-  load. The `BatchingPolicy` seam is there for it; the feature is not.
-- **Persistence.** No write-ahead log. Durability stays with the source.
+  load. A `RecordBuffer` of its own can do it; the library does not ship one.
+- **Durable buffers and queues.** The contracts are in core; Redis, Kafka,
+  RabbitMQ or a table come later as separate modules. Until then durability
+  stays with the source. How a durable stage turns a record into bytes is
+  decided with the first one.
 - **Retries with a delay.** A failed record goes to the fallback immediately.
   Retry policy belongs to whatever reads the fallback.
 - **A ready-made fallback.** Parking records in RabbitMQ or Kafka is a few lines

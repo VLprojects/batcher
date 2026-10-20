@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
@@ -16,6 +17,8 @@ subprojects {
             explicitApi()
             compilerOptions {
                 allWarningsAsErrors = true
+                // Interface defaults as plain JVM default methods, without the DefaultImpls bridge.
+                jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
             }
             // A breaking change shows up as a diff of the checked-in dump.
             @OptIn(ExperimentalAbiValidation::class)

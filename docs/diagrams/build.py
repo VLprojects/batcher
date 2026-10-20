@@ -219,7 +219,7 @@ def recovery(pal):
 
 	rows = [
 		("persist(batch)", "the whole batch, one write", "500 records written"),
-		("persist(record)", "the same batch, record by record", "499 written, 1 still fails"),
+		("persist(slice)", "the same batch, one record a slice", "499 written, 1 still fails"),
 		("write fallback", "whatever the retry could not write", "1 record parked"),
 		("lost", "the fallback failed as well", "ERROR in the log, a metric"),
 	]
@@ -304,14 +304,12 @@ def shutdown(pal):
 		a.record(x, buf_y + lane_h / 2 - REC / 2)
 	a.t(stop + 16, buf_y + 24.5, "new records rejected", color="soft")
 
-	# writer: a batch now and then; after stop the remaining batch, then the queue back to back
+	# writer: a batch now and then; after stop the queue back to back, the buffer's last batch at its tail
 	by, bh = wr_y + 8, lane_h - 16
 	for x in range(lx + 24, stop - 10, 36):
 		a.bar(x, by, h=bh)
 	rest = stop + 16
-	a.bar(rest, by, h=bh)
-	drain = rest + 3 * BAR_PITCH
-	for x in range(drain, budget - 8, BAR_PITCH):
+	for x in range(rest, budget - 8, BAR_PITCH):
 		a.bar(x, by, h=bh)
 	for x in range(budget + 16, budget + 16 + 5 * BAR_PITCH, BAR_PITCH):
 		a.bar(x, by, "amber", h=bh)
@@ -319,11 +317,10 @@ def shutdown(pal):
 	a.path(f"M{stop},{st_y - 8} L{stop},{bottom + 8}", "ink")
 	a.path(f"M{budget},{wr_y - 8} L{budget},{bottom + 8}", "ink")
 	a.label(stop - 12, 24, "stop arrives", "after the message listeners", anchor="end")
-	a.label(stop + 12, 24, "buffer closes", "deadline thread cancelled")
+	a.label(stop + 12, 24, "buffer closes", "its last batch joins the queue")
 
 	ly = bottom + 30
-	a.label(rest - 4, ly, "remaining batch", "goes ahead of the queue")
-	a.label(rest + 176, ly, "writer drains", "one batch at a time")
+	a.label(rest - 4, ly, "writer drains the queue", "one batch at a time, while the budget lasts")
 	a.label(budget + 12, ly, "leftovers parked", "in the write fallback")
 
 	by2 = ly + 40
@@ -386,7 +383,7 @@ def types(pal):
 	# the pipeline again, as types: the same left-to-right chain, and under each type what it asks or
 	# where its failures go; what travels between types is drawn as the thing itself
 	a = Art(880, 316, pal)
-	ws, gap, h = (176, 172, 200, 180), 40, 76
+	ws, gap, h = (156, 204, 196, 172), 40, 76
 	xs, x = [], 16
 	for w in ws:
 		xs.append(x)
@@ -404,14 +401,14 @@ def types(pal):
 
 	card(0, top, "batcher", [("accept(record)", True), ("start(), stop()", True)])
 	card(1, top, "record buffer", [("holds records and", False), ("cuts them into batches", False)])
-	card(2, top, "batch ready listener", [("takes each batch;", False), ("default: recovering writer", False)])
-	card(3, top, "batch writer", [("persist(batch)", True), ("persist(record)", True)], "green", "yours")
+	card(2, top, "batch queue", [("offer(batch)", True), ("poll() → lease", True)])
+	card(3, top, "batch writer", [("persist(batch)", True), ("one insert", False)], "green", "yours")
 
-	card(0, low, "back pressure policy", [("the queue is full;", False), ("default: to the fallback", False)])
-	card(1, low, "batching policy", [("when to cut a batch:", False), ("size or max age", False)])
-	card(2, low, "write fallback", [("what could not be written;", False), ("default: log at ERROR", False)], "amber")
-	card(3, low, "batch", [("records and the arrival", False), ("time of the first one", False)])
-	a.bar(xs[3] + ws[3] - 16 - BAR_W, low + 13, h=16)
+	card(0, low, "batch", [("records and an id;", False), ("slice(from, to)", True)])
+	a.bar(xs[0] + ws[0] - 16 - BAR_W, low + 13, h=16)
+	card(1, low, "batch ready listener", [("takes each cut batch;", False), ("default: the batcher", False)])
+	card(2, low, "batch lease", [("one batch on loan;", False), ("complete(), release()", True)])
+	card(3, low, "write fallback", [("what was not written,", False), ("and why", False)], "amber")
 
 	# along the chain: an arrow and what it carries, centred in the gap
 	mid = top + h / 2
@@ -425,8 +422,8 @@ def types(pal):
 		else:
 			a.bar(cx - BAR_W / 2, mid - 16, h=16)
 
-	# down from each type: whom it asks, or where a failed write goes
-	for i, text, color in ((0, "asks", "line"), (1, "asks", "line"), (2, "write failed", "red")):
+	# down from each type: what it hands out, or where a failed write goes
+	for i, text, color in ((1, "hands to", "line"), (2, "lends", "line"), (3, "write failed", "red")):
 		cx = xs[i] + ws[i] / 2
 		a.varrow(cx, top + h + 8, low - 8, color)
 		a.t(cx - 12, top + h + 28.5, text, color="red" if color == "red" else "soft", weight="600" if color == "red" else "400", anchor="end")
@@ -510,7 +507,7 @@ def sequence(pal):
 	a.rect(W - 18, 340, 2, 88, "line", r=1)
 	a.t(W - 28, 380, "for each of", anchor="end")
 	a.t(W - 28, 398, "500 records", anchor="end")
-	msg(W, BW, 356, "persist(record)", mono=True)
+	msg(W, BW, 356, "persist(slice)", mono=True)
 	msg(BW, W, 388, "499 written", "line")
 	msg(BW, W, 420, "1 throws", "red")
 
