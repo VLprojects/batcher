@@ -3,22 +3,20 @@
 
 Rules the drawings follow:
 
+- Show the thing, not a box with its name. A record is a small square, a batch
+  is a bar, a container is a plate with slots, drawn to one scale everywhere.
+- Plates, not frames: a group is a flat fill with no outline.
 - Colour means the same thing everywhere. Blue is data on the move, green is
-  done or allowed, amber is waiting it out (draining, parked), red is a failure,
-  grey is inactive. In the module map green is Spring and blue is plain JVM.
-- The path a thing takes is a 3 px line with rounded caps. It runs at 0, 45 or
-  90 degrees, and its corners are rounded: three line widths, half as much again
-  on a 45-degree turn. Every line is solid; a lighter colour, never a dash,
-  marks what is inactive.
-- A point on the path is a white circle with a coloured ring. Records are
-  ticks, batches are blocks, drawn to the same scale everywhere.
-- Structure stays in the background: hairlines, grey small caps.
-- Labels sit next to what they label and never cross a line: the name in bold,
-  the explanation below it in grey. Code identifiers are monospaced.
+  done or allowed, amber is waiting it out (draining, parked), red is a
+  failure, grey is structure. In the module map green is Spring and blue is
+  plain JVM. Text on amber is black.
+- Every line is solid; a lighter colour, never a dash, marks what is inactive.
+- One grid of 4 px. Space inside a group is smaller than space between groups.
+- Two text sizes: the name in bold, the explanation in grey below it, both
+  aligned to the left edge of what they label. Code identifiers are monospaced.
 - All diagrams share one scale and are embedded at their native width.
 """
 
-import math
 import pathlib
 
 OUT = pathlib.Path(__file__).resolve().parent.parent / "assets"
@@ -26,270 +24,267 @@ OUT = pathlib.Path(__file__).resolve().parent.parent / "assets"
 FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif"
 MONO = "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace"
 
-# bg matches GitHub's light and dark canvas, so a station reads as a hole in its line.
 PALETTE = {
 	"light": {
-		"bg": "#FFFFFF", "ink": "#1F2328", "soft": "#59636E", "mute": "#8C959F", "hair": "#D1D9E0",
-		"blue": "#1F6FEB", "green": "#1A7F37", "amber": "#D18A00", "red": "#CF222E", "grey": "#BCC4CC",
-		"amber-text": "#9A6700",
+		"bg": "#FFFFFF", "ink": "#1F2328", "soft": "#59636E", "mute": "#8C959F",
+		"plate": "#F2F4F6", "slot": "#DDE2E7", "line": "#AFB8C1",
+		"blue": "#1F6FEB", "green": "#1A7F37", "amber": "#E5A000", "red": "#CF222E",
+		"blue-plate": "#E8F0FE", "green-plate": "#E6F4EA", "amber-plate": "#FDF3D7", "red-plate": "#FDE8E8",
+		"on-green": "#FFFFFF", "on-blue": "#FFFFFF", "on-amber": "#1F2328",
 	},
 	"dark": {
-		"bg": "#0D1117", "ink": "#E6EDF3", "soft": "#9198A1", "mute": "#6E7681", "hair": "#30363D",
-		"blue": "#4493F8", "green": "#3FB950", "amber": "#E3A21A", "red": "#F85149", "grey": "#4A525C",
-		"amber-text": "#E3A21A",
+		"bg": "#0D1117", "ink": "#E6EDF3", "soft": "#9198A1", "mute": "#6E7681",
+		"plate": "#161B22", "slot": "#2A313A", "line": "#4A525C",
+		"blue": "#4493F8", "green": "#3FB950", "amber": "#E3A21A", "red": "#F85149",
+		"blue-plate": "#0F213A", "green-plate": "#10261A", "amber-plate": "#2B210A", "red-plate": "#2E1416",
+		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117",
 	},
 }
 
-LW = 3  # line width
-R90, R45 = 3 * LW, 4.5 * LW  # corner radius on 90- and 45-degree turns
-STOP, RING = 5.5, 2.25  # station: outer radius and ring
-NAME, NOTE, CODE, CAPS = 13.5, 12, 13, 10.5
-
-
-def rounded(points):
-	"""Polyline with every inner corner replaced by an arc."""
-	d = [f"M{points[0][0]:.2f},{points[0][1]:.2f}"]
-	for (x0, y0), (x1, y1), (x2, y2) in zip(points, points[1:], points[2:]):
-		ax, ay, bx, by = x1 - x0, y1 - y0, x2 - x1, y2 - y1
-		la, lb = math.hypot(ax, ay), math.hypot(bx, by)
-		ux, uy, vx, vy = ax / la, ay / la, bx / lb, by / lb
-		cos = max(-1.0, min(1.0, ux * vx + uy * vy))
-		r = R45 if cos > 0.5 else R90
-		t = r * math.tan(math.acos(cos) / 2)
-		sweep = 1 if ux * vy - uy * vx > 0 else 0
-		d.append(f"L{x1 - ux * t:.2f},{y1 - uy * t:.2f}")
-		d.append(f"A{r},{r} 0 0 {sweep} {x1 + vx * t:.2f},{y1 + vy * t:.2f}")
-	d.append(f"L{points[-1][0]:.2f},{points[-1][1]:.2f}")
-	return " ".join(d)
+NAME, NOTE, CODE = 14, 12.5, 13
+REC, PITCH = 6, 8  # record square and its pitch
+BAR_W, BAR_H, BAR_PITCH = 6, 28, 10  # batch bar
 
 
 class Art:
-	def __init__(self, width, height, pal, top=0):
-		self.w, self.h, self.top, self.p, self.parts = width, height, top, pal, []
+	def __init__(self, width, height, pal):
+		self.w, self.h, self.p, self.parts = width, height, pal, []
 
 	def add(self, markup):
 		self.parts.append(markup)
 
 	# text -------------------------------------------------------------
-	def t(self, x, y, s, size=NOTE, color="soft", anchor="middle", weight="400", mono=False, spacing=None):
-		gap = f' letter-spacing="{spacing}"' if spacing else ""
+	def t(self, x, y, s, size=NOTE, color="soft", anchor="start", weight="400", mono=False):
 		self.add(
 			f'<text x="{x:.1f}" y="{y:.1f}" font-family="{MONO if mono else FONT}" font-size="{size}" '
-			f'font-weight="{weight}" fill="{self.p[color]}" text-anchor="{anchor}"{gap}>{s}</text>'
+			f'font-weight="{weight}" fill="{self.p[color]}" text-anchor="{anchor}">{s}</text>'
 		)
 
-	def name(self, x, y, s, anchor="middle", color="ink", mono=False):
-		self.t(x, y, s, size=CODE if mono else NAME, color=color, anchor=anchor, weight="650", mono=mono)
+	def name(self, x, y, s, anchor="start", color="ink", mono=False):
+		self.t(x, y, s, size=CODE if mono else NAME, color=color, anchor=anchor, weight="600", mono=mono)
 
-	def caps(self, x, y, s, anchor="middle", color="soft"):
-		self.t(x, y, s.upper(), size=CAPS, color=color, anchor=anchor, weight="700", spacing="0.08em")
-
-	def label(self, x, y, title, note=None, anchor="middle", mono=False, note_mono=False):
-		"""Bold name with a grey note under it; y is the baseline of the name."""
-		self.name(x, y, title, anchor=anchor, mono=mono)
+	def label(self, x, y, title, note=None, anchor="start", mono=False, color="ink", note_mono=False):
+		"""Name with a grey note below; y is the baseline of the name."""
+		self.name(x, y, title, anchor=anchor, color=color, mono=mono)
 		if note:
-			self.t(x, y + 17, note, anchor=anchor, mono=note_mono)
+			self.t(x, y + 18, note, anchor=anchor, mono=note_mono)
 
-	# marks ------------------------------------------------------------
-	def line(self, points, color, width=LW):
+	# shapes -----------------------------------------------------------
+	def rect(self, x, y, w, h, color, r=2):
+		self.add(f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" rx="{r}" fill="{self.p[color]}"/>')
+
+	def plate(self, x, y, w, h, color="plate"):
+		self.rect(x, y, w, h, color, r=6)
+
+	def record(self, x, y, color="blue"):
+		self.rect(x, y, REC, REC, color, r=1)
+
+	def bar(self, x, y, color="blue", h=BAR_H):
+		self.rect(x, y, BAR_W, h, color, r=1.5)
+
+	def path(self, d, color="line", width=1.5):
 		self.add(
-			f'<path d="{rounded(points)}" stroke="{self.p[color]}" stroke-width="{width}" fill="none" '
+			f'<path d="{d}" stroke="{self.p[color]}" stroke-width="{width}" fill="none" '
 			f'stroke-linecap="round" stroke-linejoin="round"/>'
 		)
 
-	def hair(self, x1, y1, x2, y2):
-		self.add(f'<path d="M{x1},{y1} L{x2},{y2}" stroke="{self.p["hair"]}" stroke-width="1"/>')
-
-	def station(self, x, y, color="ink"):
-		self.add(
-			f'<circle cx="{x}" cy="{y}" r="{STOP - RING / 2}" fill="{self.p["bg"]}" '
-			f'stroke="{self.p[color]}" stroke-width="{RING}"/>'
-		)
-
-	def end(self, x, y, color):
-		"""The end of a path: a solid dot."""
-		self.add(f'<circle cx="{x}" cy="{y}" r="{STOP - 1}" fill="{self.p[color]}"/>')
-
-	def tip(self, x, y, color):
-		self.add(
-			f'<path d="M{x - 7},{y - 5} L{x},{y} L{x - 7},{y + 5}" stroke="{self.p[color]}" stroke-width="{LW}" '
-			f'fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-		)
-
-	def tick(self, x, base, height, color="blue"):
-		self.add(
-			f'<path d="M{x},{base} L{x},{base - height}" stroke="{self.p[color]}" stroke-width="1.6"/>'
-		)
-
-	def block(self, x, base, w, h, color="blue"):
-		self.add(f'<rect x="{x}" y="{base - h}" width="{w}" height="{h}" rx="2" fill="{self.p[color]}"/>')
-
-	def bracket(self, x, y1, y2, color, reach=8):
-		"""A coloured bracket on the right of a group of rows."""
-		self.line([(x - reach, y1), (x, y1), (x, y2), (x - reach, y2)], color)
-
-	def brace(self, x1, x2, y, depth=6):
-		self.add(
-			f'<path d="M{x1},{y - depth} L{x1},{y} L{x2},{y} L{x2},{y - depth}" stroke="{self.p["mute"]}" '
-			f'stroke-width="1.25" fill="none"/>'
-		)
+	def arrow(self, x1, y, x2, color="line"):
+		"""Horizontal arrow with a solid head that ends at x2."""
+		self.path(f"M{x1},{y} L{x2 - 6},{y}", color)
+		self.add(f'<path d="M{x2 - 7},{y - 4} L{x2},{y} L{x2 - 7},{y + 4} Z" fill="{self.p[color]}"/>')
 
 	def svg(self):
 		body = "\n  ".join(self.parts)
 		return (
-			f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 {self.top} {self.w} {self.h}" '
+			f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {self.w} {self.h}" '
 			f'width="{self.w}" height="{self.h}" role="img">\n  {body}\n</svg>\n'
 		)
 
 
 # ---------------------------------------------------------------------- 1
 def pipeline(pal):
-	a = Art(880, 222, pal, top=22)
-	y = 120
-	zones = [(24, "producer"), (196, "record buffer"), (420, "queue"), (580, "writer thread"), (724, "clickhouse")]
-	for x, title in zones:
-		a.caps(x + (0 if x == 24 else 12), 44, title, anchor="start")
-		if x > 24:
-			a.hair(x, 32, x, y + 12)
-	a.line([(24, y), (856, y)], "blue")
-	a.tip(858, y, "blue")
+	a = Art(880, 248, pal)
+	top, h, gap = 64, 60, 32
+	mid = top + h / 2
+	cols = [("producer", 112), ("record buffer", 216), ("queue", 184), ("writer thread", 96), ("ClickHouse", 112)]
+	xs, x = [], 16
+	for _, w in cols:
+		xs.append(x)
+		x += w + gap
+	(px, pw), (bx, bw), (qx, qw), (wx, ww), (cx, cw) = [(x, w) for x, (_, w) in zip(xs, cols)]
+	notes = ["records, one at a time", "cut at 500 records or 1 second", "at most 16 batches", "one write at a time", "one part per write"]
+	for x, (title, _), note in zip(xs, cols, notes):
+		a.label(x, 26, title, note)
+	for (x0, w0), x1 in zip([(px, pw), (bx, bw), (qx, qw), (wx, ww)], [bx, qx, wx, cx]):
+		a.arrow(x0 + w0 + 8, mid, x1 - 8)
 
-	for i in range(7):
-		a.tick(44 + i * 20, y - 6, 14)
-	a.t(104, y - 32, "records, one at a time")
+	# producer: records arriving one by one; no plate, it is outside the batcher
+	for i in range(5):
+		a.record(px + i * 22, mid - REC / 2)
 
-	for i in range(24):
-		a.tick(214 + i * 6.5, y - 6, 14)
-	a.brace(214, 364, y - 26, depth=-5)
-	a.t(289, y - 36, "500 of them, or one second")
-	a.add(f'<path d="M392,{y - 3} L392,{y - 30}" stroke="{pal["ink"]}" stroke-width="2"/>')
-	a.t(392, y - 38, "cut", color="ink")
+	# record buffer: slots for records, partly filled
+	a.plate(bx, top, bw, h)
+	ncol, nrow = 23, 3
+	ox, oy = bx + 16, mid - (nrow * PITCH - (PITCH - REC)) / 2
+	for c in range(ncol):
+		for r in range(nrow):
+			a.record(ox + c * PITCH, oy + r * PITCH, "blue" if c * nrow + r < 44 else "slot")
 
+	# queue: 16 slots for batches, 3 waiting at the front
+	a.plate(qx, top, qw, h)
+	ox = qx + (qw - (16 * BAR_PITCH - (BAR_PITCH - BAR_W))) / 2
+	for i in range(16):
+		a.bar(ox + i * BAR_PITCH, mid - BAR_H / 2, "blue" if i >= 13 else "slot")
+
+	# writer: room for one batch
+	a.plate(wx, top, ww, h)
+	a.bar(wx + ww / 2 - BAR_W / 2, mid - BAR_H / 2)
+
+	# clickhouse: a part per write
+	a.plate(cx, top, cw, h, "green-plate")
+	ox = cx + (cw - (6 * BAR_PITCH - (BAR_PITCH - BAR_W))) / 2
+	for i in range(6):
+		a.bar(ox + i * BAR_PITCH, mid - BAR_H / 2, "green")
+
+	# failure: straight down from the writer to the fallback
+	fy = top + h + 48
+	a.plate(wx, fy, ww, h, "amber-plate")
 	for i in range(3):
-		a.block(446 + i * 40, y - 6, 28, 14)
-	a.t(500, y - 32, "batches wait, at most 16")
-
-	writer = 652
-	a.block(writer - 14, y - 6, 28, 14)
-	a.t(writer, y - 32, "one write at a time", color="ink")
-
-	a.block(772, y - 6, 40, 14, color="green")
-	a.t(792, y - 32, "one part per write")
-
-	low = y + 64
-	a.line([(writer, y), (writer, y + 20), (writer + 44, low), (742, low)], "red")
-	a.station(748, low, "amber")
-	a.t(writer - 12, y + 40, "write failed", color="red", anchor="end", weight="600")
-	a.label(764, low + 5, "WriteFallback", "queue, file, log", anchor="start", mono=True)
+		a.record(wx + ww / 2 - 17 + i * 14, fy + h / 2 - REC / 2, "amber")
+	wm = wx + ww / 2
+	a.path(f"M{wm},{top + h + 8} L{wm},{fy - 14}", "red")
+	a.add(f'<path d="M{wm - 4},{fy - 15} L{wm},{fy - 8} L{wm + 4},{fy - 15} Z" fill="{pal["red"]}"/>')
+	a.t(wm - 12, top + h + 32, "write failed", color="red", weight="600", anchor="end")
+	a.label(cx, fy + h / 2 - 4, "WriteFallback", "queue, file, log", mono=True)
 	return a
 
 
 # ---------------------------------------------------------------------- 2
 def recovery(pal):
-	a = Art(720, 360, pal, top=0)
-	x, end, step, drop = 268, 520, 80, 32
-	ys = [36, 36 + step, 36 + 2 * step]
-	last = ys[2] + step
-
-	a.line([(x, ys[0]), (x, last), (x + drop, last + drop), (end, last + drop)], "red")
-	# each step forks: what was written leaves to the right, the rest goes on down
-	outcomes = [(ys[0], "green", "500 records written"), (ys[1], "green", "499 written"), (ys[2], "amber", "1 record parked")]
-	for y0, color, outcome in outcomes:
-		a.line([(x, y0), (x + drop, y0 + drop), (end, y0 + drop)], color)
-		a.end(end, y0 + drop, color)
-		a.name(end + 16, y0 + drop + 5, outcome, anchor="start")
-	a.end(end, last + drop, "red")
-	a.label(end + 16, last + drop + 5, "lost", "ERROR in the log, a metric", anchor="start")
-
-	for y0, failed in zip(ys, ("fails", "1 still fails", "fails")):
-		a.t(x + 12, y0 + drop + 30, failed, color="red", anchor="start", weight="600")
-
+	a = Art(680, 272, pal)
+	x, step, y0 = 16, 68, 36
+	ox = 280  # outcome column
+	full = 160  # 500 records
 	rows = [
-		("persist(batch)", "the whole batch, one write"),
-		("persist(record)", "the same batch, record by record"),
-		("WriteFallback", "whatever the retry could not write"),
+		("persist(batch)", "the whole batch, one write", "500 records written"),
+		("persist(record)", "the same batch, record by record", "499 written, 1 still fails"),
+		("WriteFallback", "whatever the retry could not write", "1 record parked"),
+		("lost", "the fallback failed as well", "ERROR in the log, a metric"),
 	]
-	for y0, (title, note) in zip(ys, rows):
-		a.station(x, y0)
-		a.label(x - 20, y0 + 1, title, note, anchor="end", mono=True)
+	for i, (title, note, outcome) in enumerate(rows):
+		y = y0 + i * step
+		last = i == len(rows) - 1
+		a.label(x + 20, y, title, note, mono=not last, color="red" if last else "ink")
+		a.add(f'<circle cx="{x + 4}" cy="{y - 5}" r="4" fill="{pal["red" if last else "ink"]}"/>')
+		if not last:
+			a.path(f"M{x + 4},{y + 6} L{x + 4},{y + step - 16}", "red")
+		mid = y - 5
+		bad = ox + full + 4
+		if i == 0:
+			a.rect(ox, mid - 5, full + 4 + REC, 10, "green", r=2)
+		elif i == 1:
+			a.rect(ox, mid - 5, full, 10, "green", r=2)
+			a.rect(bad, mid - 5, REC, 10, "red", r=1)
+		elif i == 2:
+			a.rect(bad, mid - 5, REC, 10, "amber", r=1)
+		else:
+			a.rect(bad, mid - 5, REC, 10, "red", r=1)
+		a.t(bad + REC + 16, y, outcome, color="red" if last else "ink", weight="600" if last else "400", size=NOTE + 0.5)
 	return a
 
 
 # ---------------------------------------------------------------------- 3
 def lifecycle(pal):
-	a = Art(880, 100, pal, top=12)
-	y = 78
-	x0, start, stop, drained, x1 = 32, 220, 470, 760, 856
-	states = [
-		(x0, start, "grey", "NEW", None),
-		(start, stop, "green", "RUNNING", "accept allowed"),
-		(stop, drained, "amber", "STOPPING", "accept rejected, buffer drains"),
-		(drained, x1, "grey", "STOPPED", None),
+	a = Art(880, 112, pal)
+	top, h = 44, 32
+	segments = [
+		(16, 150, "plate", "ink", "NEW", None),
+		(170, 330, "green", "on-green", "RUNNING", "accept allowed"),
+		(504, 236, "amber", "on-amber", "STOPPING", "accept rejected, buffer drains"),
+		(744, 120, "plate", "ink", "STOPPED", None),
 	]
-	for left, right, color, state, note in states:
-		a.line([(left, y), (right, y)], color)
-		middle = (left + right) / 2
-		text = {"grey": "soft", "amber": "amber-text"}.get(color, color)
-		a.caps(middle, y - 34, state, color=text)
+	for x, w, fill, text, state, note in segments:
+		a.rect(x, top, w, h, fill, r=4)
+		a.t(x + 12, top + h / 2 + 4.5, state, color=text, weight="650", size=NOTE)
 		if note:
-			a.t(middle, y - 16, note)
-	for x, event in ((start, "start"), (stop, "stop"), (drained, "queue drained")):
-		a.station(x, y)
-		a.t(x, y + 26, event, color="ink", weight="650")
+			a.t(x + 12, top + h + 24, note)
+	for x, event in ((168, "start"), (502, "stop"), (742, "queue drained")):
+		a.t(x, top - 14, event, color="ink", weight="600", anchor="middle")
 	return a
 
 
 # ---------------------------------------------------------------------- 4
 def shutdown(pal):
-	a = Art(880, 196, pal, top=34)
-	y = 120
-	arrives, closes, remaining, drains, budget, parked = 104, 284, 464, 644, 728, 808
-	a.line([(24, y), (arrives, y)], "green")
-	a.line([(arrives, y), (budget, y)], "amber")
-	a.line([(budget, y), (parked, y)], "red")
-	steps = [
-		(arrives, "stop arrives", "after the message listeners", "up"),
-		(closes, "buffer closes", "deadline thread cancelled", "down"),
-		(remaining, "remaining batch", "goes ahead of the queue", "up"),
-		(drains, "writer drains", "one batch at a time", "down"),
-	]
-	for x, title, note, side in steps:
-		a.station(x, y, "ink" if x == arrives else "amber")
-		a.label(x, y - 36 if side == "up" else y + 30, title, note)
-	a.station(parked, y, "amber")
-	a.label(parked, y - 36, "leftovers parked", "WriteFallback", note_mono=True)
+	a = Art(880, 268, pal)
+	lx = 120  # lanes start
+	lane_h, buf_y, wr_y = 32, 76, 124
+	stop, closes, budget, end = 300, 352, 712, 864
 
-	a.brace(closes, budget, y + 78)
-	a.t((closes + budget) / 2, y + 100, "shutdown-await-period", color="ink", mono=True, size=CODE)
+	a.name(lx - 16, buf_y + 21, "buffer", anchor="end")
+	a.name(lx - 16, wr_y + 21, "writer", anchor="end")
+
+	# buffer: accepts until stop, cuts the remaining batch, then is closed
+	a.rect(lx, buf_y, stop - lx - 2, lane_h, "green", r=4)
+	a.t(lx + 12, buf_y + 20.5, "accepts", color="on-green", weight="600")
+	a.rect(stop, buf_y, closes - stop, lane_h, "amber", r=4)
+	a.rect(closes + 2, buf_y, end - closes - 2, lane_h, "plate", r=4)
+	a.t(closes + 14, buf_y + 20.5, "rejects", color="soft", weight="600")
+
+	# writer: batches one at a time; after the cut, the remaining batch first, then the queue
+	a.rect(lx, wr_y, end - lx, lane_h, "plate", r=4)
+	by = wr_y + 6
+	bh = lane_h - 12
+	for x in range(lx + 20, stop - 10, 34):
+		a.bar(x, by, h=bh)
+	a.bar(closes + 10, by, "blue", h=bh)  # the remaining batch, set apart from the queue
+	for x in range(closes + 10 + 2 * BAR_PITCH, budget - 6, BAR_PITCH):
+		a.bar(x, by, h=bh)
+	for x in range(budget + 10, budget + 10 + 4 * BAR_PITCH, BAR_PITCH):
+		a.bar(x, by, "amber", h=bh)
+
+	a.path(f"M{stop},{buf_y - 8} L{stop},{wr_y + lane_h + 8}", "ink", width=1.5)
+	a.label(stop - 6, 36, "stop arrives", "after the message listeners", anchor="end")
+	a.path(f"M{closes},{buf_y - 8} L{closes},{buf_y + lane_h}", "ink", width=1.5)
+	a.label(closes + 6, 36, "buffer closes", "deadline thread cancelled")
+	a.path(f"M{budget},{wr_y - 8} L{budget},{wr_y + lane_h + 8}", "ink", width=1.5)
+
+	ly = wr_y + lane_h + 30
+	a.label(closes + 6, ly, "remaining batch", "goes ahead of the queue")
+	a.label(closes + 170, ly, "writer drains", "one batch at a time")
+	a.label(budget + 6, ly, "leftovers parked", "WriteFallback", note_mono=True)
+
+	by2 = ly + 44
+	a.path(f"M{closes},{by2 - 6} L{closes},{by2} L{budget},{by2} L{budget},{by2 - 6}", "mute", width=1.25)
+	a.t((closes + budget) / 2, by2 + 20, "shutdown-await-period", color="ink", mono=True, size=CODE, anchor="middle")
 	return a
 
 
 # ---------------------------------------------------------------------- 5
 def modules(pal):
-	a = Art(600, 270, pal, top=0)
-	x, kid, text, margin = 36, 64, 82, 432
+	# each layer depends on the ones below it; micrometer is optional for both kinds of service
+	a = Art(584, 268, pal)
+	x, w, h, gap = 16, 360, 56, 4
 	rows = [
-		(40, "batcher-spring-boot-starter", "one dependency, nothing of its own"),
-		(110, "batcher-spring-boot", "auto-configuration, properties, lifecycle"),
-		(170, "batcher-micrometer", "metrics, optional"),
-		(230, "batcher-core", "the engine and every interface, no Spring"),
+		("green-plate", "batcher-spring-boot-starter", "one dependency, nothing of its own"),
+		("green-plate", "batcher-spring-boot", "auto-configuration, lifecycle"),
+		("blue-plate", "batcher-micrometer", "metrics, optional"),
+		("blue-plate", "batcher-core", "the engine and every interface, no Spring"),
 	]
-	mid = [y - 4.5 for y, *_ in rows]
-	for m in mid[1:]:
-		a.line([(x, mid[0]), (x, m), (kid, m)], "green")
-	a.station(x, mid[0], "green")
-	for m in mid[1:]:
-		a.station(kid, m, "green")
+	for i, (fill, title, note) in enumerate(rows):
+		y = 16 + i * (h + gap)
+		a.plate(x, y, w, h, fill)
+		a.label(x + 16, y + 24, title, note, mono=True)
 
-	a.name(x + 18, rows[0][0], rows[0][1], anchor="start", mono=True)
-	a.t(x + 18, rows[0][0] + 17, rows[0][2], anchor="start")
-	for y, title, note in rows[1:]:
-		a.label(text, y, title, note, anchor="start", mono=True)
+	mx = x + w + 16
 
-	a.bracket(margin, rows[0][0] - 12, rows[0][0] + 21, "green")
-	a.label(margin + 16, rows[0][0], "a Spring Boot service", "takes this one", anchor="start")
-	a.bracket(margin, rows[2][0] - 12, rows[3][0] + 21, "blue")
-	a.label(margin + 16, (rows[2][0] + rows[3][0]) / 2 + 2, "a plain JVM service", "takes these two", anchor="start")
+	def bracket(y1, y2, color):
+		a.path(f"M{mx},{y1 + 2} L{mx + 6},{y1 + 2} L{mx + 6},{y2 - 2} L{mx},{y2 - 2}", color, width=2)
+
+	bracket(16, 16 + h, "green")
+	a.label(mx + 20, 16 + 24, "a Spring Boot service", "takes this one")
+	y3 = 16 + 2 * (h + gap)
+	bracket(y3, y3 + 2 * h + gap, "blue")
+	a.label(mx + 20, y3 + h - 4, "a plain JVM service", "takes these two")
 	return a
 
 

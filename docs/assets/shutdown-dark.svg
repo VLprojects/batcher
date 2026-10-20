@@ -1,22 +1,68 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 34 880 196" width="880" height="196" role="img">
-  <path d="M24.00,120.00 L104.00,120.00" stroke="#3FB950" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M104.00,120.00 L728.00,120.00" stroke="#E3A21A" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M728.00,120.00 L808.00,120.00" stroke="#F85149" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="104" cy="120" r="4.375" fill="#0D1117" stroke="#E6EDF3" stroke-width="2.25"/>
-  <text x="104.0" y="84.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="650" fill="#E6EDF3" text-anchor="middle">stop arrives</text>
-  <text x="104.0" y="101.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="middle">after the message listeners</text>
-  <circle cx="284" cy="120" r="4.375" fill="#0D1117" stroke="#E3A21A" stroke-width="2.25"/>
-  <text x="284.0" y="150.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="650" fill="#E6EDF3" text-anchor="middle">buffer closes</text>
-  <text x="284.0" y="167.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="middle">deadline thread cancelled</text>
-  <circle cx="464" cy="120" r="4.375" fill="#0D1117" stroke="#E3A21A" stroke-width="2.25"/>
-  <text x="464.0" y="84.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="650" fill="#E6EDF3" text-anchor="middle">remaining batch</text>
-  <text x="464.0" y="101.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="middle">goes ahead of the queue</text>
-  <circle cx="644" cy="120" r="4.375" fill="#0D1117" stroke="#E3A21A" stroke-width="2.25"/>
-  <text x="644.0" y="150.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="650" fill="#E6EDF3" text-anchor="middle">writer drains</text>
-  <text x="644.0" y="167.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9198A1" text-anchor="middle">one batch at a time</text>
-  <circle cx="808" cy="120" r="4.375" fill="#0D1117" stroke="#E3A21A" stroke-width="2.25"/>
-  <text x="808.0" y="84.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="650" fill="#E6EDF3" text-anchor="middle">leftovers parked</text>
-  <text x="808.0" y="101.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#9198A1" text-anchor="middle">WriteFallback</text>
-  <path d="M284,192 L284,198 L728,198 L728,192" stroke="#6E7681" stroke-width="1.25" fill="none"/>
-  <text x="506.0" y="220.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="400" fill="#E6EDF3" text-anchor="middle">shutdown-await-period</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 268" width="880" height="268" role="img">
+  <text x="104.0" y="97.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="end">buffer</text>
+  <text x="104.0" y="145.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="end">writer</text>
+  <rect x="120.0" y="76.0" width="178.0" height="32.0" rx="4" fill="#3FB950"/>
+  <text x="132.0" y="96.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#0D1117" text-anchor="start">accepts</text>
+  <rect x="300.0" y="76.0" width="52.0" height="32.0" rx="4" fill="#E3A21A"/>
+  <rect x="354.0" y="76.0" width="510.0" height="32.0" rx="4" fill="#161B22"/>
+  <text x="366.0" y="96.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#9198A1" text-anchor="start">rejects</text>
+  <rect x="120.0" y="124.0" width="744.0" height="32.0" rx="4" fill="#161B22"/>
+  <rect x="140.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="174.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="208.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="242.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="276.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="362.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="382.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="392.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="402.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="412.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="422.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="432.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="442.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="452.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="462.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="472.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="482.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="492.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="502.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="512.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="522.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="532.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="542.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="552.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="562.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="572.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="582.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="592.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="602.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="612.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="622.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="632.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="642.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="652.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="662.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="672.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="682.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="692.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="702.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#4493F8"/>
+  <rect x="722.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#E3A21A"/>
+  <rect x="732.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#E3A21A"/>
+  <rect x="742.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#E3A21A"/>
+  <rect x="752.0" y="130.0" width="6.0" height="20.0" rx="1.5" fill="#E3A21A"/>
+  <path d="M300,68 L300,164" stroke="#E6EDF3" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="294.0" y="36.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="end">stop arrives</text>
+  <text x="294.0" y="54.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#9198A1" text-anchor="end">after the message listeners</text>
+  <path d="M352,68 L352,108" stroke="#E6EDF3" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="358.0" y="36.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="start">buffer closes</text>
+  <text x="358.0" y="54.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#9198A1" text-anchor="start">deadline thread cancelled</text>
+  <path d="M712,116 L712,164" stroke="#E6EDF3" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="358.0" y="186.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="start">remaining batch</text>
+  <text x="358.0" y="204.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#9198A1" text-anchor="start">goes ahead of the queue</text>
+  <text x="522.0" y="186.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="start">writer drains</text>
+  <text x="522.0" y="204.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#9198A1" text-anchor="start">one batch at a time</text>
+  <text x="718.0" y="186.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="start">leftovers parked</text>
+  <text x="718.0" y="204.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12.5" font-weight="400" fill="#9198A1" text-anchor="start">WriteFallback</text>
+  <path d="M352,224 L352,230 L712,230 L712,224" stroke="#6E7681" stroke-width="1.25" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="532.0" y="250.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="400" fill="#E6EDF3" text-anchor="middle">shutdown-await-period</text>
 </svg>

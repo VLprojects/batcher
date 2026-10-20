@@ -79,7 +79,7 @@ Micrometer:
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/modules-dark.svg">
-    <img alt="Modules, and which of them a Spring Boot or a plain JVM service takes" src="assets/modules-light.svg" width="600">
+    <img alt="Modules, and which of them a Spring Boot or a plain JVM service takes" src="assets/modules-light.svg" width="584">
   </picture>
 </p>
 
@@ -282,7 +282,7 @@ thread away from it, so it recovers instead.
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/recovery-dark.svg">
-    <img alt="A failed batch is retried record by record" src="assets/recovery-light.svg" width="720">
+    <img alt="A failed batch is retried record by record" src="assets/recovery-light.svg" width="680">
   </picture>
 </p>
 
