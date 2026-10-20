@@ -8,7 +8,6 @@ public final class pro/vlprojects/batcher/Batch {
 	public final fun getSize ()I
 	public fun hashCode ()I
 	public static final fun of (Ljava/util/List;Ljava/time/Instant;)Lpro/vlprojects/batcher/Batch;
-	public final fun slice (II)Lpro/vlprojects/batcher/Batch;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -17,6 +16,7 @@ public final class pro/vlprojects/batcher/Batch$Companion {
 }
 
 public abstract interface class pro/vlprojects/batcher/BatchWriter {
+	public abstract fun persist (Ljava/lang/Object;)V
 	public abstract fun persist (Lpro/vlprojects/batcher/Batch;)V
 }
 
@@ -62,7 +62,7 @@ public final class pro/vlprojects/batcher/fallback/FallbackReason : java/lang/En
 }
 
 public abstract interface class pro/vlprojects/batcher/fallback/WriteFallback {
-	public abstract fun handle (Lpro/vlprojects/batcher/Batch;Lpro/vlprojects/batcher/fallback/FallbackCause;)V
+	public abstract fun handle (Ljava/util/Collection;Lpro/vlprojects/batcher/fallback/FallbackCause;)V
 }
 
 public final class pro/vlprojects/batcher/metric/AcceptanceResult : java/lang/Enum {

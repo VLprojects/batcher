@@ -78,7 +78,7 @@
     <text x="489.0" y="398.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="end">500 records</text>
     <path d="M522.0,356 L653.0,356" stroke="#1F2328" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M652.0,352 L659.0,356 L652.0,360 Z" fill="#1F2328"/>
-    <text x="529.0" y="347.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#1F2328" text-anchor="start">persist(slice)</text>
+    <text x="529.0" y="347.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#1F2328" text-anchor="start">persist(record)</text>
     <path d="M659.0,388 L528.0,388" stroke="#AFB8C1" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M529.0,384 L522.0,388 L529.0,392 Z" fill="#AFB8C1"/>
     <text x="652.0" y="379.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="end">499 written</text>

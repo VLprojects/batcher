@@ -1,7 +1,5 @@
 package pro.vlprojects.batcher.fallback
 
-import pro.vlprojects.batcher.Batch
-
 /**
  * Keeps what could not be written until something replays it, and throws when it cannot: silence
  * here turns a loss into a clean shutdown. [FallbackCause.reason] tells a bad record, which a replay
@@ -9,5 +7,5 @@ import pro.vlprojects.batcher.Batch
  */
 public fun interface WriteFallback<in T : Any> {
 
-    public fun handle(batch: Batch<T>, cause: FallbackCause)
+    public fun handle(records: Collection<T>, cause: FallbackCause)
 }

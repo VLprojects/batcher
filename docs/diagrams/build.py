@@ -219,7 +219,7 @@ def recovery(pal):
 
 	rows = [
 		("persist(batch)", "the whole batch, one write", "500 records written"),
-		("persist(slice)", "the same batch, one record a slice", "499 written, 1 still fails"),
+		("persist(record)", "the same batch, record by record", "499 written, 1 still fails"),
 		("write fallback", "whatever the retry could not write", "1 record parked"),
 		("lost", "the fallback failed as well", "ERROR in the log, a metric"),
 	]
@@ -402,9 +402,9 @@ def types(pal):
 	card(0, top, "batcher", [("accept(record)", True), ("start(), stop()", True)])
 	card(1, top, "record buffer", [("holds records and", False), ("cuts them into batches", False)])
 	card(2, top, "batch queue", [("offer(batch)", True), ("poll() → lease", True)])
-	card(3, top, "batch writer", [("persist(batch)", True), ("one insert", False)], "green", "yours")
+	card(3, top, "batch writer", [("persist(batch)", True), ("persist(record)", True)], "green", "yours")
 
-	card(0, low, "batch", [("records and an id;", False), ("slice(from, to)", True)])
+	card(0, low, "batch", [("records, an id and the", False), ("first record's arrival", False)])
 	a.bar(xs[0] + ws[0] - 16 - BAR_W, low + 13, h=16)
 	card(1, low, "batch ready listener", [("takes each cut batch;", False), ("default: the batcher", False)])
 	card(2, low, "batch lease", [("one batch on loan;", False), ("complete(), release()", True)])
@@ -507,7 +507,7 @@ def sequence(pal):
 	a.rect(W - 18, 340, 2, 88, "line", r=1)
 	a.t(W - 28, 380, "for each of", anchor="end")
 	a.t(W - 28, 398, "500 records", anchor="end")
-	msg(W, BW, 356, "persist(slice)", mono=True)
+	msg(W, BW, 356, "persist(record)", mono=True)
 	msg(BW, W, 388, "499 written", "line")
 	msg(BW, W, 420, "1 throws", "red")
 

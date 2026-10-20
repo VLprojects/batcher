@@ -91,6 +91,8 @@ The only thing you have to write is the batch write itself:
 class HistoryWriter(private val history: HistoryService) : BatchWriter<HistoryRecord> {
 
     override fun persist(batch: Batch<HistoryRecord>) = history.saveAll(batch.records)
+
+    override fun persist(record: HistoryRecord) = history.save(record)
 }
 ```
 
@@ -235,7 +237,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | Type | Responsibility | Default |
 | --- | --- | --- |
 | `Batcher<T>` | entry point: `accept(record)`, `accept(records)`, start, stop | the only implementation |
-| `Batch<T>` | records, an id, the arrival of the first one; `slice` for writing it in parts | value type |
+| `Batch<T>` | records, an id, the arrival of the first one | value type |
 | `BatchWriter<T>` | one insert of one batch | **yours**, there is no default |
 | `RecordBuffer<T>` | collect records and cut batches by a rule of its own | in memory, cut by size or by age on a daemon thread |
 | `BatchReadyListener<T>` | take a batch the buffer has cut | the batcher, which offers it to the queue |
@@ -244,11 +246,10 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `WriteFallback<T>` | keep what could not be written, with a `FallbackCause` | none: log at ERROR and count |
 | `BatcherMeter` | report every event; each method does nothing by default | disabled in core, Micrometer in `batcher-micrometer` |
 
-`BatchWriter` is the only thing you must write. It gets a `Batch<T>` and does one
-insert. A failed batch comes back to it in slices, down to single records, so
-there is no separate per-record method. `Batch.id` can go to the storage as a
-deduplication token: it stays the same when a durable queue delivers the batch
-again, and a slice derives its id from its parent's.
+`BatchWriter` is the only thing you must write: `persist(batch)` for one insert
+of a batch, `persist(record)` for the retry of a failed one. `Batch.id` can go to
+the storage as a deduplication token: it stays the same when a durable queue
+delivers the batch again.
 
 ### Handing a batch on
 
@@ -307,8 +308,8 @@ is bad, and then only that one does and the other 499 land. Without the second
 pass you cannot tell those apart, and you lose good records because of a bad
 neighbour.
 
-The retry is `persist` again, on slices of the failed batch. A record parked
-reaches the fallback as a slice too, with a `FallbackCause`: one of four reasons
+The retry is `persist(record)` for each record of the failed batch. What is
+parked reaches the fallback as records, with a `FallbackCause`: one of four reasons
 and the error, if there was one. The reason tells a fallback what a replay
 would do:
 
