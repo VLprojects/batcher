@@ -38,9 +38,9 @@ public interface RecordBuffer<T : Any> {
     /** The most records it holds: a batch is cut once [size] reaches it, if not earlier. */
     public val capacity: Int
 
-    /** Read by the gauges on every scrape, as is [oldestRecordAt]: has to be cheap, may be approximate. */
+    /** Read by the gauges on every scrape, as is [firstRecordAt]: has to be cheap, may be approximate. */
     public val size: Int
 
-    /** Null while the buffer is empty. */
-    public val oldestRecordAt: Instant?
+    /** The arrival of the first record still collecting, which the cut batch carries on; null while empty. */
+    public val firstRecordAt: Instant?
 }
