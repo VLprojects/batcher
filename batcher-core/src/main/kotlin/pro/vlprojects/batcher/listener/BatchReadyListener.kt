@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.buffer
+package pro.vlprojects.batcher.listener
 
 import pro.vlprojects.batcher.model.Batch
 

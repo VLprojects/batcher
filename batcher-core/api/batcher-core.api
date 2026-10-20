@@ -1,14 +1,10 @@
-public abstract interface class pro/vlprojects/batcher/buffer/BatchReadyListener {
-	public abstract fun handle (Lpro/vlprojects/batcher/model/Batch;)V
-}
-
 public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
 	public abstract fun add (Ljava/lang/Object;)V
 	public abstract fun close ()Lpro/vlprojects/batcher/model/Batch;
 	public abstract fun getBufferedRecords ()I
 	public abstract fun getOldestRecordAt ()Ljava/time/Instant;
 	public abstract fun isDurable ()Z
-	public abstract fun open (Lpro/vlprojects/batcher/buffer/BatchReadyListener;)V
+	public abstract fun open (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
 }
 
 public final class pro/vlprojects/batcher/fallback/FallbackCause {
@@ -30,6 +26,10 @@ public final class pro/vlprojects/batcher/fallback/FallbackReason : java/lang/En
 
 public abstract interface class pro/vlprojects/batcher/fallback/WriteFallback {
 	public abstract fun handle (Ljava/util/Collection;Lpro/vlprojects/batcher/fallback/FallbackCause;)V
+}
+
+public abstract interface class pro/vlprojects/batcher/listener/BatchReadyListener {
+	public abstract fun handle (Lpro/vlprojects/batcher/model/Batch;)V
 }
 
 public final class pro/vlprojects/batcher/metric/AcceptanceResult : java/lang/Enum {
