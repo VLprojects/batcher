@@ -1,28 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 316" width="800" height="316" role="img">
-  <defs><marker id="tip-ink" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0.8,1.2 L7.4,4.5 L0.8,7.8" fill="none" stroke="#14181D" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="tip-soft" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0.8,1.2 L7.4,4.5 L0.8,7.8" fill="none" stroke="#5C6570" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="tip-mute" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0.8,1.2 L7.4,4.5 L0.8,7.8" fill="none" stroke="#949CA6" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="tip-hair" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0.8,1.2 L7.4,4.5 L0.8,7.8" fill="none" stroke="#C9CFD6" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="tip-bad" markerWidth="9" markerHeight="9" refX="7.2" refY="4.5" orient="auto"><path d="M0.8,1.2 L7.4,4.5 L0.8,7.8" fill="none" stroke="#C0392F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-  <path d="M44,72 L44,87.0" stroke="#C9CFD6" stroke-width="1" fill="none" stroke-linecap="round"/>
-  <path d="M44,109.0 L44,128" stroke="#C9CFD6" stroke-width="1" fill="none" stroke-linecap="round"/>
-  <text x="44" y="104.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#C0392F" text-anchor="middle">fails</text>
-  <path d="M44,144 L44,159.0" stroke="#C9CFD6" stroke-width="1" fill="none" stroke-linecap="round"/>
-  <path d="M44,181.0 L44,200" stroke="#C9CFD6" stroke-width="1" fill="none" stroke-linecap="round"/>
-  <text x="44" y="176.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#C0392F" text-anchor="middle">fails</text>
-  <path d="M44,216 L44,231.0" stroke="#C9CFD6" stroke-width="1" fill="none" stroke-linecap="round"/>
-  <path d="M44,253.0 L44,272" stroke="#C9CFD6" stroke-width="1" fill="none" stroke-linecap="round"/>
-  <text x="44" y="248.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#C0392F" text-anchor="middle">fails</text>
-  <circle cx="44" cy="64" r="3.2" fill="#14181D"/>
-  <text x="76" y="68" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13.5" font-weight="550" fill="#14181D" text-anchor="start">persist(batch)</text>
-  <text x="76" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#949CA6" text-anchor="start">the whole batch, one write</text>
-  <text x="760" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5C6570" text-anchor="end">500 records written</text>
-  <circle cx="44" cy="136" r="3.2" fill="#14181D"/>
-  <text x="76" y="140" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13.5" font-weight="550" fill="#14181D" text-anchor="start">persist(record)</text>
-  <text x="76" y="158" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#949CA6" text-anchor="start">the same batch, record by record</text>
-  <text x="760" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5C6570" text-anchor="end">499 written, 1 still fails</text>
-  <circle cx="44" cy="208" r="3.2" fill="#14181D"/>
-  <text x="76" y="212" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="550" fill="#14181D" text-anchor="start">WriteFallback</text>
-  <text x="76" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#949CA6" text-anchor="start">whatever the retry could not write</text>
-  <text x="760" y="212" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5C6570" text-anchor="end">1 record parked</text>
-  <circle cx="44" cy="280" r="3.2" fill="#C0392F"/>
-  <text x="76" y="284" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="550" fill="#C0392F" text-anchor="start">lost</text>
-  <text x="76" y="302" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#949CA6" text-anchor="start">the fallback failed as well</text>
-  <text x="760" y="284" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#C0392F" text-anchor="end">ERROR in the log, a metric</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 2 720 436" width="720" height="436" role="img">
+  <rect x="208.8" y="20.5" width="102.4" height="19" rx="9.5" fill="#1A9850"/>
+  <text x="260.0" y="34.1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">writer thread</text>
+  <path d="M260.00,40.00 L260.00,80.00" stroke="#1A9850" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
+  <path d="M260.00,80.00 L260.00,344.82 A27.00,27.00 0 0 0 267.91,363.91 L292.09,388.09 A27.00,27.00 0 0 0 311.18,396.00 L520.00,396.00" stroke="#E5432A" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
+  <path d="M260.00,80.00 L292.09,112.09 A27.00,27.00 0 0 0 311.18,120.00 L520.00,120.00" stroke="#1A9850" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
+  <rect x="517.0" y="111.0" width="6" height="18.0" fill="#1A9850"/>
+  <text x="538.0" y="125.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1F2328" text-anchor="start">500 records written</text>
+  <path d="M260.00,172.00 L292.09,204.09 A27.00,27.00 0 0 0 311.18,212.00 L520.00,212.00" stroke="#1A9850" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
+  <rect x="517.0" y="203.0" width="6" height="18.0" fill="#1A9850"/>
+  <text x="538.0" y="217.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1F2328" text-anchor="start">499 written</text>
+  <path d="M260.00,264.00 L292.09,296.09 A27.00,27.00 0 0 0 311.18,304.00 L520.00,304.00" stroke="#8C959F" stroke-width="6" fill="none" stroke-linecap="butt" stroke-linejoin="round"/>
+  <rect x="517.0" y="295.0" width="6" height="18.0" fill="#8C959F"/>
+  <text x="538.0" y="309.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1F2328" text-anchor="start">1 record parked</text>
+  <rect x="517.0" y="387.0" width="6" height="18.0" fill="#E5432A"/>
+  <text x="538.0" y="401.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#1F2328" text-anchor="start">lost</text>
+  <text x="538.0" y="418.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#656D76" text-anchor="start">ERROR in the log, a metric</text>
+  <text x="274.0" y="154.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#E5432A" text-anchor="start">fails</text>
+  <text x="274.0" y="246.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#E5432A" text-anchor="start">1 still fails</text>
+  <text x="274.0" y="338.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#E5432A" text-anchor="start">fails</text>
+  <rect x="253.00" y="73.00" width="14.00" height="14.00" rx="7.00" fill="#FFFFFF" stroke="#1F2328" stroke-width="3"/>
+  <text x="236.0" y="81.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="650" fill="#1F2328" text-anchor="end">persist(batch)</text>
+  <text x="236.0" y="98.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#656D76" text-anchor="end">the whole batch, one write</text>
+  <rect x="253.00" y="165.00" width="14.00" height="14.00" rx="7.00" fill="#FFFFFF" stroke="#1F2328" stroke-width="3"/>
+  <text x="236.0" y="173.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="650" fill="#1F2328" text-anchor="end">persist(record)</text>
+  <text x="236.0" y="190.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#656D76" text-anchor="end">the same batch, record by record</text>
+  <rect x="253.00" y="257.00" width="14.00" height="14.00" rx="7.00" fill="#FFFFFF" stroke="#1F2328" stroke-width="3"/>
+  <text x="236.0" y="265.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="650" fill="#1F2328" text-anchor="end">WriteFallback</text>
+  <text x="236.0" y="282.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#656D76" text-anchor="end">whatever the retry could not write</text>
 </svg>

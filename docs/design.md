@@ -79,7 +79,7 @@ Micrometer:
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/modules-dark.svg">
-    <img alt="Modules and what depends on what" src="assets/modules-light.svg" width="660">
+    <img alt="Which modules a Spring Boot service and a plain JVM service take" src="assets/modules-light.svg" width="530">
   </picture>
 </p>
 
@@ -215,7 +215,7 @@ One batcher is a short pipeline with two threads of its own.
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/pipeline-dark.svg">
-    <img alt="From accept to the storage" src="assets/pipeline-light.svg" width="100%">
+    <img alt="From accept to the storage: the caller, deadline and writer threads" src="assets/pipeline-light.svg" width="880">
   </picture>
 </p>
 
@@ -282,7 +282,7 @@ thread away from it, so it recovers instead.
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/recovery-dark.svg">
-    <img alt="A failed batch is retried record by record" src="assets/recovery-light.svg" width="800">
+    <img alt="A failed batch is retried record by record" src="assets/recovery-light.svg" width="720">
   </picture>
 </p>
 
@@ -306,7 +306,7 @@ Records reach the fallback for four reasons, and each is a separate counter:
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/lifecycle-dark.svg">
-    <img alt="States of a batcher" src="assets/lifecycle-light.svg" width="820">
+    <img alt="States of a batcher" src="assets/lifecycle-light.svg" width="880">
   </picture>
 </p>
 
@@ -315,7 +315,7 @@ Shutdown is the part that decides whether you lose data on every deploy.
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/shutdown-dark.svg">
-    <img alt="What happens on stop" src="assets/shutdown-light.svg" width="100%">
+    <img alt="What happens on stop" src="assets/shutdown-light.svg" width="880">
   </picture>
 </p>
 
