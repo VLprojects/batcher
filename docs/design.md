@@ -79,7 +79,7 @@ Micrometer:
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/modules-dark.svg">
-    <img alt="Modules, and which of them a Spring Boot or a plain JVM service takes" src="assets/modules-light.svg" width="584">
+    <img alt="Modules, and which of them a Spring Boot or a plain JVM service takes" src="assets/modules-light.svg" width="672">
   </picture>
 </p>
 

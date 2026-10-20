@@ -111,20 +111,20 @@
   <rect x="572.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#1F6FEB"/>
   <rect x="624.0" y="64.0" width="96.0" height="60.0" rx="6" fill="#F2F4F6"/>
   <rect x="669.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#1F6FEB"/>
-  <rect x="752.0" y="64.0" width="112.0" height="60.0" rx="6" fill="#E6F4EA"/>
-  <rect x="780.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#1A7F37"/>
-  <rect x="790.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#1A7F37"/>
-  <rect x="800.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#1A7F37"/>
-  <rect x="810.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#1A7F37"/>
-  <rect x="820.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#1A7F37"/>
-  <rect x="830.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#1A7F37"/>
-  <rect x="624.0" y="172.0" width="96.0" height="60.0" rx="6" fill="#FDF3D7"/>
-  <rect x="655.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#E5A000"/>
-  <rect x="669.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#E5A000"/>
-  <rect x="683.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#E5A000"/>
-  <path d="M672.0,132 L672.0,158" stroke="#CF222E" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M668.0,157 L672.0,164 L676.0,157 Z" fill="#CF222E"/>
-  <text x="660.0" y="156.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#CF222E" text-anchor="end">write failed</text>
+  <rect x="752.0" y="64.0" width="112.0" height="60.0" rx="6" fill="#E8F7EE"/>
+  <rect x="780.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#16A34A"/>
+  <rect x="790.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#16A34A"/>
+  <rect x="800.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#16A34A"/>
+  <rect x="810.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#16A34A"/>
+  <rect x="820.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#16A34A"/>
+  <rect x="830.0" y="80.0" width="6.0" height="28.0" rx="1.5" fill="#16A34A"/>
+  <rect x="624.0" y="172.0" width="96.0" height="60.0" rx="6" fill="#FFF4DC"/>
+  <rect x="655.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#F5A524"/>
+  <rect x="669.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#F5A524"/>
+  <rect x="683.0" y="199.0" width="6.0" height="6.0" rx="1" fill="#F5A524"/>
+  <path d="M672.0,132 L672.0,158" stroke="#DC2F3A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M668.0,157 L672.0,164 L676.0,157 Z" fill="#DC2F3A"/>
+  <text x="660.0" y="156.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#DC2F3A" text-anchor="end">write failed</text>
   <text x="752.0" y="198.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">WriteFallback</text>
   <text x="752.0" y="216.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">queue, file, log</text>
 </svg>

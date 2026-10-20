@@ -8,8 +8,9 @@ Rules the drawings follow:
 - Plates, not frames: a group is a flat fill with no outline.
 - Colour means the same thing everywhere. Blue is data on the move, green is
   done or allowed, amber is waiting it out (draining, parked), red is a
-  failure, grey is structure. In the module map green is Spring and blue is
-  plain JVM. Text on amber is black.
+  failure, grey is structure. States keep their colour wherever they appear:
+  NEW light blue, RUNNING green, STOPPING amber, STOPPED slate. In the module
+  map green is Spring and blue is plain JVM. Text on amber is black.
 - Every line is solid; a lighter colour, never a dash, marks what is inactive.
 - One grid of 4 px. Space inside a group is smaller than space between groups.
 - Two text sizes: the name in bold, the explanation in grey below it, both
@@ -28,16 +29,18 @@ PALETTE = {
 	"light": {
 		"bg": "#FFFFFF", "ink": "#1F2328", "soft": "#59636E", "mute": "#8C959F",
 		"plate": "#F2F4F6", "slot": "#DDE2E7", "line": "#AFB8C1",
-		"blue": "#1F6FEB", "green": "#1A7F37", "amber": "#E5A000", "red": "#CF222E",
-		"blue-plate": "#E8F0FE", "green-plate": "#E6F4EA", "amber-plate": "#FDF3D7", "red-plate": "#FDE8E8",
-		"on-green": "#FFFFFF", "on-blue": "#FFFFFF", "on-amber": "#1F2328",
+		"blue": "#1F6FEB", "green": "#16A34A", "amber": "#F5A524", "red": "#DC2F3A",
+		"sky": "#9CC8FF", "slate": "#6E7781",
+		"blue-plate": "#EAF2FF", "green-plate": "#E8F7EE", "amber-plate": "#FFF4DC", "red-plate": "#FDE8E8",
+		"on-green": "#FFFFFF", "on-blue": "#FFFFFF", "on-amber": "#1F2328", "on-sky": "#1F2328", "on-slate": "#FFFFFF",
 	},
 	"dark": {
 		"bg": "#0D1117", "ink": "#E6EDF3", "soft": "#9198A1", "mute": "#6E7681",
 		"plate": "#161B22", "slot": "#2A313A", "line": "#4A525C",
 		"blue": "#4493F8", "green": "#3FB950", "amber": "#E3A21A", "red": "#F85149",
+		"sky": "#2F5F9E", "slate": "#545D68",
 		"blue-plate": "#0F213A", "green-plate": "#10261A", "amber-plate": "#2B210A", "red-plate": "#2E1416",
-		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117",
+		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#E6EDF3", "on-slate": "#E6EDF3",
 	},
 }
 
@@ -208,21 +211,34 @@ def recovery(pal):
 
 
 # ---------------------------------------------------------------------- 3
+STATES = {  # state: fill, text
+	"NEW": ("sky", "on-sky"),
+	"RUNNING": ("green", "on-green"),
+	"STOPPING": ("amber", "on-amber"),
+	"STOPPED": ("slate", "on-slate"),
+}
+
+
+def state_bar(a, x, y, w, h, state, note=None):
+	fill, ink = STATES[state]
+	a.rect(x, y, w, h, fill, r=4)
+	a.t(x + 12, y + h / 2 + 4.5, state, color=ink, weight="650")
+	if note:
+		a.t(x + 12 + len(state) * 9.2 + 12, y + h / 2 + 4.5, note, color=ink)
+
+
 def lifecycle(pal):
 	a = Art(880, 92, pal)
 	top, h, gap = 44, 32, 4
 	segments = [
-		(112, "plate", "ink", "soft", "NEW", None),
-		(328, "green", "on-green", "on-green", "RUNNING", "accept allowed"),
-		(300, "amber", "on-amber", "on-amber", "STOPPING", "accept rejected, buffer drains"),
-		(96, "plate", "ink", "soft", "STOPPED", None),
+		(112, "NEW", None),
+		(328, "RUNNING", "accept allowed"),
+		(300, "STOPPING", "accept rejected, buffer drains"),
+		(96, "STOPPED", None),
 	]
 	x, cuts = 16, []
-	for w, fill, ink, soft, state, note in segments:
-		a.rect(x, top, w, h, fill, r=4)
-		a.t(x + 12, top + h / 2 + 4.5, state, color=ink, weight="650")
-		if note:
-			a.t(x + 12 + len(state) * 9.2 + 12, top + h / 2 + 4.5, note, color=soft)
+	for w, state, note in segments:
+		state_bar(a, x, top, w, h, state, note)
 		x += w + gap
 		cuts.append(x - gap / 2)
 	for cx, event in zip(cuts, ("start", "stop", "queue drained")):
@@ -233,41 +249,48 @@ def lifecycle(pal):
 
 # ---------------------------------------------------------------------- 4
 def shutdown(pal):
-	a = Art(880, 260, pal)
-	lx = 120  # lanes start
-	lane_h, buf_y, wr_y = 32, 64, 112
-	stop, budget, end = 336, 712, 864
+	# the state strip on top is the lifecycle bar; the lanes below show what each thread does meanwhile
+	a = Art(880, 300, pal)
+	lx = 112  # lanes start
+	st_y, st_h = 64, 28
+	lane_h, buf_y, wr_y = 40, 100, 144
+	stop, budget, done, end = 336, 696, 776, 864
+	bottom = wr_y + lane_h
 
-	a.name(lx - 16, buf_y + 21, "buffer", anchor="end")
-	a.name(lx - 16, wr_y + 21, "writer", anchor="end")
+	state_bar(a, lx, st_y, stop - lx - 2, st_h, "RUNNING")
+	state_bar(a, stop + 2, st_y, done - stop - 4, st_h, "STOPPING")
+	state_bar(a, done + 2, st_y, end - done - 2, st_h, "STOPPED")
 
-	# buffer: accepts until stop, closed after it
-	a.rect(lx, buf_y, stop - lx - 2, lane_h, "green", r=4)
-	a.t(lx + 12, buf_y + 20.5, "accepts", color="on-green", weight="600")
-	a.rect(stop + 2, buf_y, end - stop - 2, lane_h, "plate", r=4)
-	a.t(stop + 14, buf_y + 20.5, "rejects", color="soft", weight="600")
+	a.name(lx - 16, buf_y + 25, "buffer", anchor="end")
+	a.name(lx - 16, wr_y + 25, "writer", anchor="end")
+	a.plate(lx, buf_y, end - lx, lane_h)
+	a.plate(lx, wr_y, end - lx, lane_h)
+
+	# buffer: records keep arriving until stop, nothing after
+	for x in range(lx + 20, stop - 12, 22):
+		a.record(x, buf_y + lane_h / 2 - REC / 2)
+	a.t(stop + 16, buf_y + 24.5, "new records rejected", color="soft")
 
 	# writer: a batch now and then; after stop the remaining batch, then the queue back to back
-	a.rect(lx, wr_y, end - lx, lane_h, "plate", r=4)
-	by, bh = wr_y + 6, lane_h - 12
-	for x in range(lx + 20, stop - 10, 34):
+	by, bh = wr_y + 8, lane_h - 16
+	for x in range(lx + 24, stop - 10, 36):
 		a.bar(x, by, h=bh)
-	rest = stop + 14
+	rest = stop + 16
 	a.bar(rest, by, h=bh)
 	drain = rest + 3 * BAR_PITCH
-	for x in range(drain, budget - 6, BAR_PITCH):
+	for x in range(drain, budget - 8, BAR_PITCH):
 		a.bar(x, by, h=bh)
-	for x in range(budget + 12, budget + 12 + 4 * BAR_PITCH, BAR_PITCH):
+	for x in range(budget + 16, budget + 16 + 5 * BAR_PITCH, BAR_PITCH):
 		a.bar(x, by, "amber", h=bh)
 
-	a.path(f"M{stop},{buf_y - 8} L{stop},{wr_y + lane_h + 8}", "ink")
+	a.path(f"M{stop},{st_y - 8} L{stop},{bottom + 8}", "ink")
+	a.path(f"M{budget},{wr_y - 8} L{budget},{bottom + 8}", "ink")
 	a.label(stop - 12, 24, "stop arrives", "after the message listeners", anchor="end")
 	a.label(stop + 12, 24, "buffer closes", "deadline thread cancelled")
-	a.path(f"M{budget},{wr_y - 8} L{budget},{wr_y + lane_h + 8}", "ink")
 
-	ly = wr_y + lane_h + 30
-	a.label(rest - 2, ly, "remaining batch", "goes ahead of the queue")
-	a.label(drain + 168, ly, "writer drains", "one batch at a time")
+	ly = bottom + 30
+	a.label(rest - 4, ly, "remaining batch", "goes ahead of the queue")
+	a.label(rest + 176, ly, "writer drains", "one batch at a time")
 	a.label(budget + 12, ly, "leftovers parked", "WriteFallback", note_mono=True)
 
 	by2 = ly + 40
@@ -278,30 +301,31 @@ def shutdown(pal):
 
 # ---------------------------------------------------------------------- 5
 def modules(pal):
-	# each layer depends on the ones below it; micrometer is optional for both kinds of service
-	a = Art(584, 268, pal)
-	x, w, h, gap = 16, 360, 56, 4
-	rows = [
-		("green-plate", "batcher-spring-boot-starter", "one dependency, nothing of its own"),
-		("green-plate", "batcher-spring-boot", "auto-configuration, lifecycle"),
-		("blue-plate", "batcher-micrometer", "metrics, optional"),
-		("blue-plate", "batcher-core", "the engine and every interface, no Spring"),
-	]
-	for i, (fill, title, note) in enumerate(rows):
-		y = 16 + i * (h + gap)
-		a.plate(x, y, w, h, fill)
+	# one container for the group; the starter sits on top of everything, core underneath
+	a = Art(672, 272, pal)
+	cx, cy, cw, ch = 16, 16, 640, 240
+	a.plate(cx, cy, cw, ch)
+	a.name(cx + 16, cy + 28, "pro.vlprojects", mono=True)
+	a.t(cx + 136, cy + 28, "four artifacts; a tag marks what a service of that kind adds to its build", color="soft")
+
+	ix, iw, h, gap = cx + 12, cw - 24, 56, 8
+	half = (iw - gap) / 2
+	y1 = cy + 44
+	y2, y3 = y1 + h + gap, y1 + 2 * (h + gap)
+
+	def card(x, y, w, fill, title, note, tag=None, tag_fill=None):
+		a.rect(x, y, w, h, fill, r=6)
 		a.label(x + 16, y + 24, title, note, mono=True)
+		if tag:
+			tw = len(tag) * 6.6 + 20
+			a.rect(x + w - 16 - tw, y + 12, tw, 20, tag_fill, r=10)
+			a.t(x + w - 16 - tw / 2, y + 26, tag, size=11.5, color="on-" + tag_fill, weight="600", anchor="middle")
 
-	mx = x + w + 16
-
-	def bracket(y1, y2, color):
-		a.path(f"M{mx},{y1 + 2} L{mx + 6},{y1 + 2} L{mx + 6},{y2 - 2} L{mx},{y2 - 2}", color, width=2)
-
-	bracket(16, 16 + h, "green")
-	a.label(mx + 20, 16 + 24, "a Spring Boot service", "takes this one")
-	y3 = 16 + 2 * (h + gap)
-	bracket(y3, y3 + 2 * h + gap, "blue")
-	a.label(mx + 20, y3 + h - 4, "a plain JVM service", "takes these two")
+	card(ix, y1, iw, "green-plate", "batcher-spring-boot-starter", "one dependency, nothing of its own",
+		"Spring Boot", "green")
+	card(ix, y2, half, "green-plate", "batcher-spring-boot", "auto-configuration, lifecycle")
+	card(ix + half + gap, y2, half, "blue-plate", "batcher-micrometer", "metrics, optional", "plain JVM", "blue")
+	card(ix, y3, iw, "blue-plate", "batcher-core", "the engine and every interface, no Spring", "plain JVM", "blue")
 	return a
 
 
