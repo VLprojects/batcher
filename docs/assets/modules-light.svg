@@ -1,23 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 672 272" width="672" height="272" role="img">
-  <rect x="16.0" y="16.0" width="640.0" height="240.0" rx="6" fill="#F2F4F6"/>
-  <text x="32.0" y="44.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">pro.vlprojects</text>
-  <text x="152.0" y="44.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">four artifacts; a tag marks what a service of that kind adds to its build</text>
-  <rect x="28.0" y="60.0" width="616.0" height="56.0" rx="6" fill="#E8F7EE"/>
-  <text x="44.0" y="84.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">batcher-spring-boot-starter</text>
-  <text x="44.0" y="102.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">one dependency, nothing of its own</text>
-  <rect x="535.4" y="72.0" width="92.6" height="20.0" rx="10" fill="#16A34A"/>
-  <text x="581.7" y="86.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#FFFFFF" text-anchor="middle">Spring Boot</text>
-  <rect x="28.0" y="124.0" width="304.0" height="56.0" rx="6" fill="#E8F7EE"/>
-  <text x="44.0" y="148.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">batcher-spring-boot</text>
-  <text x="44.0" y="166.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">auto-configuration, lifecycle</text>
-  <rect x="340.0" y="124.0" width="304.0" height="56.0" rx="6" fill="#EAF2FF"/>
-  <text x="356.0" y="148.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">batcher-micrometer</text>
-  <text x="356.0" y="166.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">metrics, optional</text>
-  <rect x="548.6" y="136.0" width="79.4" height="20.0" rx="10" fill="#1F6FEB"/>
-  <text x="588.3" y="150.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#FFFFFF" text-anchor="middle">plain JVM</text>
-  <rect x="28.0" y="188.0" width="616.0" height="56.0" rx="6" fill="#EAF2FF"/>
-  <text x="44.0" y="212.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">batcher-core</text>
-  <text x="44.0" y="230.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">the engine and every interface, no Spring</text>
-  <rect x="548.6" y="200.0" width="79.4" height="20.0" rx="10" fill="#1F6FEB"/>
-  <text x="588.3" y="214.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#FFFFFF" text-anchor="middle">plain JVM</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 272" width="704" height="272" role="img">
+  <rect x="208.0" y="16.0" width="480.0" height="240.0" rx="6" fill="#F2F4F6"/>
+  <text x="224.0" y="44.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">pro.vlprojects</text>
+  <text x="344.0" y="44.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">four artifacts</text>
+  <rect x="220.0" y="60.0" width="456.0" height="56.0" rx="6" fill="#DDF7E7"/>
+  <text x="236.0" y="84.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">batcher-spring-boot-starter</text>
+  <text x="236.0" y="102.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">one dependency, nothing of its own</text>
+  <rect x="220.0" y="124.0" width="224.0" height="56.0" rx="6" fill="#E3EFFF"/>
+  <text x="236.0" y="148.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">batcher-micrometer</text>
+  <text x="236.0" y="166.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">metrics, optional</text>
+  <rect x="452.0" y="124.0" width="224.0" height="56.0" rx="6" fill="#DDF7E7"/>
+  <text x="468.0" y="148.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">batcher-spring-boot</text>
+  <text x="468.0" y="166.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">auto-configuration, lifecycle</text>
+  <rect x="220.0" y="188.0" width="456.0" height="56.0" rx="6" fill="#E3EFFF"/>
+  <text x="236.0" y="212.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#1F2328" text-anchor="start">batcher-core</text>
+  <text x="236.0" y="230.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">the engine and every interface, no Spring</text>
+  <rect x="16.0" y="72.0" width="160.0" height="32.0" rx="16" fill="#22C063"/>
+  <text x="96.0" y="92.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#0B2915" text-anchor="middle">Spring Boot service</text>
+  <path d="M176,88.0 L214,88.0" stroke="#22C063" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M213,84.0 L220,88.0 L213,92.0 Z" fill="#22C063"/>
+  <rect x="16.0" y="168.0" width="160.0" height="32.0" rx="16" fill="#1A7CFF"/>
+  <text x="96.0" y="188.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#FFFFFF" text-anchor="middle">plain JVM service</text>
+  <path d="M176,184.0 L192,184.0" stroke="#1A7CFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M192,184.0 L192,160.0 Q192,152.0 200,152.0 L214,152.0" stroke="#1A7CFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M213,148.0 L220,152.0 L213,156.0 Z" fill="#1A7CFF"/>
+  <path d="M192,184.0 L192,208.0 Q192,216.0 200,216.0 L214,216.0" stroke="#1A7CFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M213,212.0 L220,216.0 L213,220.0 Z" fill="#1A7CFF"/>
 </svg>

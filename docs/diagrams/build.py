@@ -10,7 +10,7 @@ Rules the drawings follow:
   done or allowed, amber is waiting it out (draining, parked), red is a
   failure, grey is structure. States keep their colour wherever they appear:
   NEW light blue, RUNNING green, STOPPING amber, STOPPED slate. In the module
-  map green is Spring and blue is plain JVM. Text on amber is black.
+  map green is Spring and blue is plain JVM. Text on bright fills is dark.
 - Every line is solid; a lighter colour, never a dash, marks what is inactive.
 - One grid of 4 px. Space inside a group is smaller than space between groups.
 - Two text sizes: the name in bold, the explanation in grey below it, both
@@ -29,17 +29,17 @@ PALETTE = {
 	"light": {
 		"bg": "#FFFFFF", "ink": "#1F2328", "soft": "#59636E", "mute": "#8C959F",
 		"plate": "#F2F4F6", "slot": "#DDE2E7", "line": "#AFB8C1",
-		"blue": "#1F6FEB", "green": "#16A34A", "amber": "#F5A524", "red": "#DC2F3A",
-		"sky": "#9CC8FF", "slate": "#6E7781",
-		"blue-plate": "#EAF2FF", "green-plate": "#E8F7EE", "amber-plate": "#FFF4DC", "red-plate": "#FDE8E8",
-		"on-green": "#FFFFFF", "on-blue": "#FFFFFF", "on-amber": "#1F2328", "on-sky": "#1F2328", "on-slate": "#FFFFFF",
+		"blue": "#1A7CFF", "green": "#22C063", "amber": "#FFB21E", "red": "#F0384A",
+		"sky": "#9DD1FF", "slate": "#7A8594",
+		"blue-plate": "#E3EFFF", "green-plate": "#DDF7E7", "amber-plate": "#FFF1D1", "red-plate": "#FFE4E7",
+		"on-green": "#0B2915", "on-blue": "#FFFFFF", "on-amber": "#2B1D00", "on-sky": "#0B2340", "on-slate": "#FFFFFF",
 	},
 	"dark": {
 		"bg": "#0D1117", "ink": "#E6EDF3", "soft": "#9198A1", "mute": "#6E7681",
 		"plate": "#161B22", "slot": "#2A313A", "line": "#4A525C",
 		"blue": "#4493F8", "green": "#3FB950", "amber": "#E3A21A", "red": "#F85149",
 		"sky": "#2F5F9E", "slate": "#545D68",
-		"blue-plate": "#0F213A", "green-plate": "#10261A", "amber-plate": "#2B210A", "red-plate": "#2E1416",
+		"blue-plate": "#132A4A", "green-plate": "#123120", "amber-plate": "#2E230B", "red-plate": "#331619",
 		"on-green": "#0D1117", "on-blue": "#0D1117", "on-amber": "#0D1117", "on-sky": "#E6EDF3", "on-slate": "#E6EDF3",
 	},
 }
@@ -301,31 +301,47 @@ def shutdown(pal):
 
 # ---------------------------------------------------------------------- 5
 def modules(pal):
-	# one container for the group; the starter sits on top of everything, core underneath
-	a = Art(672, 272, pal)
-	cx, cy, cw, ch = 16, 16, 640, 240
+	# the group is one container: core underneath, the starter on top; a service on the left points
+	# at what it puts in its build
+	a = Art(704, 272, pal)
+	cx, cy, cw, ch = 208, 16, 480, 240
 	a.plate(cx, cy, cw, ch)
 	a.name(cx + 16, cy + 28, "pro.vlprojects", mono=True)
-	a.t(cx + 136, cy + 28, "four artifacts; a tag marks what a service of that kind adds to its build", color="soft")
+	a.t(cx + 136, cy + 28, "four artifacts", color="soft")
 
 	ix, iw, h, gap = cx + 12, cw - 24, 56, 8
 	half = (iw - gap) / 2
 	y1 = cy + 44
 	y2, y3 = y1 + h + gap, y1 + 2 * (h + gap)
 
-	def card(x, y, w, fill, title, note, tag=None, tag_fill=None):
+	def card(x, y, w, fill, title, note):
 		a.rect(x, y, w, h, fill, r=6)
 		a.label(x + 16, y + 24, title, note, mono=True)
-		if tag:
-			tw = len(tag) * 6.6 + 20
-			a.rect(x + w - 16 - tw, y + 12, tw, 20, tag_fill, r=10)
-			a.t(x + w - 16 - tw / 2, y + 26, tag, size=11.5, color="on-" + tag_fill, weight="600", anchor="middle")
 
-	card(ix, y1, iw, "green-plate", "batcher-spring-boot-starter", "one dependency, nothing of its own",
-		"Spring Boot", "green")
-	card(ix, y2, half, "green-plate", "batcher-spring-boot", "auto-configuration, lifecycle")
-	card(ix + half + gap, y2, half, "blue-plate", "batcher-micrometer", "metrics, optional", "plain JVM", "blue")
-	card(ix, y3, iw, "blue-plate", "batcher-core", "the engine and every interface, no Spring", "plain JVM", "blue")
+	card(ix, y1, iw, "green-plate", "batcher-spring-boot-starter", "one dependency, nothing of its own")
+	card(ix, y2, half, "blue-plate", "batcher-micrometer", "metrics, optional")
+	card(ix + half + gap, y2, half, "green-plate", "batcher-spring-boot", "auto-configuration, lifecycle")
+	card(ix, y3, iw, "blue-plate", "batcher-core", "the engine and every interface, no Spring")
+
+	def chip(y, fill, text):
+		a.rect(16, y - 16, 160, 32, fill, r=16)
+		a.t(96, y + 4.5, text, color="on-" + fill, weight="650", anchor="middle")
+
+	def head(x, y, color):
+		a.add(f'<path d="M{x - 7},{y - 4} L{x},{y} L{x - 7},{y + 4} Z" fill="{pal[color]}"/>')
+
+	c1, c2, c3 = y1 + h / 2, y2 + h / 2, y3 + h / 2
+	chip(c1, "green", "Spring Boot service")
+	a.path(f"M176,{c1} L{ix - 6},{c1}", "green", width=2)
+	head(ix, c1, "green")
+
+	cj, fx, r = (c2 + c3) / 2, 192, 8
+	chip(cj, "blue", "plain JVM service")
+	a.path(f"M176,{cj} L{fx},{cj}", "blue", width=2)
+	for cy_ in (c2, c3):
+		sign = -1 if cy_ < cj else 1
+		a.path(f"M{fx},{cj} L{fx},{cy_ - sign * r} Q{fx},{cy_} {fx + r},{cy_} L{ix - 6},{cy_}", "blue", width=2)
+		head(ix, cy_, "blue")
 	return a
 
 
