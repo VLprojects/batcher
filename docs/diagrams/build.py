@@ -8,8 +8,8 @@ Rules the drawings follow:
 - Plates, not frames: a group is a flat fill with no outline.
 - Colour means the same thing everywhere. Blue is data on the move, green is
   done or allowed, amber is waiting it out (draining, parked), red is a
-  failure, grey is structure. The fallback plate is a bright apricot with dark
-  text in both themes: a dark orange turns brown on a dark canvas. States keep their colour wherever they appear:
+  failure, grey is structure. On the dark canvas the fallback plate is a
+  bright apricot with dark text: a dark orange there turns brown. States keep their colour wherever they appear:
   new light blue, running green, stopping amber, stopped slate. In the module
   map green is Spring and blue is plain JVM. Text on bright fills is dark.
 - Every line is solid; a lighter colour, never a dash, marks what is inactive.
@@ -41,8 +41,8 @@ PALETTE = {
 		"wash": "#FFFFFF", "card": "#E3E8ED", "bar": "#BEC7D0",
 		"blue": "#1A7CFF", "green": "#22C063", "amber": "#FF9F2E", "red": "#EE2D62",
 		"sky": "#9DD1FF", "slate": "#7A8594",
-		"blue-plate": "#E3EFFF", "green-plate": "#DDF7E7", "amber-plate": "#FFB46B", "amber-ink": "#1F1206", "amber-glyph": "#8A3F00",
-		"green-soft": "#3A7550", "blue-soft": "#41679C", "amber-soft": "#4A2808", "green-text": "#12873F", "amber-text": "#B85300",
+		"blue-plate": "#E3EFFF", "green-plate": "#DDF7E7", "amber-plate": "#FFEEDC", "amber-ink": "#1F2328", "amber-glyph": "#FF9F2E",
+		"green-soft": "#3A7550", "blue-soft": "#41679C", "amber-soft": "#8F4600", "green-text": "#12873F", "amber-text": "#B85300",
 		"on-green": "#0B2915", "on-blue": "#FFFFFF", "on-amber": "#2E1700", "on-sky": "#0B2340", "on-slate": "#FFFFFF",
 	},
 	"dark": {

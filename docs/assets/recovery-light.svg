@@ -159,8 +159,8 @@
     <rect x="448.0" y="107.0" width="6.0" height="6.0" rx="1" fill="#22C063"/>
     <rect x="448.0" y="115.0" width="6.0" height="6.0" rx="1" fill="#22C063"/>
     <rect x="448.0" y="123.0" width="6.0" height="6.0" rx="1" fill="#22C063"/>
-    <rect x="381.0" y="176.0" width="44.0" height="44.0" rx="6" fill="#FFB46B"/>
-    <rect x="400.0" y="195.0" width="6.0" height="6.0" rx="1" fill="#8A3F00"/>
+    <rect x="381.0" y="176.0" width="44.0" height="44.0" rx="6" fill="#FFEEDC"/>
+    <rect x="400.0" y="195.0" width="6.0" height="6.0" rx="1" fill="#FF9F2E"/>
     <rect x="400.0" y="275.0" width="6.0" height="6.0" rx="1" fill="#EE2D62"/>
     <path d="M403.0,66 L403.0,84" stroke="#EE2D62" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M399.0,83 L403.0,90 L407.0,83 Z" fill="#EE2D62"/>

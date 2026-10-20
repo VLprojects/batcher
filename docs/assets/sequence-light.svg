@@ -23,8 +23,8 @@
     <text x="517.0" y="39.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="middle">recovering writer</text>
     <rect x="610.0" y="16.0" width="108.0" height="36.0" rx="6" fill="#DDF7E7"/>
     <text x="664.0" y="39.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="middle">batch writer</text>
-    <rect x="739.0" y="16.0" width="124.0" height="36.0" rx="6" fill="#FFB46B"/>
-    <text x="801.0" y="39.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F1206" text-anchor="middle">write fallback</text>
+    <rect x="739.0" y="16.0" width="124.0" height="36.0" rx="6" fill="#FFEEDC"/>
+    <text x="801.0" y="39.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="middle">write fallback</text>
     <rect x="152.0" y="112.0" width="8.0" height="116.0" rx="2" fill="#BEC7D0"/>
     <rect x="269.0" y="148.0" width="8.0" height="56.0" rx="2" fill="#BEC7D0"/>
     <rect x="269.0" y="300.0" width="8.0" height="56.0" rx="2" fill="#BEC7D0"/>
