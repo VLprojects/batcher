@@ -1,11 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 504" width="880" height="504" role="img">
   <rect x="16.0" y="68.0" width="352.0" height="176.0" rx="8" fill="#141920"/>
-  <text x="32.0" y="92.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#9198A1" text-anchor="start">producer thread</text>
+  <text x="32.0" y="92.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#9198A1" text-anchor="start">consumer thread</text>
+  <rect x="16.0" y="260.0" width="352.0" height="112.0" rx="8" fill="#141920"/>
+  <text x="32.0" y="284.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#9198A1" text-anchor="start">buffer thread</text>
   <rect x="408.0" y="188.0" width="456.0" height="300.0" rx="8" fill="#141920"/>
   <text x="424.0" y="212.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#9198A1" text-anchor="start">writer thread</text>
   <path d="M156,52 L156,244" stroke="#2A313A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M273.0,52 L273.0,244" stroke="#2A313A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M388.0,52 L388.0,272" stroke="#2A313A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M273.0,52 L273.0,372" stroke="#2A313A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M388.0,52 L388.0,400" stroke="#2A313A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M517.0,52 L517.0,488" stroke="#2A313A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M664.0,52 L664.0,488" stroke="#2A313A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M801.0,52 L801.0,488" stroke="#2A313A" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -23,8 +25,10 @@
   <text x="801.0" y="39.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#E6EDF3" text-anchor="middle">WriteFallback</text>
   <rect x="152.0" y="112.0" width="8.0" height="116.0" rx="2" fill="#3D4650"/>
   <rect x="269.0" y="148.0" width="8.0" height="56.0" rx="2" fill="#3D4650"/>
+  <rect x="269.0" y="300.0" width="8.0" height="56.0" rx="2" fill="#3D4650"/>
   <rect x="513.0" y="236.0" width="8.0" height="236.0" rx="2" fill="#3D4650"/>
   <rect x="385.0" y="190.0" width="6.0" height="66.0" rx="1.5" fill="#4493F8"/>
+  <rect x="385.0" y="334.0" width="6.0" height="66.0" rx="1.5" fill="#4493F8"/>
   <rect x="661.0" y="270.0" width="6.0" height="52.0" rx="1.5" fill="#4493F8"/>
   <rect x="661.0" y="343.0" width="6.0" height="6.0" rx="1" fill="#3FB950"/>
   <rect x="661.0" y="351.0" width="6.0" height="6.0" rx="1" fill="#3FB950"/>
@@ -39,6 +43,7 @@
   <rect x="661.0" y="423.0" width="6.0" height="6.0" rx="1" fill="#3FB950"/>
   <rect x="798.0" y="459.0" width="6.0" height="6.0" rx="1" fill="#E3A21A"/>
   <circle cx="32" cy="132" r="3.5" fill="#E6EDF3"/>
+  <circle cx="32" cy="316" r="3.5" fill="#E6EDF3"/>
   <path d="M32,132 L145,132" stroke="#E6EDF3" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M144,128 L151,132 L144,136 Z" fill="#E6EDF3"/>
   <text x="44.0" y="123.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#E6EDF3" text-anchor="start">accept(record)</text>
@@ -51,6 +56,12 @@
   <path d="M151,220 L43,220" stroke="#4A525C" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M44,216 L37,220 L44,224 Z" fill="#4A525C"/>
   <text x="144.0" y="211.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#9198A1" text-anchor="end">returns, no I/O</text>
+  <path d="M32,316 L262.0,316" stroke="#E6EDF3" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M261.0,312 L268.0,316 L261.0,320 Z" fill="#E6EDF3"/>
+  <text x="44.0" y="307.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#E6EDF3" text-anchor="start">max age reached</text>
+  <path d="M278.0,340 L377.0,340" stroke="#4493F8" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M376.0,336 L383.0,340 L376.0,344 Z" fill="#4493F8"/>
+  <text x="285.0" y="331.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#4493F8" text-anchor="start">a short batch</text>
   <path d="M393.0,252 L506.0,252" stroke="#4493F8" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M505.0,248 L512.0,252 L505.0,256 Z" fill="#4493F8"/>
   <text x="424.0" y="243.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#4493F8" text-anchor="start">next batch</text>

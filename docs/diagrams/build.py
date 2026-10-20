@@ -125,7 +125,7 @@ def pipeline(pal):
 	a = Art(880, 248, pal)
 	top, h, gap = 64, 60, 32
 	mid = top + h / 2
-	cols = [("producer", 112), ("record buffer", 216), ("queue", 184), ("writer thread", 96), ("ClickHouse", 112)]
+	cols = [("consumer", 112), ("record buffer", 216), ("queue", 184), ("writer thread", 96), ("ClickHouse", 112)]
 	xs, x = [], 16
 	for _, w in cols:
 		xs.append(x)
@@ -137,7 +137,7 @@ def pipeline(pal):
 	for (x0, w0), x1 in zip([(px, pw), (bx, bw), (qx, qw), (wx, ww)], [bx, qx, wx, cx]):
 		a.arrow(x0 + w0 + 8, mid, x1 - 8)
 
-	# producer: records arriving one by one; no plate, it is outside the batcher
+	# consumer: records arriving one by one; no plate, it is outside the batcher
 	for i in range(5):
 		a.record(px + i * 22, mid - REC / 2)
 
@@ -423,8 +423,8 @@ def types(pal):
 
 # ---------------------------------------------------------------------- 7
 def sequence(pal):
-	# sequence diagram: one record on the producer thread, then a batch that fails once on the writer thread;
-	# each thread is a plate over the lifelines it uses, the queue belongs to neither and holds the batch
+	# sequence diagram: the consumer thread fills a batch, the buffer thread cuts one by age, the writer thread
+	# writes a batch that fails once; each thread is a plate over the lifelines it uses, the queue belongs to none
 	a = Art(880, 504, pal)
 	parts = [
 		("Batcher", 76, "card", True), ("RecordBuffer", 116, "card", True), ("queue", 72, "card", False),
@@ -437,18 +437,19 @@ def sequence(pal):
 			x += parts[i - 1][1] / 2 + 21 + w / 2
 		xs.append(x)
 	BT, RB, Q, W, BW, WF = xs
-	P, end = 32, 488  # the producer is the thread itself: its calls start at the plate's edge
+	P, end = 32, 488  # the consumer is the thread itself: its calls start at the plate's edge
 	pr, wr = Q - 20, Q + 20  # the thread plates stop short of the queue
 
 	def region(x1, y1, x2, y2, text):
 		a.rect(x1, y1, x2 - x1, y2 - y1, "wash", r=8)
 		a.t(x1 + 16, y1 + 24, text, color="soft", weight="600")
 
-	region(16, 68, pr, 244, "producer thread")
+	region(16, 68, pr, 244, "consumer thread")
+	region(16, 260, pr, 372, "buffer thread")
 	region(wr, 188, 864, end, "writer thread")
 
 	# a lifeline ends with its thread's plate
-	for x, y2 in zip(xs, (244, 244, 272, end, end, end)):
+	for x, y2 in zip(xs, (244, 372, 400, end, end, end)):
 		a.path(f"M{x},52 L{x},{y2}", "slot", width=1.5)
 	for x, (name, w, fill, mono) in zip(xs, parts):
 		a.rect(x - w / 2, 16, w, 36, fill, r=6)
@@ -456,9 +457,10 @@ def sequence(pal):
 
 	# activation is grey structure; where something real is held, the bar is the thing itself:
 	# the batch in the queue and in the writer, the records written one by one, the record parked
-	for x, y1, y2 in ((BT, 112, 228), (RB, 148, 204), (W, 236, 472)):
+	for x, y1, y2 in ((BT, 112, 228), (RB, 148, 204), (RB, 300, 356), (W, 236, 472)):
 		a.rect(x - 4, y1, 8, y2 - y1, "bar", r=2)
 	a.bar(Q - BAR_W / 2, 190, h=66)
+	a.bar(Q - BAR_W / 2, 334, h=66)  # waits for the writer to finish the first one
 	a.bar(BW - BAR_W / 2, 270, h=52)
 	for i in range(11):
 		a.record(BW - REC / 2, 343 + i * PITCH, "red" if i == 9 else "green")
@@ -471,11 +473,15 @@ def sequence(pal):
 		text = {"ink": "ink", "line": "soft", "amber": "amber-text"}.get(color, color)
 		a.t(tx, y - 9, label, color=text, mono=mono, size=12 if mono else NOTE, anchor="start" if d > 0 else "end")
 
-	a.add(f'<circle cx="{P}" cy="132" r="3.5" fill="{pal["ink"]}"/>')
+	for y in (132, 316):
+		a.add(f'<circle cx="{P}" cy="{y}" r="3.5" fill="{pal["ink"]}"/>')
 	msg(P, BT, 132, "accept(record)", mono=True, edge=0)
 	msg(BT, RB, 164, "append")
 	msg(RB, Q, 196, "a full batch", "blue")
 	msg(BT, P, 220, "returns, no I/O", "line")
+
+	msg(P, RB, 316, "max age reached", edge=0)
+	msg(RB, Q, 340, "a short batch", "blue")
 
 	msg(Q, W, 252, "next batch", "blue", tx=wr + 16)
 	msg(W, BW, 284, "persist(batch)", mono=True)

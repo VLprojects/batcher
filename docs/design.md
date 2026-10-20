@@ -38,7 +38,7 @@ Writing in groups needs more than a list and a timer:
 | Need | Why |
 | --- | --- |
 | Cut by size and by age | A full batch must go at once; a half-full batch must not wait forever. |
-| Accept while writing | The producer must not wait for the previous batch to land. |
+| Accept while writing | The consumer must not wait for the previous batch to land. |
 | Bounded memory | A slow storage must not turn into an unbounded queue. |
 | Attribute failures | When a batch fails, you need to know which records to retry and which to park. |
 | Lose nothing on shutdown | Buffered records must be written or parked before the process exits. |
@@ -56,7 +56,7 @@ an orderly shutdown. It never builds a query: what a write is stays in your code
 
 What you get:
 
-- the producer thread does no I/O: `accept` appends to a buffer and returns;
+- the consumer thread does no I/O: `accept` appends to a buffer and returns;
 - memory is bounded, and a full queue has a defined outcome;
 - a failed batch is retried record by record, and what still fails goes to a
   fallback, not to the floor;
@@ -221,19 +221,19 @@ One batcher is a short pipeline with two threads of its own.
 
 - `accept` takes the lock, appends to the buffer and returns. It does no I/O.
 - The record that fills the batch carries it out to the queue; nothing else
-  happens on the producer thread.
-- A daemon thread watches the age of the oldest record and cuts a batch when the
-  deadline passes.
-- The queue is bounded. When it is full the batcher does not block the producer:
+  happens on the consumer thread.
+- The buffer thread, a daemon, watches the age of the oldest record and cuts a
+  batch when the deadline passes.
+- The queue is bounded. When it is full the batcher does not block the consumer:
   it applies the back-pressure policy.
 - One writer thread writes batches in order, one at a time.
 
-The same in time, for one record and for a batch that fails once:
+The same in time: a batch cut by size, one cut by age, and a write that fails once:
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/sequence-dark.svg">
-    <img alt="Calls on the producer thread and on the writer thread" src="assets/sequence-light.svg" width="880">
+    <img alt="Calls on the consumer, buffer and writer threads" src="assets/sequence-light.svg" width="880">
   </picture>
 </p>
 
@@ -292,7 +292,7 @@ and drive them from your own code.
 
 ## 8. Failure handling
 
-A write failure is not an exception for the producer. The batcher is already one
+A write failure is not an exception for the consumer. The batcher is already one
 thread away from it, so it recovers instead.
 
 <p align="center">
