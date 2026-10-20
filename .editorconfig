@@ -16,32 +16,6 @@ ij_smart_tabs = false
 ij_visual_guides = none
 ij_wrap_on_typing = false
 
-[*.proto]
-indent_size = 2
-tab_width = 2
-ij_continuation_indent_size = 4
-ij_protobuf_keep_blank_lines_in_code = 2
-ij_protobuf_keep_indents_on_empty_lines = false
-ij_protobuf_keep_line_breaks = true
-ij_protobuf_space_after_comma = true
-ij_protobuf_space_before_comma = false
-ij_protobuf_spaces_around_assignment_operators = true
-ij_protobuf_spaces_within_braces = false
-ij_protobuf_spaces_within_brackets = false
-
-[{*.bash,*.sh,*.zsh}]
-indent_size = 2
-tab_width = 2
-ij_shell_binary_ops_start_line = false
-ij_shell_keep_column_alignment_padding = false
-ij_shell_minify_program = false
-ij_shell_redirect_followed_by_space = false
-ij_shell_switch_cases_indented = false
-ij_shell_use_unix_line_separator = true
-
-
-
-# [{*.gradle.kts,*.kt,*.kts,*.main.kts,*.space.kts}]
 [*.{kt,kts}]
 ktlint_code_style = ktlint_official
 ktlint_standard = enabled

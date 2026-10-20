@@ -1,6 +1,6 @@
+// Dependencies only, like the Spring Boot starters themselves.
 plugins {
-    kotlin("jvm")
-    id("org.jmailen.kotlinter")
+    `java-library`
 }
 
 dependencies {
