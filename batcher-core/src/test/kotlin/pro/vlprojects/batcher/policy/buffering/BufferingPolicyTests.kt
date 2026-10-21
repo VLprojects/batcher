@@ -35,7 +35,7 @@ class BufferingPolicyTests {
 
     private fun capacityUsage(recordCount: Int): BufferCapacityUsage =
         object : BufferCapacityUsage {
-            override val recordCount = recordCount
+            override fun recordCount(): Int = recordCount
         }
 
     private fun durationUsage(firstRecordAt: Instant): BufferDurationUsage =

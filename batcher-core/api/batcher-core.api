@@ -1,5 +1,5 @@
 public abstract interface class pro/vlprojects/batcher/buffer/BufferCapacityUsage : pro/vlprojects/batcher/buffer/BufferUsage {
-	public abstract fun getRecordCount ()I
+	public abstract fun recordCount ()I
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/BufferDurationUsage : pro/vlprojects/batcher/buffer/BufferUsage {

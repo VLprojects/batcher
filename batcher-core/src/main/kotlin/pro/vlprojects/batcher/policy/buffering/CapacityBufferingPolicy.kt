@@ -14,7 +14,7 @@ public class CapacityBufferingPolicy(public val capacity: Int) : BufferingPolicy
         require(capacity > 0) { "A capacity must be positive: $capacity" }
     }
 
-    override fun isMet(usage: BufferCapacityUsage, now: Instant): Boolean = usage.recordCount >= capacity
+    override fun isMet(usage: BufferCapacityUsage, now: Instant): Boolean = usage.recordCount() >= capacity
 
     override fun toString(): String = "CapacityBufferingPolicy[capacity: $capacity]"
 }

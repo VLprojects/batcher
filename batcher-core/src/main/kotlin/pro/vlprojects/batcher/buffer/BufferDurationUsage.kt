@@ -6,8 +6,8 @@ import java.time.Instant
 public interface BufferDurationUsage : BufferUsage {
 
     /**
-     * How long the first record still collecting has waited by [now], zero while empty. A function and
-     * not a property: it grows with the clock, and the buffer passes its own.
+     * How long the first record still collecting has waited by [now], zero while empty. [now] is the
+     * buffer's own clock, so every policy asked at once sees the same moment.
      */
     public fun duration(now: Instant): Duration
 }
