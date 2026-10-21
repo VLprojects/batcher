@@ -1,4 +1,4 @@
-public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer : pro/vlprojects/batcher/buffer/usage/BufferUsage {
+public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
 	public fun add (Ljava/util/Collection;)V
 	public abstract fun add (Lpro/vlprojects/batcher/data/Record;)V
 	public abstract fun addListener (Lpro/vlprojects/batcher/listener/BatchDispatchedListener;)V

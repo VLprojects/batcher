@@ -11,7 +11,7 @@ import pro.vlprojects.batcher.listener.BatchDispatchedListener
  * usage by implementing the [BufferUsage] subtypes it can count. A policy due by time is met with no
  * new record, so the buffer keeps a scheduler of its own, names its threads and counts every check.
  */
-public interface RecordBuffer<R : Record<*>> : BufferUsage {
+public interface RecordBuffer<R : Record<*>> {
 
     /**
      * Set when built. After every add each is asked in this order and dispatches for as long as it is
