@@ -14,19 +14,21 @@ public class DurationDispatchPolicy(
     public val checkInterval: Duration,
 ) : DispatchPolicy<DurationMeasurable> {
 
-    override val name: String = "max_duration"
+    override val name: String = "duration"
 
     init {
         require(maxDuration.isPositive) { "A max duration must be positive: $maxDuration" }
-        require(checkInterval.isPositive) { "A check interval must be positive: $checkInterval" }
+        require(checkInterval >= Duration.ofMillis(1)) {
+            "A check interval must be at least a millisecond: $checkInterval"
+        }
     }
 
     override fun shouldDispatch(buffer: DurationMeasurable): Boolean = buffer.measureDuration() >= maxDuration
 
     /** Fixed delay: a slow check pushes the next one back instead of piling them up. */
     override fun schedule(scheduler: ScheduledExecutorService, check: Runnable) {
-        val interval = checkInterval.toNanos()
-        scheduler.scheduleWithFixedDelay(check, interval, interval, TimeUnit.NANOSECONDS)
+        val interval = checkInterval.toMillis()
+        scheduler.scheduleWithFixedDelay(check, interval, interval, TimeUnit.MILLISECONDS)
     }
 
     override fun toString(): String =
