@@ -13,24 +13,24 @@ class DispatchPolicyTests {
     fun `the capacity policy dispatches on the record that fills it`() {
         val policy = CapacityDispatchPolicy(capacity = 2)
 
-        assertFalse(policy.shouldDispatch(capacityUsage(recordCount = 1)))
-        assertTrue(policy.shouldDispatch(capacityUsage(recordCount = 2)))
+        assertFalse(policy.shouldDispatch(capacityBuffer(recordCount = 1)))
+        assertTrue(policy.shouldDispatch(capacityBuffer(recordCount = 2)))
     }
 
     @Test
     fun `the duration policy dispatches once the first record has waited the max duration`() {
         val policy = DurationDispatchPolicy(maxDuration = Duration.ofSeconds(1), checkInterval = Duration.ofMillis(100))
 
-        assertFalse(policy.shouldDispatch(durationUsage(duration = Duration.ofMillis(999))))
-        assertTrue(policy.shouldDispatch(durationUsage(duration = Duration.ofSeconds(1))))
+        assertFalse(policy.shouldDispatch(durationBuffer(duration = Duration.ofMillis(999))))
+        assertTrue(policy.shouldDispatch(durationBuffer(duration = Duration.ofSeconds(1))))
     }
 
-    private fun capacityUsage(recordCount: Int): CapacityMeasurable =
+    private fun capacityBuffer(recordCount: Int): CapacityMeasurable =
         object : CapacityMeasurable {
             override fun countRecords(): Int = recordCount
         }
 
-    private fun durationUsage(duration: Duration): DurationMeasurable =
+    private fun durationBuffer(duration: Duration): DurationMeasurable =
         object : DurationMeasurable {
             override fun measureDuration(): Duration = duration
         }
