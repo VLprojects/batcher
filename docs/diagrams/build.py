@@ -17,7 +17,7 @@ Rules the drawings follow:
 - Two text sizes: the name in bold, the explanation in grey below it, both
   aligned to the left edge of what they label.
 - Every part is named in plain lowercase words, types included (batch writer,
-  write fallback). Only what one would type is monospaced: calls, artifacts,
+  writing fallback). Only what one would type is monospaced: calls, artifacts,
   config keys. Product names keep their capitals.
 - All diagrams share one scale and are embedded at their native width. Each
   sits on its own rounded surface, the colour of a GitHub code block, so it
@@ -191,7 +191,7 @@ def pipeline(pal):
 	a.path(f"M{wm},{top + h + 8} L{wm},{fy - 14}", "red")
 	a.add(f'<path d="M{wm - 4},{fy - 15} L{wm},{fy - 8} L{wm + 4},{fy - 15} Z" fill="{pal["red"]}"/>')
 	a.t(wm - 12, top + h + 32, "write failed", color="red", weight="600", anchor="end")
-	a.label(cx, fy + h / 2 - 4, "write fallback", "queue, file, log")
+	a.label(cx, fy + h / 2 - 4, "writing fallback", "queue, file, log")
 	return a
 
 
@@ -220,7 +220,7 @@ def recovery(pal):
 	rows = [
 		("persist(batch)", "the whole batch, one write", "500 records written"),
 		("persist(record)", "the same batch, record by record", "499 written, 1 still fails"),
-		("write fallback", "whatever the retry could not write", "1 record parked"),
+		("writing fallback", "whatever the retry could not write", "1 record parked"),
 		("lost", "the fallback failed as well", "ERROR in the log, a metric"),
 	]
 	for i, (title, note, outcome) in enumerate(rows):
@@ -321,7 +321,7 @@ def shutdown(pal):
 
 	ly = bottom + 30
 	a.label(rest - 4, ly, "writer drains the queue", "one batch at a time, while the budget lasts")
-	a.label(budget + 12, ly, "leftovers parked", "in the write fallback")
+	a.label(budget + 12, ly, "leftovers parked", "in the writing fallback")
 
 	by2 = ly + 40
 	a.path(f"M{stop},{by2 - 6} L{stop},{by2} L{budget},{by2} L{budget},{by2 - 6}", "mute", width=1.25)
@@ -408,7 +408,7 @@ def types(pal):
 	a.bar(xs[0] + ws[0] - 16 - BAR_W, low + 13, h=16)
 	card(1, low, "batch ready listener", [("takes each cut batch;", False), ("default: the batcher", False)])
 	card(2, low, "put result", [("in queue, queue full", False), ("or queue closed", False)])
-	card(3, low, "write fallback", [("what was not written,", False), ("and why", False)], "amber")
+	card(3, low, "writing fallback", [("what was not written,", False), ("and why", False)], "amber")
 
 	# along the chain: an arrow and what it carries, centred in the gap
 	mid = top + h / 2
@@ -445,9 +445,9 @@ def sequence(pal):
 	parts = [
 		("batcher", 76, "card"), ("record buffer", 116, "card"), ("queue", 72, "card"),
 		("recovering writer", 144, "card"), ("batch writer", 108, "green-plate"),
-		("write fallback", 124, "amber-plate"),
+		("writing fallback", 138, "amber-plate"),
 	]
-	xs, x = [], 156
+	xs, x = [], 143
 	for i, (_, w, _) in enumerate(parts):
 		if i:
 			x += parts[i - 1][1] / 2 + 21 + w / 2

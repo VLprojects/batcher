@@ -242,7 +242,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `RecordBuffer<T>` | collect records and cut batches by a rule of its own | in memory, cut by size or by age on a daemon thread |
 | `BatchReadyListener<T>` | take a batch the buffer has cut; any number, added and removed at run time | the batcher, which puts it in the writing queue |
 | `WritingBatchQueue<T>` | hold cut batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
-| `WriteFallback<T>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
+| `WritingFallback<T>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | report every event; each method does nothing by default | none in core, Micrometer in `batcher-micrometer` |
 
 `BatchWriter` is the only thing you must write: `persist(batch)` for one insert
@@ -282,7 +282,7 @@ keep the defaults while another one does not.
 | Seam | Replace it when |
 | --- | --- |
 | `BatchWriter<T>` | always: this is your insert |
-| `WriteFallback<T>` | failed records must go somewhere: a log, a table, back to a queue |
+| `WritingFallback<T>` | failed records must go somewhere: a log, a table, back to a queue |
 | `RecordBuffer<T>` | size and age are not your rule (a byte budget, a key per table), or records must survive a restart, for example in Redis |
 | `WritingBatchQueue<T>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | your observability is not Micrometer |

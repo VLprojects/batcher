@@ -5,7 +5,7 @@ package pro.vlprojects.batcher.fallback
  * here turns a loss into a clean shutdown. [error] is null when nothing was thrown, as with a full
  * queue.
  */
-public fun interface WriteFallback<in T : Any> {
+public fun interface WritingFallback<in T : Any> {
 
     public fun handle(records: Collection<T>, reason: FallbackReason, error: Throwable?)
 

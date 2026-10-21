@@ -22,7 +22,7 @@ public final class pro/vlprojects/batcher/fallback/FallbackReason : java/lang/En
 	public static fun values ()[Lpro/vlprojects/batcher/fallback/FallbackReason;
 }
 
-public abstract interface class pro/vlprojects/batcher/fallback/WriteFallback {
+public abstract interface class pro/vlprojects/batcher/fallback/WritingFallback {
 	public fun handle (Ljava/lang/Object;Lpro/vlprojects/batcher/fallback/FallbackReason;Ljava/lang/Throwable;)V
 	public abstract fun handle (Ljava/util/Collection;Lpro/vlprojects/batcher/fallback/FallbackReason;Ljava/lang/Throwable;)V
 }
