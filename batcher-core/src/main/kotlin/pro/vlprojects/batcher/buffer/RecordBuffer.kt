@@ -2,19 +2,20 @@ package pro.vlprojects.batcher.buffer
 
 import pro.vlprojects.batcher.dto.Batch
 import pro.vlprojects.batcher.listener.BatchReadyListener
-import pro.vlprojects.batcher.policy.BufferingPolicy
+import pro.vlprojects.batcher.policy.buffering.BufferingPolicy
 import java.time.Instant
 
 /**
- * Collects records and dispatches them in batches by its [policy]. A batch due by age needs a clock
- * running somewhere, and that is the buffer's own, not the batcher's.
+ * Collects records and dispatches them in batches once any of its [policies] is met. A policy due by
+ * time needs a clock running somewhere, and that is the buffer's own, not the batcher's.
  */
 public interface RecordBuffer<T : Any> {
 
     /** Records outlive the process, so the source may acknowledge one as soon as [add] returns. */
     public val isDurable: Boolean
 
-    public val policy: BufferingPolicy<T>
+    /** Asked in this order; the first one met names the batch in the metrics. */
+    public val policies: List<BufferingPolicy<T>>
 
     /** Records, not their weight. Read by the gauges on every scrape, as is [firstRecordAt]: has to be cheap, may be approximate. */
     public val size: Int

@@ -14,6 +14,9 @@ public interface WritingBatchQueue<T : Any> {
     /** Batches waiting, or null when the queue cannot tell cheaply. */
     public val size: Int?
 
+    /** No room for one more batch. Read before every accept by a rejecting policy: has to be cheap. */
+    public val isFull: Boolean
+
     /** Set by [close]: no batch gets in any more. */
     public val isClosed: Boolean
 

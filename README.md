@@ -239,8 +239,9 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batcher<T>` | entry point: `accept(record)`, `accept(records)`, start, stop | the only implementation |
 | `Batch<T>` | records, an id, the arrival of the first one | value type |
 | `BatchWriter<T>` | one insert of one batch | **yours**, there is no default |
-| `RecordBuffer<T>` | collect records and dispatch batches by its policy | in memory, with a daemon thread for the age |
-| `BufferingPolicy<T>` | when a batch is due: capacity, max age and the weight of a record | `batch-size` records or `buffering-max-duration` |
+| `RecordBuffer<T>` | collect records and dispatch a batch once any of its policies is met | in memory, with a daemon thread for the age |
+| `BufferingPolicy<T>` | one rule for when a batch is due | `CapacityBufferingPolicy` (`batch-size`) and `MaxAgeBufferingPolicy` (`buffering-max-duration`) |
+| `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
 | `BatchReadyListener<T>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
 | `WritingBatchQueue<T>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
 | `WritingFallback<T>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
@@ -284,13 +285,13 @@ keep the defaults while another one does not.
 | --- | --- |
 | `BatchWriter<T>` | always: this is your insert |
 | `WritingFallback<T>` | failed records must go somewhere: a log, a table, back to a queue |
-| `BufferingPolicy<T>` | records are not your unit, for example a byte budget: `weigh` returns the encoded size |
+| `BufferingPolicy<T>` | a batch is due by a rule of yours, for example a byte budget; it adds to the two defaults |
+| `WritingBackPressurePolicy` | none of `fallback`, `reject` and `block` fits the source |
 | `RecordBuffer<T>` | records must be grouped on the way in (a key per table), or survive a restart, for example in Redis |
 | `WritingBatchQueue<T>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | your observability is not Micrometer |
 
-What happens when the queue is full is a setting, not a type: see
-`back-pressure` in section 11.
+`back-pressure` in section 11 picks one of the three ready back-pressure policies.
 
 **Assemble your own.** `batcher-core` has no Spring dependency. Construct the
 buffer, the writer and the batcher yourself, or keep only the pieces you need
@@ -407,7 +408,8 @@ Two numbers set the shape of the load: `batch-size` and
 before a record is queryable. Pick the delay you can live with, then the size
 that keeps inserts at roughly one per second per table.
 
-`back-pressure` decides what a full queue means:
+`back-pressure` picks a `WritingBackPressurePolicy`, and a bean of your own
+replaces it. It decides what a full queue means:
 
 - `fallback` parks the batch and returns;
 - `reject` checks for room before the record goes into the buffer and throws
@@ -436,7 +438,7 @@ it is wired in when Micrometer is on the classpath.
 | `batcher.records` | counter, records | `result` | persisted, sent to the fallback or lost? |
 | `batcher.buffer.records` | gauge, records | | how full is the buffer? |
 | `batcher.buffer.age` | gauge, seconds | | how long has the oldest record waited? |
-| `batcher.buffer.dispatched` | counter, batches | `reason` | dispatched at capacity or at max age? |
+| `batcher.buffer.dispatched` | counter, batches | `policy` | dispatched at capacity or at max age? |
 | `batcher.batch.write` | timer | `mode` | how slow are writes, and how often do we recover? |
 | `batcher.batch.size` | distribution summary, records | | are batches full? |
 | `batcher.writer.queue.size` | gauge, batches | | is the storage keeping up? |
