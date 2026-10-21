@@ -9,8 +9,9 @@ public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
 }
 
 public final class pro/vlprojects/batcher/buffer/policy/CapacityDispatchPolicy : pro/vlprojects/batcher/buffer/policy/DispatchPolicy {
-	public fun <init> (I)V
+	public fun <init> (ILjava/time/Duration;)V
 	public final fun getCapacity ()I
+	public fun getCheckInterval ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
 	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/CapacityMeasurable;)Z
 	public synthetic fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
@@ -18,17 +19,16 @@ public final class pro/vlprojects/batcher/buffer/policy/CapacityDispatchPolicy :
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/DispatchPolicy {
+	public abstract fun getCheckInterval ()Ljava/time/Duration;
 	public abstract fun getName ()Ljava/lang/String;
-	public fun schedule (Ljava/util/concurrent/ScheduledExecutorService;Ljava/lang/Runnable;)V
 	public abstract fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 }
 
 public final class pro/vlprojects/batcher/buffer/policy/DurationDispatchPolicy : pro/vlprojects/batcher/buffer/policy/DispatchPolicy {
 	public fun <init> (Ljava/time/Duration;Ljava/time/Duration;)V
-	public final fun getCheckInterval ()Ljava/time/Duration;
+	public fun getCheckInterval ()Ljava/time/Duration;
 	public final fun getMaxDuration ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
-	public fun schedule (Ljava/util/concurrent/ScheduledExecutorService;Ljava/lang/Runnable;)V
 	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/DurationMeasurable;)Z
 	public synthetic fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 	public fun toString ()Ljava/lang/String;

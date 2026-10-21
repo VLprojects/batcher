@@ -1,7 +1,7 @@
 package pro.vlprojects.batcher.buffer.policy
 
 import pro.vlprojects.batcher.buffer.usage.UsageMeasurable
-import java.util.concurrent.ScheduledExecutorService
+import java.time.Duration
 
 /**
  * One rule for when what a buffer collects goes as a batch. A buffer holds several and asks each in
@@ -14,13 +14,12 @@ public interface DispatchPolicy<in U : UsageMeasurable> {
     /** The `policy` tag of the dispatch metric: dashboards key on it, so it must not change. */
     public val name: String
 
-    /** Asked after every add and on the schedule from [schedule], with records collecting. */
-    public fun shouldDispatch(buffer: U): Boolean
-
     /**
-     * From [open][pro.vlprojects.batcher.buffer.RecordBuffer.open]. A policy that can be due with no new
-     * record puts [check] on [scheduler]; one that changes only on add leaves it be. The scheduler and
-     * its threads are the buffer's, and so is shutting them down: the policy keeps nothing of the schedule.
+     * How often the buffer asks with no new record, at least a millisecond. A policy due by time is met
+     * only then, so a batch goes at most one interval late.
      */
-    public fun schedule(scheduler: ScheduledExecutorService, check: Runnable) {}
+    public val checkInterval: Duration
+
+    /** Asked after every add and every [checkInterval], with records collecting. */
+    public fun shouldDispatch(buffer: U): Boolean
 }

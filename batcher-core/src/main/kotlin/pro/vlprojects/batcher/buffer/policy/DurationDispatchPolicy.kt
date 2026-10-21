@@ -2,16 +2,11 @@ package pro.vlprojects.batcher.buffer.policy
 
 import pro.vlprojects.batcher.buffer.usage.DurationMeasurable
 import java.time.Duration
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
 
-/**
- * Met once the first record has waited [maxDuration]: a half-full batch does not wait forever. Only a
- * check every [checkInterval] meets it, so a batch goes at most one interval late.
- */
+/** Met once the first record has waited [maxDuration]: a half-full batch does not wait forever. */
 public class DurationDispatchPolicy(
     public val maxDuration: Duration,
-    public val checkInterval: Duration,
+    override val checkInterval: Duration,
 ) : DispatchPolicy<DurationMeasurable> {
 
     override val name: String = "duration"
@@ -24,12 +19,6 @@ public class DurationDispatchPolicy(
     }
 
     override fun shouldDispatch(buffer: DurationMeasurable): Boolean = buffer.measureDuration() >= maxDuration
-
-    /** Fixed delay: a slow check pushes the next one back instead of piling them up. */
-    override fun schedule(scheduler: ScheduledExecutorService, check: Runnable) {
-        val interval = checkInterval.toMillis()
-        scheduler.scheduleWithFixedDelay(check, interval, interval, TimeUnit.MILLISECONDS)
-    }
 
     override fun toString(): String =
         "DurationDispatchPolicy[maxDuration: $maxDuration, checkInterval: $checkInterval]"

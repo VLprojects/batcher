@@ -11,7 +11,7 @@ class DispatchPolicyTests {
 
     @Test
     fun `the capacity policy dispatches on the record that fills it`() {
-        val policy = CapacityDispatchPolicy(capacity = 2)
+        val policy = CapacityDispatchPolicy(capacity = 2, checkInterval = Duration.ofSeconds(1))
 
         assertFalse(policy.shouldDispatch(capacityBuffer(recordCount = 1)))
         assertTrue(policy.shouldDispatch(capacityBuffer(recordCount = 2)))

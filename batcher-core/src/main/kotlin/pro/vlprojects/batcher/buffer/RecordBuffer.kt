@@ -9,7 +9,8 @@ import pro.vlprojects.batcher.listener.BatchDispatchedListener
 /**
  * Collects records and dispatches them in batches once any of its [policies] is met. It reports its
  * usage by implementing the [UsageMeasurable] subtypes it can count. A policy due by time is met with no
- * new record, so the buffer keeps a scheduler of its own, names its threads and counts every check.
+ * new record, so the buffer also asks every policy on a scheduler of its own, names its threads and
+ * counts every check.
  */
 public interface RecordBuffer<R : Record<*>> {
 
@@ -32,8 +33,10 @@ public interface RecordBuffer<R : Record<*>> {
     public fun removeListener(listener: BatchDispatchedListener<R>)
 
     /**
-     * Before the first record, once the listeners are in: lets every policy [schedule][DispatchPolicy.schedule] its check. A durable
-     * buffer also restores what it held at the last stop and dispatches it as the policies say.
+     * Before the first record, once the listeners are in: starts asking every policy each
+     * [interval][DispatchPolicy.checkInterval] of its own, with a fixed delay so a slow check pushes
+     * the next one back. A durable buffer also restores what it held at the last stop and dispatches it
+     * as the policies say.
      */
     public fun open()
 

@@ -222,8 +222,8 @@ has two threads of its own.
 - `accept` takes the lock, appends to the buffer and returns. It does no I/O.
 - The record that fills the batch carries it out to the queue; nothing else
   happens on the consumer thread.
-- The buffer's scheduler, on a daemon thread named after the batcher, runs the
-  checks each policy has scheduled for itself: that is how a batch goes once
+- The buffer's scheduler, on a daemon thread named after the batcher, asks every
+  policy each check interval of its own: that is how a batch goes once
   the first record has waited past the max duration.
 - The queue is bounded. When it is full the batcher applies the back-pressure
   setting: park the batch, reject the record, or wait for room.
@@ -249,7 +249,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
 | `RecordBuffer<R>` | collect records and dispatch a batch whenever a policy is met, asking each in turn | in memory |
 | `UsageMeasurable` | what a buffer reports about the records it collects, one subtype per kind: `CapacityMeasurable` (`countRecords()`), `DurationMeasurable` (`measureDuration()`) | the in-memory buffer reports both |
-| `DispatchPolicy<U>` | one rule for when a batch is due, over one kind of usage, and when to check it with no new record, on the buffer's scheduler (`schedule`, on open); fixed when the buffer is built, taken as policies over the buffer's own type, so one whose usage it does not report does not compile; a repeated name is refused | `CapacityDispatchPolicy` (`batch-size`) and `DurationDispatchPolicy` (`buffering-max-duration`, checked every `buffering-check-interval`) |
+| `DispatchPolicy<U>` | one rule for when a batch is due, over one kind of usage, and its `checkInterval`: how often the buffer asks it with no new record; fixed when the buffer is built, taken as policies over the buffer's own type, so one whose usage it does not report does not compile; a repeated name is refused | `CapacityDispatchPolicy` (`batch-size`, checked every second as a backstop) and `DurationDispatchPolicy` (`buffering-max-duration`, checked every `buffering-check-interval`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
 | `BatchDispatchedListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
 | `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
