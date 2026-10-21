@@ -14,13 +14,19 @@ public interface BufferingPolicy<in U : BufferUsage> {
     /** The `policy` tag of the dispatch metric: dashboards key on it, so it must not change. */
     public val name: String
 
-    /** Asked after every add and on the schedule from [scheduleCheck], with records collecting. */
+    /** Asked after every add and on the schedule from [schedule], with records collecting. */
     public fun shouldDispatch(usage: U): Boolean
 
     /**
      * From [open][pro.vlprojects.batcher.buffer.RecordBuffer.open]. A policy that can be due with no new
      * record puts [check] on [scheduler]; one that changes only on add leaves it be. The scheduler and
-     * its threads are the buffer's, and so is stopping them: the policy keeps nothing of the schedule.
+     * its threads are the buffer's; the policy keeps only what it scheduled, so it serves one buffer.
      */
-    public fun scheduleCheck(scheduler: ScheduledExecutorService, check: Runnable) {}
+    public fun schedule(scheduler: ScheduledExecutorService, check: Runnable) {}
+
+    /**
+     * From [close][pro.vlprojects.batcher.buffer.RecordBuffer.close]: no check starts after this. One
+     * under way runs to the end, and the buffer waits for it.
+     */
+    public fun unschedule() {}
 }

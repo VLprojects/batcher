@@ -3,6 +3,7 @@ package pro.vlprojects.batcher.buffer.policy
 import pro.vlprojects.batcher.buffer.usage.BufferDurationUsage
 import java.time.Duration
 import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 /**
@@ -16,6 +17,9 @@ public class BufferDurationPolicy(
 
     override val name: String = "max_duration"
 
+    @Volatile
+    private var scheduled: ScheduledFuture<*>? = null
+
     init {
         require(maxDuration.isPositive) { "A max duration must be positive: $maxDuration" }
         require(checkInterval.isPositive) { "A check interval must be positive: $checkInterval" }
@@ -24,9 +28,15 @@ public class BufferDurationPolicy(
     override fun shouldDispatch(usage: BufferDurationUsage): Boolean = usage.measureDuration() >= maxDuration
 
     /** Fixed delay: a slow check pushes the next one back instead of piling them up. */
-    override fun scheduleCheck(scheduler: ScheduledExecutorService, check: Runnable) {
+    override fun schedule(scheduler: ScheduledExecutorService, check: Runnable) {
+        check(scheduled == null) { "Already scheduled: one policy serves one buffer" }
         val interval = checkInterval.toNanos()
-        scheduler.scheduleWithFixedDelay(check, interval, interval, TimeUnit.NANOSECONDS)
+        scheduled = scheduler.scheduleWithFixedDelay(check, interval, interval, TimeUnit.NANOSECONDS)
+    }
+
+    override fun unschedule() {
+        scheduled?.cancel(false)
+        scheduled = null
     }
 
     override fun toString(): String =
