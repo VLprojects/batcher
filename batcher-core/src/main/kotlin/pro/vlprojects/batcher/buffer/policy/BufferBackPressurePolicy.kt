@@ -12,5 +12,13 @@ public interface BufferBackPressurePolicy<in U : UsageMeasurable> {
     /** The `policy` tag of the back-pressure metric. */
     public val name: String
 
+    /** The `component` tag of the policy's metrics: the stage it guards. */
+    public val component: String
+        get() = "buffer"
+
+    /** The `action` tag of the policy's metrics: what it decides. */
+    public val action: String
+        get() = "back_pressure"
+
     public fun requiresBackPressure(buffer: U): Boolean
 }

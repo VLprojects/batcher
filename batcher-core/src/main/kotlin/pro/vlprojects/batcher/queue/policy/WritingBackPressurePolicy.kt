@@ -10,6 +10,14 @@ import java.time.Duration
  */
 public interface WritingBackPressurePolicy {
 
+    /** The `component` tag of the policy's metrics: the stage it guards. */
+    public val component: String
+        get() = "writing_queue"
+
+    /** The `action` tag of the policy's metrics: what it decides. */
+    public val action: String
+        get() = "back_pressure"
+
     /** How long enqueue waits for room; then the batch goes to the enqueuing fallback as `QUEUE_OVERFLOW`. */
     public val enqueueTimeout: Duration
 

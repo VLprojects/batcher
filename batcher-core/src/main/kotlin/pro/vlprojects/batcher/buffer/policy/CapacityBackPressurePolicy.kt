@@ -2,18 +2,18 @@ package pro.vlprojects.batcher.buffer.policy
 
 import pro.vlprojects.batcher.buffer.usage.CapacityMeasurable
 
-/** Requires back pressure once the buffer holds [maxRecords]: the memory it takes stays bounded. */
+/** Requires back pressure once the buffer holds [capacity] records: the memory it takes stays bounded. */
 public class CapacityBackPressurePolicy(
-    public val maxRecords: Int,
+    public val capacity: Int,
 ) : BufferBackPressurePolicy<CapacityMeasurable> {
 
     override val name: String = "capacity"
 
     init {
-        require(maxRecords > 0) { "A max record count must be positive: $maxRecords" }
+        require(capacity > 0) { "A capacity must be positive: $capacity" }
     }
 
-    override fun requiresBackPressure(buffer: CapacityMeasurable): Boolean = buffer.countRecords() >= maxRecords
+    override fun requiresBackPressure(buffer: CapacityMeasurable): Boolean = buffer.countRecords() >= capacity
 
-    override fun toString(): String = "CapacityBackPressurePolicy[maxRecords: $maxRecords]"
+    override fun toString(): String = "CapacityBackPressurePolicy[capacity: $capacity]"
 }

@@ -17,6 +17,14 @@ public interface DispatchPolicy<in U : UsageMeasurable> {
      */
     public val name: String
 
+    /** The `component` tag of the policy's metrics: the stage it guards. */
+    public val component: String
+        get() = "buffer"
+
+    /** The `action` tag of the policy's metrics: what it decides. */
+    public val action: String
+        get() = "dispatch"
+
     /**
      * How often the batcher asks with no new record, at least a millisecond. A policy due by time is met
      * only then, so a batch goes at most one interval late.

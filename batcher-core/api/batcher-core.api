@@ -4,17 +4,20 @@ public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
 	public abstract fun close ()V
 	public abstract fun confirm (Lpro/vlprojects/batcher/data/Batch;)V
 	public abstract fun dispatch (Ljava/lang/Integer;)Ljava/util/List;
+	public static synthetic fun dispatch$default (Lpro/vlprojects/batcher/buffer/RecordBuffer;Ljava/lang/Integer;ILjava/lang/Object;)Ljava/util/List;
 	public abstract fun open ()V
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferBackPressurePolicy {
+	public fun getAction ()Ljava/lang/String;
+	public fun getComponent ()Ljava/lang/String;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun requiresBackPressure (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 }
 
 public final class pro/vlprojects/batcher/buffer/policy/CapacityBackPressurePolicy : pro/vlprojects/batcher/buffer/policy/BufferBackPressurePolicy {
 	public fun <init> (I)V
-	public final fun getMaxRecords ()I
+	public final fun getCapacity ()I
 	public fun getName ()Ljava/lang/String;
 	public fun requiresBackPressure (Lpro/vlprojects/batcher/buffer/usage/CapacityMeasurable;)Z
 	public synthetic fun requiresBackPressure (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
@@ -32,7 +35,9 @@ public final class pro/vlprojects/batcher/buffer/policy/CapacityDispatchPolicy :
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/DispatchPolicy {
+	public fun getAction ()Ljava/lang/String;
 	public abstract fun getCheckInterval ()Ljava/time/Duration;
+	public fun getComponent ()Ljava/lang/String;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun requiresDispatch (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 }
@@ -206,6 +211,8 @@ public final class pro/vlprojects/batcher/queue/policy/RejectingWritingBackPress
 
 public abstract interface class pro/vlprojects/batcher/queue/policy/WritingBackPressurePolicy {
 	public fun admits (Lpro/vlprojects/batcher/queue/WritingBatchQueue;)Z
+	public fun getAction ()Ljava/lang/String;
+	public fun getComponent ()Ljava/lang/String;
 	public abstract fun getEnqueueTimeout ()Ljava/time/Duration;
 }
 

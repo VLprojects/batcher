@@ -31,7 +31,7 @@ public interface RecordBuffer<R : Record<*>> {
      * is null; a batch per group if it groups records by a key. Empty when it holds nothing. What it
      * returns counts no more towards the usage but stays with the buffer until [confirm].
      */
-    public fun dispatch(batchSize: Int?): List<Batch<R>>
+    public fun dispatch(batchSize: Int? = null): List<Batch<R>>
 
     /**
      * [batch] is written or parked in the fallback: only now the buffer lets go of its records, so one
