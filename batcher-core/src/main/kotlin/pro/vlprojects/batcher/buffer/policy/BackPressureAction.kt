@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.buffer.policy
 
-/** What happens to a record a [BufferBackPressurePolicy] does not admit. */
+/** What happens to a record once a [BufferBackPressurePolicy] requires back pressure. */
 public enum class BackPressureAction {
 
     /** Accept throws: the record is still the caller's, and the source redelivers it. */

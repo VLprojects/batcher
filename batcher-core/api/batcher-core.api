@@ -17,18 +17,18 @@ public final class pro/vlprojects/batcher/buffer/policy/BackPressureAction : jav
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferBackPressurePolicy {
-	public abstract fun admits (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 	public abstract fun getAction ()Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
 	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun requiresBackPressure (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 }
 
 public final class pro/vlprojects/batcher/buffer/policy/CapacityBackPressurePolicy : pro/vlprojects/batcher/buffer/policy/BufferBackPressurePolicy {
 	public fun <init> (ILpro/vlprojects/batcher/buffer/policy/BackPressureAction;)V
-	public fun admits (Lpro/vlprojects/batcher/buffer/usage/CapacityMeasurable;)Z
-	public synthetic fun admits (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 	public fun getAction ()Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
 	public final fun getMaxRecords ()I
 	public fun getName ()Ljava/lang/String;
+	public fun requiresBackPressure (Lpro/vlprojects/batcher/buffer/usage/CapacityMeasurable;)Z
+	public synthetic fun requiresBackPressure (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 	public fun toString ()Ljava/lang/String;
 }
 

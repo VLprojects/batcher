@@ -250,7 +250,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `RecordBuffer<R>` | hold records until the batcher dispatches them, in batches of at most `batch-size`, and keep a dispatched batch until it is written or parked (`confirm`); no schedule and no listeners of its own | in memory |
 | `UsageMeasurable` | what a buffer reports about the records it collects, one subtype per kind: `CapacityMeasurable` (`countRecords()`), `DurationMeasurable` (`measureDuration()`) | the in-memory buffer reports both |
 | `DispatchPolicy<U>` | one rule for when a batch is due, over one kind of usage, and its `checkInterval`: how often the batcher asks it with no new record; fixed when the batcher is built, taken as policies over its buffer's type, so one whose usage it does not report does not compile; a repeated name is refused | `CapacityDispatchPolicy` (`batch-size`, checked every second as a backstop) and `DurationDispatchPolicy` (`buffering-max-duration`, checked every `buffering-check-interval`) |
-| `BufferBackPressurePolicy<U>` | what a full buffer means: asked before every record goes in, over one kind of usage like a dispatch policy; the first that does not admit it decides by its `BackPressureAction`: `REJECT` (the source keeps the record), `DISCARD` (dropped and counted) or `FALLBACK` | `CapacityBackPressurePolicy` (`maxRecords`) |
+| `BufferBackPressurePolicy<U>` | what a full buffer means: asked before every record goes in, over one kind of usage like a dispatch policy; the first that requires back pressure (`requiresBackPressure`) decides by its `BackPressureAction`: `REJECT` (the source keeps the record), `DISCARD` (dropped and counted) or `FALLBACK` | `CapacityBackPressurePolicy` (`maxRecords`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
 | `BatchDispatchedListener<R>` | take a batch the batcher has dispatched; any number, added to the batcher and removed at run time | the writing queue |
 | `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
@@ -334,7 +334,7 @@ if there was one. The reason tells a fallback what a replay would do:
 
 | Reason | Meaning | A replay |
 | --- | --- | --- |
-| `BUFFER_OVERFLOW` | a buffer back-pressure policy did not admit the record | writes it |
+| `BUFFER_OVERFLOW` | a buffer back-pressure policy turned the record away | writes it |
 | `QUEUE_OVERFLOW` | the writing queue had no room | writes it |
 | `QUEUE_CLOSED` | a stop had closed the writing queue before the batch came | writes it |
 | `ENQUEUE_FAILED` | the writing queue threw on the batch | writes it |

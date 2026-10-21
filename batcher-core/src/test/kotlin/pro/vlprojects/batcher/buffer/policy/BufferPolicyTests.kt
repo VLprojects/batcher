@@ -26,11 +26,11 @@ class BufferPolicyTests {
     }
 
     @Test
-    fun `the capacity back-pressure policy admits records while the buffer has room`() {
+    fun `the capacity back-pressure policy pushes back once the buffer is full`() {
         val policy = CapacityBackPressurePolicy(maxRecords = 2, action = BackPressureAction.REJECT)
 
-        assertTrue(policy.admits(capacityBuffer(recordCount = 1)))
-        assertFalse(policy.admits(capacityBuffer(recordCount = 2)))
+        assertFalse(policy.requiresBackPressure(capacityBuffer(recordCount = 1)))
+        assertTrue(policy.requiresBackPressure(capacityBuffer(recordCount = 2)))
     }
 
     private fun capacityBuffer(recordCount: Int): CapacityMeasurable =
