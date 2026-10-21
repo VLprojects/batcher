@@ -239,7 +239,8 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batcher<T>` | entry point: `accept(record)`, `accept(records)`, start, stop | the only implementation |
 | `Batch<T>` | records, an id, the arrival of the first one | value type |
 | `BatchWriter<T>` | one insert of one batch | **yours**, there is no default |
-| `RecordBuffer<T>` | collect records and dispatch batches by a rule of its own | in memory, dispatched by size or by age on a daemon thread |
+| `RecordBuffer<T>` | collect records and dispatch batches by its policy | in memory, with a daemon thread for the age |
+| `BufferingPolicy<T>` | when a batch is due: capacity, max age and the weight of a record | `batch-size` records or `buffering-max-duration` |
 | `BatchReadyListener<T>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
 | `WritingBatchQueue<T>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
 | `WritingFallback<T>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
@@ -283,7 +284,8 @@ keep the defaults while another one does not.
 | --- | --- |
 | `BatchWriter<T>` | always: this is your insert |
 | `WritingFallback<T>` | failed records must go somewhere: a log, a table, back to a queue |
-| `RecordBuffer<T>` | size and age are not your rule (a byte budget, a key per table), or records must survive a restart, for example in Redis |
+| `BufferingPolicy<T>` | records are not your unit, for example a byte budget: `weigh` returns the encoded size |
+| `RecordBuffer<T>` | records must be grouped on the way in (a key per table), or survive a restart, for example in Redis |
 | `WritingBatchQueue<T>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | your observability is not Micrometer |
 

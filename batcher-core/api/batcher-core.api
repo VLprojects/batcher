@@ -3,9 +3,8 @@ public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
 	public fun add (Ljava/util/Collection;)V
 	public abstract fun addListener (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
 	public abstract fun close ()Lpro/vlprojects/batcher/dto/Batch;
-	public abstract fun getCapacity ()I
 	public abstract fun getFirstRecordAt ()Ljava/time/Instant;
-	public abstract fun getMaxAge ()Ljava/time/Duration;
+	public abstract fun getPolicy ()Lpro/vlprojects/batcher/policy/BufferingPolicy;
 	public abstract fun getSize ()I
 	public abstract fun isDurable ()Z
 	public abstract fun removeListener (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
@@ -100,6 +99,12 @@ public abstract interface class pro/vlprojects/batcher/metric/WriterMeter {
 	public fun incrementBatchWriting (Lpro/vlprojects/batcher/metric/WriteMode;Ljava/time/Duration;)V
 	public fun incrementRecordWriting (ILpro/vlprojects/batcher/metric/RecordWritingStatus;)V
 	public fun watchWritingQueue (Lkotlin/jvm/functions/Function0;)V
+}
+
+public abstract interface class pro/vlprojects/batcher/policy/BufferingPolicy {
+	public abstract fun getCapacity ()I
+	public abstract fun getMaxAge ()Ljava/time/Duration;
+	public fun weigh (Ljava/lang/Object;)I
 }
 
 public final class pro/vlprojects/batcher/queue/EnqueueStatus : java/lang/Enum {
