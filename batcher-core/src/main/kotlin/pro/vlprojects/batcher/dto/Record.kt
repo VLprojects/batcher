@@ -3,18 +3,21 @@ package pro.vlprojects.batcher.dto
 import java.time.Instant
 
 /**
- * What the batcher holds for one accepted record: [payload] as the service gave it, wrapped and not
- * required to implement anything, plus what the batcher itself knows of it. Where it came from, a
- * queue to put it back to say, is the service's to keep in [payload].
+ * One accepted record: [payload] as the service gave it, wrapped rather than made to implement
+ * anything. Open so a service can carry more of its own, where a record came from say, in a subtype.
  */
-public class Record<out T : Any>(
+public open class Record<out T : Any>(
     public val payload: T,
-    /** Stamped by the batcher's clock on accept and kept as is by a durable stage that restores it. */
-    public val acceptedAt: Instant,
+    /** Kept as is by a durable stage that restores the record: the wait is measured from it. */
+    public val acceptedAt: Instant = Instant.now(),
 ) {
 
+    /** Same class only: a subtype with fields of its own must not equal its base. */
     override fun equals(other: Any?): Boolean =
-        other is Record<*> && payload == other.payload && acceptedAt == other.acceptedAt
+        other != null &&
+            other.javaClass == javaClass &&
+            payload == (other as Record<*>).payload &&
+            acceptedAt == other.acceptedAt
 
     override fun hashCode(): Int = 31 * payload.hashCode() + acceptedAt.hashCode()
 

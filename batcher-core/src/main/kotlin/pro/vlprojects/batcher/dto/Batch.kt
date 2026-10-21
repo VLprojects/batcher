@@ -9,10 +9,10 @@ import java.util.UUID
  *
  * [records] is taken as is, without a copy: whoever dispatches the batch must not touch the list again.
  */
-public class Batch<out T : Any>(
+public class Batch<out R : Record<*>>(
     /** Given explicitly only by a durable stage that restores a batch it already held. */
     public val id: UUID = UUID.randomUUID(),
-    public val records: List<Record<T>>,
+    public val records: List<R>,
 ) {
 
     public val size: Int

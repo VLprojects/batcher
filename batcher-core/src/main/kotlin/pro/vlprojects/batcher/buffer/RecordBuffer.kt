@@ -12,7 +12,7 @@ import pro.vlprojects.batcher.listener.BatchDispatchedListener
  * usage by implementing the [BufferUsage] subtypes it can count. A policy due by time is met with no
  * new record, so the buffer is built with a [BufferingPolicyChecker] that asks them on a schedule.
  */
-public interface RecordBuffer<T : Any> : BufferUsage {
+public interface RecordBuffer<R : Record<*>> : BufferUsage {
 
     /**
      * Set when built. After every add each is asked in this order and dispatches for as long as it is
@@ -28,9 +28,9 @@ public interface RecordBuffer<T : Any> : BufferUsage {
      * throw from any keeps the batch, and all of them get it again: a listener has to bear a repeat,
      * which it can tell by [Batch.id].
      */
-    public fun addListener(listener: BatchDispatchedListener<T>)
+    public fun addListener(listener: BatchDispatchedListener<R>)
 
-    public fun removeListener(listener: BatchDispatchedListener<T>)
+    public fun removeListener(listener: BatchDispatchedListener<R>)
 
     /**
      * Before the first record, once the listeners are in: hands every policy to the checker. A durable
@@ -42,13 +42,13 @@ public interface RecordBuffer<T : Any> : BufferUsage {
      * Returns once the record is in. A throw means it is not, and it is still the caller's: with no
      * listener a dispatched batch has nowhere to go, so the buffer stops taking records.
      */
-    public fun add(record: Record<T>)
+    public fun add(record: R)
 
     /**
      * One by one by default; a buffer may take them in one go instead. A throw leaves the caller the
      * record it came on and those after it.
      */
-    public fun add(records: Collection<Record<T>>): Unit = records.forEach(::add)
+    public fun add(records: Collection<R>): Unit = records.forEach(::add)
 
     /**
      * Stops taking records and the checker, then empties itself before it returns. An in-memory buffer

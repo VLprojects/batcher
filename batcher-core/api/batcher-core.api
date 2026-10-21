@@ -59,8 +59,9 @@ public final class pro/vlprojects/batcher/dto/Batch {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class pro/vlprojects/batcher/dto/Record {
+public class pro/vlprojects/batcher/dto/Record {
 	public fun <init> (Ljava/lang/Object;Ljava/time/Instant;)V
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/time/Instant;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAcceptedAt ()Ljava/time/Instant;
 	public final fun getPayload ()Ljava/lang/Object;
