@@ -216,9 +216,9 @@ has two threads of its own.
 - `accept` takes the lock, appends to the buffer and returns. It does no I/O.
 - The record that fills the batch carries it out to the queue; nothing else
   happens on the consumer thread.
-- The buffer thread, a daemon, asks every policy on its own check interval,
-  and dispatches a batch once the first record has waited past the max
-  duration.
+- The policy checker, on a daemon thread named after the batcher, has the
+  buffer dispatch by every policy on that policy's own check interval: that is
+  how a batch goes once the first record has waited past the max duration.
 - The queue is bounded. When it is full the batcher applies the back-pressure
   setting: park the batch, reject the record, or wait for room.
 - One writer thread writes batches in order, one at a time.
@@ -240,7 +240,8 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batcher<R>` | entry point: `accept(record)`, `accept(records)`, start, stop | the only implementation |
 | `Batch<R>` | records, an id, the arrival of the first one | value type |
 | `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
-| `RecordBuffer<R>` | collect records and dispatch a batch whenever a policy is met, asking each in turn | in memory, with a daemon thread for the duration |
+| `RecordBuffer<R>` | collect records and dispatch a batch whenever a policy is met, asking each in turn | in memory |
+| `BufferingPolicyChecker` | have the buffer dispatch by each policy on its check interval, and count every check | one daemon thread named after the batcher |
 | `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (`countRecords()`), `BufferDurationUsage` (`measureDuration()`) | the in-memory buffer reports both |
 | `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, taken as policies over the buffer's own type, so one whose usage it does not report does not compile; a repeated name is refused | `BufferCapacityPolicy` (`batch-size`) and `BufferDurationPolicy` (`buffering-max-duration`, `buffering-check-interval`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
@@ -340,7 +341,8 @@ Shutdown is the part that decides whether you lose data on every deploy.
 
 In order:
 
-1. The batcher stops accepting, and the buffer closes. What it still holds is
+1. The batcher stops accepting, the policy checker stops, and the buffer
+   closes. What it still holds is
    dispatched with no policy met, so the batches are enqueued in the writing
    queue as usual, waiting for room within the budget.
 2. The queue closes. The writer works through what is in it until it is empty
