@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.metric
 
-/** Every way one check of a policy on its interval can end. */
+/** Every way one scheduled check of a policy can end. */
 public enum class PolicyCheckStatus {
 
     BATCH_DISPATCHED,

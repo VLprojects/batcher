@@ -5,13 +5,11 @@ import pro.vlprojects.batcher.buffer.policy.BufferingPolicyChecker
 import pro.vlprojects.batcher.buffer.usage.BufferUsage
 import pro.vlprojects.batcher.dto.Batch
 import pro.vlprojects.batcher.listener.BatchDispatchedListener
-import pro.vlprojects.batcher.metric.PolicyCheckStatus
 
 /**
  * Collects records and dispatches them in batches once any of its [policies] is met. It reports its
  * usage by implementing the [BufferUsage] subtypes it can count. A policy due by time is met with no
- * new record, so a [BufferingPolicyChecker] also has the buffer [dispatch] by each policy on that
- * policy's [check interval][BufferingPolicy.checkInterval].
+ * new record, so the buffer is built with a [BufferingPolicyChecker] that asks them on a schedule.
  */
 public interface RecordBuffer<R : Any> : BufferUsage {
 
@@ -34,8 +32,8 @@ public interface RecordBuffer<R : Any> : BufferUsage {
     public fun removeListener(listener: BatchDispatchedListener<R>)
 
     /**
-     * Before the first record, once the listeners are in. A durable buffer restores what it held at the
-     * last stop and dispatches it as the policies say.
+     * Before the first record, once the listeners are in: hands every policy to the checker. A durable
+     * buffer also restores what it held at the last stop and dispatches it as the policies say.
      */
     public fun open()
 
@@ -52,13 +50,7 @@ public interface RecordBuffer<R : Any> : BufferUsage {
     public fun add(records: Collection<R>): Unit = records.forEach(::add)
 
     /**
-     * Asks [policy], one of its own, and dispatches for as long as it is met; called by the checker on
-     * the policy's interval, from the checker's thread.
-     */
-    public fun dispatch(policy: BufferingPolicy<*>): PolicyCheckStatus
-
-    /**
-     * Once the checker has stopped: stops taking records, then empties itself before it returns. An in-memory buffer
+     * Stops taking records and the checker, then empties itself before it returns. An in-memory buffer
      * dispatches what was still collecting with no policy met, a batch per group if it groups records
      * by a key; a durable one keeps it for the next [open]. Once closed, a throw from a listener is not
      * retried but comes out of here.

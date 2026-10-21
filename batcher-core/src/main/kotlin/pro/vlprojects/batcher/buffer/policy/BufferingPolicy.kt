@@ -1,7 +1,6 @@
 package pro.vlprojects.batcher.buffer.policy
 
 import pro.vlprojects.batcher.buffer.usage.BufferUsage
-import java.time.Duration
 
 /**
  * One rule for when what a buffer collects goes as a batch. A buffer holds several and asks each in
@@ -14,12 +13,6 @@ public interface BufferingPolicy<in U : BufferUsage> {
     /** The `policy` tag of the dispatch metric: dashboards key on it, so it must not change. */
     public val name: String
 
-    /**
-     * How often the buffer asks with no new record of its own. Each policy has its own, and the buffer
-     * keeps the schedule: a batch goes at most one interval late.
-     */
-    public val checkInterval: Duration
-
-    /** Asked after every add and on every [checkInterval], with records collecting. */
+    /** Asked after every add and on the [checker][BufferingPolicyChecker]'s schedule, with records collecting. */
     public fun shouldDispatch(usage: U): Boolean
 }

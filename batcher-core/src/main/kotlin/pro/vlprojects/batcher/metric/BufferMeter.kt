@@ -14,6 +14,6 @@ public interface BufferMeter {
     /** What the buffer still held when it closed, dispatched with no policy met. */
     public fun incrementBatchDispatchingOnClose() {}
 
-    /** Every check on the [policy]'s interval, not only the failures: the sum is the whole work of it. */
+    /** Every scheduled check of [policy], not only the failures: the sum is the whole work of the checker. */
     public fun incrementPolicyChecked(policy: BufferingPolicy<*>, status: PolicyCheckStatus) {}
 }

@@ -3,17 +3,14 @@ public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer : pro
 	public fun add (Ljava/util/Collection;)V
 	public abstract fun addListener (Lpro/vlprojects/batcher/listener/BatchDispatchedListener;)V
 	public abstract fun close ()V
-	public abstract fun dispatch (Lpro/vlprojects/batcher/buffer/policy/BufferingPolicy;)Lpro/vlprojects/batcher/metric/PolicyCheckStatus;
 	public abstract fun getPolicies ()Ljava/util/List;
 	public abstract fun open ()V
 	public abstract fun removeListener (Lpro/vlprojects/batcher/listener/BatchDispatchedListener;)V
 }
 
 public final class pro/vlprojects/batcher/buffer/policy/BufferCapacityPolicy : pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
-	public fun <init> (ILjava/time/Duration;)V
-	public synthetic fun <init> (ILjava/time/Duration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (I)V
 	public final fun getCapacity ()I
-	public fun getCheckInterval ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
 	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferCapacityUsage;)Z
 	public synthetic fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
@@ -21,9 +18,7 @@ public final class pro/vlprojects/batcher/buffer/policy/BufferCapacityPolicy : p
 }
 
 public final class pro/vlprojects/batcher/buffer/policy/BufferDurationPolicy : pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
-	public fun <init> (Ljava/time/Duration;Ljava/time/Duration;)V
-	public synthetic fun <init> (Ljava/time/Duration;Ljava/time/Duration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getCheckInterval ()Ljava/time/Duration;
+	public fun <init> (Ljava/time/Duration;)V
 	public final fun getMaxDuration ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
 	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferDurationUsage;)Z
@@ -32,13 +27,12 @@ public final class pro/vlprojects/batcher/buffer/policy/BufferDurationPolicy : p
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
-	public abstract fun getCheckInterval ()Ljava/time/Duration;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferingPolicyChecker {
-	public abstract fun start ()V
+	public abstract fun schedule (Lpro/vlprojects/batcher/buffer/policy/BufferingPolicy;Lkotlin/jvm/functions/Function0;)V
 	public abstract fun stop ()V
 }
 

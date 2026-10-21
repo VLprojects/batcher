@@ -2,17 +2,23 @@ package pro.vlprojects.batcher.buffer.policy
 
 import pro.vlprojects.batcher.buffer.RecordBuffer
 import pro.vlprojects.batcher.metric.BufferMeter
+import pro.vlprojects.batcher.metric.PolicyCheckStatus
 
 /**
- * Asks every policy of one buffer on that policy's own [check interval][BufferingPolicy.checkInterval]
- * through [RecordBuffer.dispatch], and counts every check by [BufferMeter.incrementPolicyChecked], a
- * throw included. Its threads are named after the batcher, so a thread dump tells whose they are.
+ * Asks a buffer's policies on a schedule, so that a policy due by time is met with no new record. How
+ * often, and whether at all, is its own setting per policy: a buffer in memory needs no schedule for
+ * its capacity, one shared by several instances does. It counts every check by
+ * [BufferMeter.incrementPolicyChecked], a throw included, and its threads are named after the batcher,
+ * so a thread dump tells whose they are.
  */
 public interface BufferingPolicyChecker {
 
-    /** Once the buffer is open: a check before that would dispatch to no listener. */
-    public fun start()
+    /**
+     * From [RecordBuffer.open], once per policy. [check] is the buffer's own: it asks [policy] and
+     * dispatches for as long as it is met.
+     */
+    public fun schedule(policy: BufferingPolicy<*>, check: () -> PolicyCheckStatus)
 
-    /** Before the buffer closes, and waits for a check under way, so none runs into a closed buffer. */
+    /** From [RecordBuffer.close], before the rest goes: waits for a check under way, and runs no more. */
     public fun stop()
 }
