@@ -240,7 +240,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batch<R>` | records, an id, the arrival of the first one | value type |
 | `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
 | `RecordBuffer<R>` | collect records and dispatch a batch once any of its policies is met | in memory, with a daemon thread for the duration |
-| `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (`recordCount()`), `BufferDurationUsage` (`duration(now)`) | the in-memory buffer reports both |
+| `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (`countRecords()`), `BufferDurationUsage` (`measureDuration(now)`) | the in-memory buffer reports both |
 | `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, which refuses a policy whose usage it does not report | `CapacityBufferingPolicy` (`batch-size`) and `MaxDurationBufferingPolicy` (`buffering-max-duration`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
 | `BatchReadyListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |

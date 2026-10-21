@@ -1,9 +1,9 @@
 public abstract interface class pro/vlprojects/batcher/buffer/BufferCapacityUsage : pro/vlprojects/batcher/buffer/BufferUsage {
-	public abstract fun recordCount ()I
+	public abstract fun countRecords ()I
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/BufferDurationUsage : pro/vlprojects/batcher/buffer/BufferUsage {
-	public abstract fun duration (Ljava/time/Instant;)Ljava/time/Duration;
+	public abstract fun measureDuration (Ljava/time/Instant;)Ljava/time/Duration;
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/BufferUsage {

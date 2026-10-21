@@ -35,11 +35,11 @@ class BufferingPolicyTests {
 
     private fun capacityUsage(recordCount: Int): BufferCapacityUsage =
         object : BufferCapacityUsage {
-            override fun recordCount(): Int = recordCount
+            override fun countRecords(): Int = recordCount
         }
 
     private fun durationUsage(firstRecordAt: Instant): BufferDurationUsage =
         object : BufferDurationUsage {
-            override fun duration(now: Instant): Duration = Duration.between(firstRecordAt, now)
+            override fun measureDuration(now: Instant): Duration = Duration.between(firstRecordAt, now)
         }
 }
