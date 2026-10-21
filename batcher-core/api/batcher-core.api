@@ -9,8 +9,10 @@ public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer : pro
 }
 
 public final class pro/vlprojects/batcher/buffer/policy/BufferCapacityPolicy : pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
-	public fun <init> (I)V
+	public fun <init> (ILjava/time/Duration;)V
+	public synthetic fun <init> (ILjava/time/Duration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getCapacity ()I
+	public fun getCheckInterval ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
 	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferCapacityUsage;)Z
 	public synthetic fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
@@ -29,7 +31,7 @@ public final class pro/vlprojects/batcher/buffer/policy/BufferDurationPolicy : p
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
-	public fun getCheckInterval ()Ljava/time/Duration;
+	public abstract fun getCheckInterval ()Ljava/time/Duration;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
 }

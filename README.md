@@ -216,9 +216,9 @@ has two threads of its own.
 - `accept` takes the lock, appends to the buffer and returns. It does no I/O.
 - The record that fills the batch carries it out to the queue; nothing else
   happens on the consumer thread.
-- The buffer thread, a daemon, asks every policy that has a check interval on
-  that interval, and dispatches a batch once the first record has waited past
-  the max duration.
+- The buffer thread, a daemon, asks every policy on its own check interval,
+  and dispatches a batch once the first record has waited past the max
+  duration.
 - The queue is bounded. When it is full the batcher applies the back-pressure
   setting: park the batch, reject the record, or wait for room.
 - One writer thread writes batches in order, one at a time.

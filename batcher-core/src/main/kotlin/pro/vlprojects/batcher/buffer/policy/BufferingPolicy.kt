@@ -15,11 +15,10 @@ public interface BufferingPolicy<in U : BufferUsage> {
     public val name: String
 
     /**
-     * How often the buffer asks with no new record, or null when only an add can meet the rule. Each
-     * policy has its own, and the buffer keeps the schedule: a batch goes at most one interval late.
+     * How often the buffer asks with no new record of its own. Each policy has its own, and the buffer
+     * keeps the schedule: a batch goes at most one interval late.
      */
-    public val checkInterval: Duration?
-        get() = null
+    public val checkInterval: Duration
 
     /** Asked after every add and on every [checkInterval], with records collecting. */
     public fun shouldDispatch(usage: U): Boolean
