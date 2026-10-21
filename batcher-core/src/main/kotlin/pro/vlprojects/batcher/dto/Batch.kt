@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.model
+package pro.vlprojects.batcher.dto
 
 import java.time.Instant
 import java.util.UUID
@@ -7,24 +7,20 @@ import java.util.UUID
  * Records in arrival order. [id] survives redelivery from a durable queue, so a writer can hand it
  * to the storage as a deduplication token.
  *
- * [records] is taken as is, without a copy: whoever cuts the batch must not touch the list again.
+ * [records] is taken as is, without a copy: whoever dispatches the batch must not touch the list again.
  */
 public class Batch<out T : Any>(
     /** Given explicitly only by a durable stage that restores a batch it already held. */
-    public val id: String,
+    public val id: UUID = UUID.randomUUID(),
     public val records: List<T>,
-    /** The oldest record's arrival, not when the batch was cut: it is that wait that matters. */
+    /** The oldest record's arrival, not when the batch was dispatched: it is that wait that matters. */
     public val firstRecordAt: Instant,
 ) {
-
-    public constructor(records: List<T>, firstRecordAt: Instant) :
-        this(UUID.randomUUID().toString(), records, firstRecordAt)
 
     public val size: Int
         get() = records.size
 
     init {
-        require(id.isNotBlank()) { "A batch id must not be blank" }
         require(records.isNotEmpty()) { "A batch must hold at least one record" }
     }
 

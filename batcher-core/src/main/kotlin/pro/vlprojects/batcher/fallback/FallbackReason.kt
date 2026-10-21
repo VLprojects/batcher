@@ -4,17 +4,17 @@ package pro.vlprojects.batcher.fallback
 public enum class FallbackReason {
 
     /** The writing queue had no room for the batch. A replay writes them. */
-    QUEUE_FULL,
+    QUEUE_OVERFLOW,
 
     /** A stop had closed the writing queue before the batch came. A replay writes them. */
     QUEUE_CLOSED,
 
     /** The writing queue threw on the batch. A replay writes them. */
-    QUEUE_FAILED,
+    ENQUEUE_FAILED,
 
     /** The storage refused them one by one as well. A replay fails again: a bad record. */
-    PERSIST_FAILED,
+    PERSISTING_FAILED,
 
-    /** The stop ran out of its budget before they were written. A replay writes them. */
-    STOP_TIMED_OUT,
+    /** `shutdown-await-period` ran out before they were written. A replay writes them. */
+    SHUTDOWN_PERIOD_EXPIRED,
 }

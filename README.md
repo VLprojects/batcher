@@ -37,7 +37,7 @@ Writing in groups needs more than a list and a timer:
 
 | Need | Why |
 | --- | --- |
-| Cut by size and by age | A full batch must go at once; a half-full batch must not wait forever. |
+| Dispatch by size and by age | A full batch must go at once; a half-full batch must not wait forever. |
 | Accept while writing | The consumer must not wait for the previous batch to land. |
 | Bounded memory | A slow storage must not turn into an unbounded queue. |
 | Attribute failures | When a batch fails, you need to know which records to retry and which to park. |
@@ -52,7 +52,7 @@ this library is.
 ![Modules, and which of them a Spring Boot or a plain JVM service takes](docs/assets/modules-light.svg#gh-light-mode-only)
 ![Modules, and which of them a Spring Boot or a plain JVM service takes](docs/assets/modules-dark.svg#gh-dark-mode-only)
 
-A batcher takes single records, holds them in memory, cuts a batch when it is
+A batcher takes single records, holds them in memory, dispatches a batch when it is
 full or when the oldest record has waited long enough, and writes batches on a
 thread of its own. Around the write it adds recovery, back pressure, metrics and
 an orderly shutdown. It never builds a query: what a write is stays in your code.
@@ -216,13 +216,13 @@ has two threads of its own.
 - `accept` takes the lock, appends to the buffer and returns. It does no I/O.
 - The record that fills the batch carries it out to the queue; nothing else
   happens on the consumer thread.
-- The buffer thread, a daemon, watches the age of the oldest record and cuts a
+- The buffer thread, a daemon, watches the age of the oldest record and dispatches a
   batch once it is older than the max age.
 - The queue is bounded. When it is full the batcher applies the back-pressure
   setting: park the batch, reject the record, or wait for room.
 - One writer thread writes batches in order, one at a time.
 
-The same in time: a batch cut by size, one cut by age, and a write that fails once:
+The same in time: a batch dispatched by size, one by age, and a write that fails once:
 
 ![Calls on the consumer, buffer and writer threads](docs/assets/sequence-light.svg#gh-light-mode-only)
 ![Calls on the consumer, buffer and writer threads](docs/assets/sequence-dark.svg#gh-dark-mode-only)
@@ -239,9 +239,9 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batcher<T>` | entry point: `accept(record)`, `accept(records)`, start, stop | the only implementation |
 | `Batch<T>` | records, an id, the arrival of the first one | value type |
 | `BatchWriter<T>` | one insert of one batch | **yours**, there is no default |
-| `RecordBuffer<T>` | collect records and cut batches by a rule of its own | in memory, cut by size or by age on a daemon thread |
-| `BatchReadyListener<T>` | take a batch the buffer has cut; any number, added and removed at run time | the batcher, which puts it in the writing queue |
-| `WritingBatchQueue<T>` | hold cut batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
+| `RecordBuffer<T>` | collect records and dispatch batches by a rule of its own | in memory, dispatched by size or by age on a daemon thread |
+| `BatchReadyListener<T>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
+| `WritingBatchQueue<T>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
 | `WritingFallback<T>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | report every event; each method does nothing by default | none in core, Micrometer in `batcher-micrometer` |
 
@@ -258,7 +258,7 @@ A stage lets go of a batch only once the next one has taken it:
   throw from any leaves them in the buffer, and all the listeners get the batch
   again;
 - the writer takes a batch from the writing queue and confirms it once the batch
-  is written or parked; a stop that interrupts the write puts it back.
+  is written or parked; a stop that interrupts the write requeues it.
 
 In memory this costs nothing. For a durable buffer or queue it is the point
 where it commits, so a crash between the two steps repeats a batch instead of
@@ -314,11 +314,11 @@ if there was one. The reason tells a fallback what a replay would do:
 
 | Reason | Meaning | A replay |
 | --- | --- | --- |
-| `QUEUE_FULL` | the writing queue had no room | writes it |
+| `QUEUE_OVERFLOW` | the writing queue had no room | writes it |
 | `QUEUE_CLOSED` | a stop had closed the writing queue before the batch came | writes it |
-| `QUEUE_FAILED` | the writing queue threw on the batch | writes it |
-| `PERSIST_FAILED` | the storage refused these records one by one as well | fails again: a bad record |
-| `STOP_TIMED_OUT` | the stop ran out of its budget | writes it |
+| `ENQUEUE_FAILED` | the writing queue threw on the batch | writes it |
+| `PERSISTING_FAILED` | the storage refused these records one by one as well | fails again: a bad record |
+| `SHUTDOWN_PERIOD_EXPIRED` | `shutdown-await-period` ran out before the records were written | writes it |
 
 ## 9. Lifecycle and shutdown
 
@@ -333,12 +333,12 @@ Shutdown is the part that decides whether you lose data on every deploy.
 In order:
 
 1. The batcher stops accepting, and the buffer closes. What it still holds is
-   put in the writing queue, waiting for room within the budget.
+   enqueued in the writing queue, waiting for room within the budget.
 2. The queue closes. The writer works through what is in it until it is empty
    or the budget is spent.
 3. A write still running at the end of the budget is interrupted and its batch
-   put back. Whatever the queue still holds goes to the fallback as
-   `STOP_TIMED_OUT`.
+   requeued. Whatever the queue still holds goes to the fallback as
+   `SHUTDOWN_PERIOD_EXPIRED`.
 
 A durable buffer or queue keeps what it holds instead, for the next start.
 
@@ -410,9 +410,9 @@ that keeps inserts at roughly one per second per table.
 - `fallback` parks the batch and returns;
 - `reject` checks for room before the record goes into the buffer and throws
   from `accept` when there is none, so the source keeps the record and
-  redelivers it. A batch that is already cut is never thrown back: its records
+  redelivers it. A batch that is already dispatched is never thrown back: its records
   belong to callers that have returned;
-- `block` makes the thread that cut the batch wait for room, up to a timeout,
+- `block` makes the thread that dispatched the batch wait for room, up to a timeout,
   then parks it. A message listener that waits stops acknowledging, and the
   broker stops delivering.
 
@@ -434,7 +434,7 @@ it is wired in when Micrometer is on the classpath.
 | `batcher.records` | counter, records | `result` | persisted, sent to the fallback or lost? |
 | `batcher.buffer.records` | gauge, records | | how full is the buffer? |
 | `batcher.buffer.age` | gauge, seconds | | how long has the oldest record waited? |
-| `batcher.buffer.cuts` | counter, batches | `reason` | cut at capacity or at max age? |
+| `batcher.buffer.dispatched` | counter, batches | `reason` | dispatched at capacity or at max age? |
 | `batcher.batch.write` | timer | `mode` | how slow are writes, and how often do we recover? |
 | `batcher.batch.size` | distribution summary, records | | are batches full? |
 | `batcher.writer.queue.size` | gauge, batches | | is the storage keeping up? |

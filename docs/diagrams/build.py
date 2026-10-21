@@ -148,7 +148,7 @@ def pipeline(pal):
 		xs.append(x)
 		x += w + gap
 	(px, pw), (bx, bw), (qx, qw), (wx, ww), (cx, cw) = [(x, w) for x, (_, w) in zip(xs, cols)]
-	notes = ["records, one at a time", "cut at 500 records or 1 second", "at most 16 batches", "one write at a time", "one part per write"]
+	notes = ["records, one at a time", "dispatch at 500 records or 1 second", "at most 16 batches", "one write at a time", "one part per write"]
 	for x, (title, _), note in zip(xs, cols, notes):
 		a.label(x, 26, title, note)
 	for (x0, w0), x1 in zip([(px, pw), (bx, bw), (qx, qw), (wx, ww)], [bx, qx, wx, cx]):
@@ -400,14 +400,14 @@ def types(pal):
 			a.t(x + 16, y + 48 + j * 18, line, color=(hue + "-soft") if hue else "soft", mono=mono, size=12 if mono else NOTE)
 
 	card(0, top, "batcher", [("accept(record)", True), ("start(), stop()", True)])
-	card(1, top, "record buffer", [("holds records and", False), ("cuts them into batches", False)])
-	card(2, top, "writing batch queue", [("put(batch)", True), ("take(), confirm()", True)])
+	card(1, top, "record buffer", [("holds records and", False), ("dispatches them in batches", False)])
+	card(2, top, "writing batch queue", [("enqueue(batch)", True), ("take(), confirm()", True)])
 	card(3, top, "batch writer", [("persist(batch)", True), ("persist(record)", True)], "green", "yours")
 
 	card(0, low, "batch", [("records, an id and the", False), ("first record's arrival", False)])
 	a.bar(xs[0] + ws[0] - 16 - BAR_W, low + 13, h=16)
-	card(1, low, "batch ready listener", [("takes each cut batch;", False), ("default: the batcher", False)])
-	card(2, low, "put result", [("in queue, queue full", False), ("or queue closed", False)])
+	card(1, low, "batch ready listener", [("takes each dispatched batch;", False), ("default: the batcher", False)])
+	card(2, low, "enqueue status", [("enqueued, queue overflow", False), ("or queue closed", False)])
 	card(3, low, "writing fallback", [("what was not written,", False), ("and why", False)], "amber")
 
 	# along the chain: an arrow and what it carries, centred in the gap
@@ -439,7 +439,7 @@ def types(pal):
 
 # ---------------------------------------------------------------------- 7
 def sequence(pal):
-	# sequence diagram: the consumer thread fills a batch, the buffer thread cuts one by age, the writer thread
+	# sequence diagram: the consumer thread fills a batch, the buffer thread dispatches one by age, the writer thread
 	# writes a batch that fails once; each thread is a plate over the lifelines it uses, the queue belongs to none
 	a = Art(880, 504, pal)
 	parts = [

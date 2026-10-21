@@ -1,9 +1,9 @@
 package pro.vlprojects.batcher.metric
 
 /** Every way one run of a buffer's max-age check can end. */
-public enum class AgeCheckResult {
+public enum class AgeCheckStatus {
 
-    BATCH_CUT,
+    BATCH_DISPATCHED,
 
     /** Woken before the wait was over, so the check is back for the time that was left. */
     RESCHEDULED,

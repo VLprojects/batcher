@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.metric
 
-public enum class BatchCutReason {
+public enum class BatchDispatchReason {
 
     /** Records come in faster than the buffer's max age. */
     CAPACITY_REACHED,

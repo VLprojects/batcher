@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.model
+package pro.vlprojects.batcher.dto
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -12,17 +12,20 @@ class BatchTests {
 
     @Test
     fun `a batch holds at least one record`() {
-        assertThrows<IllegalArgumentException> { Batch(emptyList<String>(), at) }
+        assertThrows<IllegalArgumentException> { Batch(records = emptyList<String>(), firstRecordAt = at) }
     }
 
     @Test
     fun `every new batch gets an id of its own`() {
-        assertNotEquals(Batch(listOf("record"), at).id, Batch(listOf("record"), at).id)
+        val first = Batch(records = listOf("record"), firstRecordAt = at)
+        val second = Batch(records = listOf("record"), firstRecordAt = at)
+
+        assertNotEquals(first.id, second.id)
     }
 
     @Test
     fun `the log line of a batch carries no records`() {
-        val batch = Batch(listOf("secret"), at)
+        val batch = Batch(records = listOf("secret"), firstRecordAt = at)
 
         assertFalse("secret" in batch.toString())
     }

@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.metric
 
-public enum class RecordWriteResult {
+public enum class RecordWritingStatus {
 
     PERSISTED,
 
