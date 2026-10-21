@@ -250,10 +250,12 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `RecordBuffer<R>` | hold records until the batcher dispatches them, in batches of at most `batch-size`, and keep a dispatched batch until it is written or parked (`confirm`); no schedule and no listeners of its own | in memory |
 | `UsageMeasurable` | what a buffer reports about the records it collects, one subtype per kind: `CapacityMeasurable` (`countRecords()`), `DurationMeasurable` (`measureDuration()`) | the in-memory buffer reports both |
 | `DispatchPolicy<U>` | one rule for when a batch is due, over one kind of usage, and its `checkInterval`: how often the batcher asks it with no new record; fixed when the batcher is built, taken as policies over its buffer's type, so one whose usage it does not report does not compile; a repeated name is refused | `CapacityDispatchPolicy` (`batch-size`, checked every second as a backstop) and `DurationDispatchPolicy` (`buffering-max-duration`, checked every `buffering-check-interval`) |
-| `BufferBackPressurePolicy<U>` | what a full buffer means: asked before every record goes in, over one kind of usage like a dispatch policy; the first that requires back pressure (`requiresBackPressure`) decides by its `BackPressureAction`: `REJECT` (the source keeps the record), `DISCARD` (dropped and counted) or `FALLBACK` | `CapacityBackPressurePolicy` (`maxRecords`) |
+| `BufferBackPressurePolicy<U>` | what a full buffer means: asked before every record goes in, over one kind of usage like a dispatch policy; once one requires back pressure (`requiresBackPressure`), the record goes to the `AcceptingFallback` | `CapacityBackPressurePolicy` (`maxRecords`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
 | `BatchDispatchedListener<R>` | take a batch the batcher has dispatched; any number, added to the batcher and removed at run time | the writing queue |
 | `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
+| `AcceptingFallback<R>` | decide what becomes of records back pressure turned away before the buffer: throw to reject them to the source, or park or drop them | reject |
+| `EnqueuingFallback<R>` | keep a dispatched batch the writing queue did not take, with the reason and the error | none: log at ERROR and count |
 | `WritingFallback<R>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | report every event; each method does nothing by default | none in core, Micrometer in `batcher-micrometer` |
 
@@ -300,6 +302,8 @@ keep the defaults while another one does not.
 | Seam | Replace it when |
 | --- | --- |
 | `BatchWriter<R>` | always: this is your insert |
+| `AcceptingFallback<R>` | records turned away must be parked or dropped rather than rejected |
+| `EnqueuingFallback<R>` | batches the queue had no room for must go somewhere: a log, a table, back to a queue |
 | `WritingFallback<R>` | failed records must go somewhere: a log, a table, back to a queue |
 | `BufferBackPressurePolicy<U>` | the buffer must be bounded by something other than a record count, bytes say |
 | `DispatchPolicy<U>` | a batch is due by a rule of yours, for example a byte budget over a `MemoryMeasurable` of its own; it adds to the two defaults |
@@ -329,17 +333,18 @@ pass you cannot tell those apart, and you lose good records because of a bad
 neighbour.
 
 The retry is `persist(record)` for each record of the failed batch. What is
-parked reaches the fallback as records, with one of five reasons and the error,
-if there was one. The reason tells a fallback what a replay would do:
+parked reaches the writing fallback as records, with the reason and the error,
+if there was one. Each stage has a fallback of its own, and the reason tells it
+what a replay would do:
 
-| Reason | Meaning | A replay |
-| --- | --- | --- |
-| `BUFFER_OVERFLOW` | a buffer back-pressure policy turned the record away | writes it |
-| `QUEUE_OVERFLOW` | the writing queue had no room | writes it |
-| `QUEUE_CLOSED` | a stop had closed the writing queue before the batch came | writes it |
-| `ENQUEUE_FAILED` | the writing queue threw on the batch | writes it |
-| `PERSISTING_FAILED` | the storage refused these records one by one as well | fails again: a bad record |
-| `SHUTDOWN_PERIOD_EXPIRED` | `shutdown-await-period` ran out before the records were written | writes it |
+| Fallback | Reason | Meaning | A replay |
+| --- | --- | --- | --- |
+| `AcceptingFallback` | the policy itself | a buffer back-pressure policy turned the record away | writes it |
+| `EnqueuingFallback` | `QUEUE_OVERFLOW` | the writing queue had no room | writes it |
+| `EnqueuingFallback` | `QUEUE_CLOSED` | a stop had closed the writing queue before the batch came | writes it |
+| `EnqueuingFallback` | `ENQUEUE_FAILED` | the writing queue threw on the batch | writes it |
+| `WritingFallback` | `PERSISTING_FAILED` | the storage refused these records one by one as well | fails again: a bad record |
+| `WritingFallback` | `SHUTDOWN_PERIOD_EXPIRED` | `shutdown-await-period` ran out before the records were written | writes it |
 
 ## 9. Lifecycle and shutdown
 
@@ -432,7 +437,7 @@ the size that keeps inserts at roughly one per second per table.
 `back-pressure` picks a `WritingBackPressurePolicy`, and a bean of your own
 replaces it. It decides what a full queue means:
 
-- `fallback` parks the batch and returns;
+- `fallback` hands the batch to the `EnqueuingFallback` and returns;
 - `reject` checks for room before the record goes into the buffer and throws
   from `accept` when there is none, so the source keeps the record and
   redelivers it. A batch that is already dispatched is never thrown back: its records
@@ -455,11 +460,11 @@ it is wired in when Micrometer is on the classpath.
 
 | Series | Type | Tags | Answers |
 | --- | --- | --- | --- |
-| `batcher.acceptance` | counter, records | `result` | are records being rejected, discarded or parked? |
+| `batcher.acceptance` | counter, records | `result` | are records being turned away? |
 | `batcher.records` | counter, records | `result` | persisted, sent to the fallback or lost? |
 | `batcher.buffer.records` | gauge, records | | how full is the buffer? |
 | `batcher.buffer.age` | gauge, seconds | | how long has the oldest record waited? |
-| `batcher.buffer.back.pressure` | counter, records | `policy`, `action` | which limit turns records away, and how? |
+| `batcher.buffer.back.pressure` | counter, records | `policy` | which limit turns records away, and how? |
 | `batcher.buffer.dispatched` | counter, batches | `policy` | dispatched at capacity, at max duration or on close? |
 | `batcher.batch.write` | timer | `mode` | how slow are writes, and how often do we recover? |
 | `batcher.batch.size` | distribution summary, records | | are batches full? |

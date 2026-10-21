@@ -15,7 +15,7 @@ public interface BufferMeter {
     /** What the buffer still held when it closed, dispatched with no policy met. */
     public fun incrementBatchDispatchingOnClose() {}
 
-    /** [records] turned away once [policy] required back pressure; its name and action are the tags. */
+    /** [records] turned away once [policy] required back pressure; its name is the tag. */
     public fun incrementBackPressureApplying(records: Int, policy: BufferBackPressurePolicy<*>) {}
 
     /** Every scheduled check of [policy], not only the failures: the sum is the whole work of the schedule. */

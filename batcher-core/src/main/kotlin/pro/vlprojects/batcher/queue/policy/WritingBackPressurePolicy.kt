@@ -10,7 +10,7 @@ import java.time.Duration
  */
 public interface WritingBackPressurePolicy {
 
-    /** How long enqueue waits for room; then the batch goes to the fallback as `QUEUE_OVERFLOW`. */
+    /** How long enqueue waits for room; then the batch goes to the enqueuing fallback as `QUEUE_OVERFLOW`. */
     public val enqueueTimeout: Duration
 
     /** Asked before the record goes into the buffer: false rejects it, and the source keeps it. */

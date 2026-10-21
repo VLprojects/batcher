@@ -7,24 +7,13 @@ public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
 	public abstract fun open ()V
 }
 
-public final class pro/vlprojects/batcher/buffer/policy/BackPressureAction : java/lang/Enum {
-	public static final field DISCARD Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
-	public static final field FALLBACK Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
-	public static final field REJECT Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
-	public static fun values ()[Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
-}
-
 public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferBackPressurePolicy {
-	public abstract fun getAction ()Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun requiresBackPressure (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 }
 
 public final class pro/vlprojects/batcher/buffer/policy/CapacityBackPressurePolicy : pro/vlprojects/batcher/buffer/policy/BufferBackPressurePolicy {
-	public fun <init> (ILpro/vlprojects/batcher/buffer/policy/BackPressureAction;)V
-	public fun getAction ()Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
+	public fun <init> (I)V
 	public final fun getMaxRecords ()I
 	public fun getName ()Ljava/lang/String;
 	public fun requiresBackPressure (Lpro/vlprojects/batcher/buffer/usage/CapacityMeasurable;)Z
@@ -85,21 +74,35 @@ public abstract interface class pro/vlprojects/batcher/data/Record {
 	public abstract fun getPayload ()Ljava/lang/Object;
 }
 
-public final class pro/vlprojects/batcher/fallback/FallbackReason : java/lang/Enum {
-	public static final field BUFFER_OVERFLOW Lpro/vlprojects/batcher/fallback/FallbackReason;
-	public static final field ENQUEUE_FAILED Lpro/vlprojects/batcher/fallback/FallbackReason;
-	public static final field PERSISTING_FAILED Lpro/vlprojects/batcher/fallback/FallbackReason;
-	public static final field QUEUE_CLOSED Lpro/vlprojects/batcher/fallback/FallbackReason;
-	public static final field QUEUE_OVERFLOW Lpro/vlprojects/batcher/fallback/FallbackReason;
-	public static final field SHUTDOWN_PERIOD_EXPIRED Lpro/vlprojects/batcher/fallback/FallbackReason;
+public abstract interface class pro/vlprojects/batcher/fallback/AcceptingFallback {
+	public abstract fun handle (Ljava/util/Collection;Lpro/vlprojects/batcher/buffer/policy/BufferBackPressurePolicy;)V
+	public fun handle (Lpro/vlprojects/batcher/data/Record;Lpro/vlprojects/batcher/buffer/policy/BufferBackPressurePolicy;)V
+}
+
+public abstract interface class pro/vlprojects/batcher/fallback/EnqueuingFallback {
+	public abstract fun handle (Lpro/vlprojects/batcher/data/Batch;Lpro/vlprojects/batcher/fallback/EnqueuingFallbackReason;Ljava/lang/Throwable;)V
+}
+
+public final class pro/vlprojects/batcher/fallback/EnqueuingFallbackReason : java/lang/Enum {
+	public static final field ENQUEUE_FAILED Lpro/vlprojects/batcher/fallback/EnqueuingFallbackReason;
+	public static final field QUEUE_CLOSED Lpro/vlprojects/batcher/fallback/EnqueuingFallbackReason;
+	public static final field QUEUE_OVERFLOW Lpro/vlprojects/batcher/fallback/EnqueuingFallbackReason;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/fallback/FallbackReason;
-	public static fun values ()[Lpro/vlprojects/batcher/fallback/FallbackReason;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/fallback/EnqueuingFallbackReason;
+	public static fun values ()[Lpro/vlprojects/batcher/fallback/EnqueuingFallbackReason;
 }
 
 public abstract interface class pro/vlprojects/batcher/fallback/WritingFallback {
-	public abstract fun handle (Ljava/util/Collection;Lpro/vlprojects/batcher/fallback/FallbackReason;Ljava/lang/Throwable;)V
-	public fun handle (Lpro/vlprojects/batcher/data/Record;Lpro/vlprojects/batcher/fallback/FallbackReason;Ljava/lang/Throwable;)V
+	public abstract fun handle (Ljava/util/Collection;Lpro/vlprojects/batcher/fallback/WritingFallbackReason;Ljava/lang/Throwable;)V
+	public fun handle (Lpro/vlprojects/batcher/data/Record;Lpro/vlprojects/batcher/fallback/WritingFallbackReason;Ljava/lang/Throwable;)V
+}
+
+public final class pro/vlprojects/batcher/fallback/WritingFallbackReason : java/lang/Enum {
+	public static final field PERSISTING_FAILED Lpro/vlprojects/batcher/fallback/WritingFallbackReason;
+	public static final field SHUTDOWN_PERIOD_EXPIRED Lpro/vlprojects/batcher/fallback/WritingFallbackReason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/fallback/WritingFallbackReason;
+	public static fun values ()[Lpro/vlprojects/batcher/fallback/WritingFallbackReason;
 }
 
 public abstract interface class pro/vlprojects/batcher/listener/BatchDispatchedListener {
@@ -108,8 +111,6 @@ public abstract interface class pro/vlprojects/batcher/listener/BatchDispatchedL
 
 public final class pro/vlprojects/batcher/metric/AcceptanceResult : java/lang/Enum {
 	public static final field ACCEPTED Lpro/vlprojects/batcher/metric/AcceptanceResult;
-	public static final field DISCARDED Lpro/vlprojects/batcher/metric/AcceptanceResult;
-	public static final field FALLBACK Lpro/vlprojects/batcher/metric/AcceptanceResult;
 	public static final field REJECTED Lpro/vlprojects/batcher/metric/AcceptanceResult;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/metric/AcceptanceResult;
