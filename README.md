@@ -243,7 +243,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (`countRecords()`), `BufferDurationUsage` (`measureDuration(now)`) | the in-memory buffer reports both |
 | `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, which refuses a policy whose usage it does not report | `CapacityBufferingPolicy` (`batch-size`) and `MaxDurationBufferingPolicy` (`buffering-max-duration`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
-| `BatchReadyListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
+| `BatchDispatchedListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
 | `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
 | `WritingFallback<R>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | report every event; each method does nothing by default | none in core, Micrometer in `batcher-micrometer` |
@@ -257,7 +257,7 @@ delivers the batch again.
 
 A stage lets go of a batch only once the next one has taken it:
 
-- the buffer drops the records once every `BatchReadyListener` has returned; a
+- the buffer drops the records once every `BatchDispatchedListener` has returned; a
   throw from any leaves them in the buffer, and all the listeners get the batch
   again;
 - the writer takes a batch from the writing queue and confirms it once the batch

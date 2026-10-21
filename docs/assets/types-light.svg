@@ -24,7 +24,7 @@
     <text x="32.0" y="206.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">first record's arrival</text>
     <rect x="150.0" y="153.0" width="6.0" height="16.0" rx="1.5" fill="#1A7CFF"/>
     <rect x="212.0" y="140.0" width="204.0" height="76.0" rx="6" fill="#FFFFFF"/>
-    <text x="228.0" y="166.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">batch ready listener</text>
+    <text x="228.0" y="166.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">batch dispatched listener</text>
     <text x="228.0" y="188.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">takes each dispatched batch;</text>
     <text x="228.0" y="206.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">default: the batcher</text>
     <rect x="456.0" y="140.0" width="196.0" height="76.0" rx="6" fill="#FFFFFF"/>

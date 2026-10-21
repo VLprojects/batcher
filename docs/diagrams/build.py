@@ -406,7 +406,7 @@ def types(pal):
 
 	card(0, low, "batch", [("records, an id and the", False), ("first record's arrival", False)])
 	a.bar(xs[0] + ws[0] - 16 - BAR_W, low + 13, h=16)
-	card(1, low, "batch ready listener", [("takes each dispatched batch;", False), ("default: the batcher", False)])
+	card(1, low, "batch dispatched listener", [("takes each dispatched batch;", False), ("default: the batcher", False)])
 	card(2, low, "enqueue status", [("enqueued, queue overflow", False), ("or queue closed", False)])
 	card(3, low, "writing fallback", [("what was not written,", False), ("and why", False)], "amber")
 

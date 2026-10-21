@@ -1,11 +1,11 @@
 public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer : pro/vlprojects/batcher/buffer/usage/BufferUsage {
 	public abstract fun add (Ljava/lang/Object;)V
 	public fun add (Ljava/util/Collection;)V
-	public abstract fun addListener (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
+	public abstract fun addListener (Lpro/vlprojects/batcher/listener/BatchDispatchedListener;)V
 	public abstract fun close ()Lpro/vlprojects/batcher/dto/Batch;
 	public abstract fun getPolicies ()Ljava/util/List;
 	public abstract fun open ()V
-	public abstract fun removeListener (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
+	public abstract fun removeListener (Lpro/vlprojects/batcher/listener/BatchDispatchedListener;)V
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
@@ -76,7 +76,7 @@ public abstract interface class pro/vlprojects/batcher/fallback/WritingFallback 
 	public abstract fun handle (Ljava/util/Collection;Lpro/vlprojects/batcher/fallback/FallbackReason;Ljava/lang/Throwable;)V
 }
 
-public abstract interface class pro/vlprojects/batcher/listener/BatchReadyListener {
+public abstract interface class pro/vlprojects/batcher/listener/BatchDispatchedListener {
 	public abstract fun handle (Lpro/vlprojects/batcher/dto/Batch;)V
 }
 

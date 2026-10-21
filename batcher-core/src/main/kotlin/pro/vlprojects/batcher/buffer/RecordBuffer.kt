@@ -3,7 +3,7 @@ package pro.vlprojects.batcher.buffer
 import pro.vlprojects.batcher.buffer.policy.BufferingPolicy
 import pro.vlprojects.batcher.buffer.usage.BufferUsage
 import pro.vlprojects.batcher.dto.Batch
-import pro.vlprojects.batcher.listener.BatchReadyListener
+import pro.vlprojects.batcher.listener.BatchDispatchedListener
 
 /**
  * Collects records and dispatches them in batches once any of its [policies] is met. It reports its
@@ -24,9 +24,9 @@ public interface RecordBuffer<R : Any> : BufferUsage {
      * throw from any keeps the batch, and all of them get it again: a listener has to bear a repeat,
      * which it can tell by [Batch.id].
      */
-    public fun addListener(listener: BatchReadyListener<R>)
+    public fun addListener(listener: BatchDispatchedListener<R>)
 
-    public fun removeListener(listener: BatchReadyListener<R>)
+    public fun removeListener(listener: BatchDispatchedListener<R>)
 
     /**
      * Before the first record, once the listeners are in: an in-memory buffer starts its clock, a
