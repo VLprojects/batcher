@@ -1,7 +1,7 @@
 package pro.vlprojects.batcher.metric
 
-/** Every way one run of a buffer's max-age check can end. */
-public enum class AgeCheckStatus {
+/** Every way one run of a buffer's max-duration check can end. */
+public enum class DurationCheckStatus {
 
     BATCH_DISPATCHED,
 

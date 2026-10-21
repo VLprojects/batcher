@@ -439,7 +439,7 @@ def types(pal):
 
 # ---------------------------------------------------------------------- 7
 def sequence(pal):
-	# sequence diagram: the consumer thread fills a batch, the buffer thread dispatches one by age, the writer thread
+	# sequence diagram: the consumer thread fills a batch, the buffer thread dispatches one by duration, the writer thread
 	# writes a batch that fails once; each thread is a plate over the lifelines it uses, the queue belongs to none
 	a = Art(880, 504, pal)
 	parts = [
@@ -496,7 +496,7 @@ def sequence(pal):
 	msg(RB, Q, 196, "a full batch", "blue")
 	msg(BT, P, 220, "returns, no I/O", "line")
 
-	msg(P, RB, 316, "max age reached", edge=0)
+	msg(P, RB, 316, "max duration reached", edge=0)
 	msg(RB, Q, 340, "a short batch", "blue")
 
 	msg(Q, W, 252, "next batch", "blue", tx=wr + 16)

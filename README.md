@@ -37,7 +37,7 @@ Writing in groups needs more than a list and a timer:
 
 | Need | Why |
 | --- | --- |
-| Dispatch by size and by age | A full batch must go at once; a half-full batch must not wait forever. |
+| Dispatch by size and by duration | A full batch must go at once; a half-full batch must not wait forever. |
 | Accept while writing | The consumer must not wait for the previous batch to land. |
 | Bounded memory | A slow storage must not turn into an unbounded queue. |
 | Attribute failures | When a batch fails, you need to know which records to retry and which to park. |
@@ -216,13 +216,13 @@ has two threads of its own.
 - `accept` takes the lock, appends to the buffer and returns. It does no I/O.
 - The record that fills the batch carries it out to the queue; nothing else
   happens on the consumer thread.
-- The buffer thread, a daemon, watches the age of the oldest record and dispatches a
-  batch once it is older than the max age.
+- The buffer thread, a daemon, watches how long the first record has waited and
+  dispatches a batch once that is past the max duration.
 - The queue is bounded. When it is full the batcher applies the back-pressure
   setting: park the batch, reject the record, or wait for room.
 - One writer thread writes batches in order, one at a time.
 
-The same in time: a batch dispatched by size, one by age, and a write that fails once:
+The same in time: a batch dispatched by size, one by duration, and a write that fails once:
 
 ![Calls on the consumer, buffer and writer threads](docs/assets/sequence-light.svg#gh-light-mode-only)
 ![Calls on the consumer, buffer and writer threads](docs/assets/sequence-dark.svg#gh-dark-mode-only)
@@ -239,9 +239,9 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batcher<R>` | entry point: `accept(record)`, `accept(records)`, start, stop | the only implementation |
 | `Batch<R>` | records, an id, the arrival of the first one | value type |
 | `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
-| `RecordBuffer<R>` | collect records and dispatch a batch once any of its policies is met | in memory, with a daemon thread for the age |
-| `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `CapacityUsage` (size), `AgeUsage` (the first record's arrival) | the in-memory buffer reports both |
-| `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, which refuses a policy whose usage it does not report | `CapacityBufferingPolicy` (`batch-size`) and `MaxAgeBufferingPolicy` (`buffering-max-duration`) |
+| `RecordBuffer<R>` | collect records and dispatch a batch once any of its policies is met | in memory, with a daemon thread for the duration |
+| `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (size), `BufferDurationUsage` (the first record's arrival) | the in-memory buffer reports both |
+| `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, which refuses a policy whose usage it does not report | `CapacityBufferingPolicy` (`batch-size`) and `MaxDurationBufferingPolicy` (`buffering-max-duration`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
 | `BatchReadyListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
 | `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
@@ -439,7 +439,7 @@ it is wired in when Micrometer is on the classpath.
 | `batcher.records` | counter, records | `result` | persisted, sent to the fallback or lost? |
 | `batcher.buffer.records` | gauge, records | | how full is the buffer? |
 | `batcher.buffer.age` | gauge, seconds | | how long has the oldest record waited? |
-| `batcher.buffer.dispatched` | counter, batches | `policy` | dispatched at capacity or at max age? |
+| `batcher.buffer.dispatched` | counter, batches | `policy` | dispatched at capacity or at max duration? |
 | `batcher.batch.write` | timer | `mode` | how slow are writes, and how often do we recover? |
 | `batcher.batch.size` | distribution summary, records | | are batches full? |
 | `batcher.writer.queue.size` | gauge, batches | | is the storage keeping up? |

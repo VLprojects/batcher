@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import pro.vlprojects.batcher.buffer.AgeUsage
-import pro.vlprojects.batcher.buffer.CapacityUsage
+import pro.vlprojects.batcher.buffer.BufferCapacityUsage
+import pro.vlprojects.batcher.buffer.BufferDurationUsage
 import java.time.Duration
 import java.time.Instant
 
@@ -24,29 +24,29 @@ class BufferingPolicyTests {
     }
 
     @Test
-    fun `the max age is met once the first record has waited it`() {
-        val policy = MaxAgeBufferingPolicy(maxAge = Duration.ofSeconds(1))
+    fun `the max duration is met once the first record has waited it`() {
+        val policy = MaxDurationBufferingPolicy(maxDuration = Duration.ofSeconds(1))
 
-        assertFalse(policy.isMet(ageUsage(firstRecordAt = at), at.plusMillis(999)))
-        assertTrue(policy.isMet(ageUsage(firstRecordAt = at), at.plusSeconds(1)))
-        assertEquals(at.plusSeconds(1), policy.nextCheckAt(ageUsage(firstRecordAt = at)))
+        assertFalse(policy.isMet(durationUsage(firstRecordAt = at), at.plusMillis(999)))
+        assertTrue(policy.isMet(durationUsage(firstRecordAt = at), at.plusSeconds(1)))
+        assertEquals(at.plusSeconds(1), policy.nextCheckAt(durationUsage(firstRecordAt = at)))
     }
 
     @Test
-    fun `an empty buffer never meets the max age`() {
-        val policy = MaxAgeBufferingPolicy(maxAge = Duration.ofSeconds(1))
+    fun `an empty buffer never meets the max duration`() {
+        val policy = MaxDurationBufferingPolicy(maxDuration = Duration.ofSeconds(1))
 
-        assertFalse(policy.isMet(ageUsage(firstRecordAt = null), at.plusSeconds(10)))
-        assertNull(policy.nextCheckAt(ageUsage(firstRecordAt = null)))
+        assertFalse(policy.isMet(durationUsage(firstRecordAt = null), at.plusSeconds(10)))
+        assertNull(policy.nextCheckAt(durationUsage(firstRecordAt = null)))
     }
 
-    private fun capacityUsage(size: Int): CapacityUsage =
-        object : CapacityUsage {
+    private fun capacityUsage(size: Int): BufferCapacityUsage =
+        object : BufferCapacityUsage {
             override val size = size
         }
 
-    private fun ageUsage(firstRecordAt: Instant?): AgeUsage =
-        object : AgeUsage {
+    private fun durationUsage(firstRecordAt: Instant?): BufferDurationUsage =
+        object : BufferDurationUsage {
             override val firstRecordAt = firstRecordAt
         }
 }

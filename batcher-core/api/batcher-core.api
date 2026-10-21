@@ -1,12 +1,12 @@
-public abstract interface class pro/vlprojects/batcher/buffer/AgeUsage : pro/vlprojects/batcher/buffer/BufferUsage {
+public abstract interface class pro/vlprojects/batcher/buffer/BufferCapacityUsage : pro/vlprojects/batcher/buffer/BufferUsage {
+	public abstract fun getSize ()I
+}
+
+public abstract interface class pro/vlprojects/batcher/buffer/BufferDurationUsage : pro/vlprojects/batcher/buffer/BufferUsage {
 	public abstract fun getFirstRecordAt ()Ljava/time/Instant;
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/BufferUsage {
-}
-
-public abstract interface class pro/vlprojects/batcher/buffer/CapacityUsage : pro/vlprojects/batcher/buffer/BufferUsage {
-	public abstract fun getSize ()I
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer : pro/vlprojects/batcher/buffer/BufferUsage {
@@ -59,24 +59,24 @@ public final class pro/vlprojects/batcher/metric/AcceptanceResult : java/lang/En
 	public static fun values ()[Lpro/vlprojects/batcher/metric/AcceptanceResult;
 }
 
-public final class pro/vlprojects/batcher/metric/AgeCheckStatus : java/lang/Enum {
-	public static final field BATCH_DISPATCHED Lpro/vlprojects/batcher/metric/AgeCheckStatus;
-	public static final field BUFFER_EMPTY Lpro/vlprojects/batcher/metric/AgeCheckStatus;
-	public static final field FAILED Lpro/vlprojects/batcher/metric/AgeCheckStatus;
-	public static final field RESCHEDULED Lpro/vlprojects/batcher/metric/AgeCheckStatus;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/metric/AgeCheckStatus;
-	public static fun values ()[Lpro/vlprojects/batcher/metric/AgeCheckStatus;
-}
-
 public abstract interface class pro/vlprojects/batcher/metric/BatcherMeter {
 	public fun incrementRecordAccepting (ILpro/vlprojects/batcher/metric/AcceptanceResult;)V
 }
 
 public abstract interface class pro/vlprojects/batcher/metric/BufferMeter {
-	public fun incrementAgeChecked (Lpro/vlprojects/batcher/metric/AgeCheckStatus;)V
 	public fun incrementBatchDispatching (Lpro/vlprojects/batcher/policy/buffering/BufferingPolicy;)V
+	public fun incrementDurationChecked (Lpro/vlprojects/batcher/metric/DurationCheckStatus;)V
 	public fun watchBuffer (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
+}
+
+public final class pro/vlprojects/batcher/metric/DurationCheckStatus : java/lang/Enum {
+	public static final field BATCH_DISPATCHED Lpro/vlprojects/batcher/metric/DurationCheckStatus;
+	public static final field BUFFER_EMPTY Lpro/vlprojects/batcher/metric/DurationCheckStatus;
+	public static final field FAILED Lpro/vlprojects/batcher/metric/DurationCheckStatus;
+	public static final field RESCHEDULED Lpro/vlprojects/batcher/metric/DurationCheckStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/metric/DurationCheckStatus;
+	public static fun values ()[Lpro/vlprojects/batcher/metric/DurationCheckStatus;
 }
 
 public final class pro/vlprojects/batcher/metric/RecordWritingStatus : java/lang/Enum {
@@ -138,19 +138,19 @@ public final class pro/vlprojects/batcher/policy/buffering/CapacityBufferingPoli
 	public final fun getCapacity ()I
 	public fun getName ()Ljava/lang/String;
 	public fun getUsageType ()Ljava/lang/Class;
+	public fun isMet (Lpro/vlprojects/batcher/buffer/BufferCapacityUsage;Ljava/time/Instant;)Z
 	public synthetic fun isMet (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Z
-	public fun isMet (Lpro/vlprojects/batcher/buffer/CapacityUsage;Ljava/time/Instant;)Z
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class pro/vlprojects/batcher/policy/buffering/MaxAgeBufferingPolicy : pro/vlprojects/batcher/policy/buffering/BufferingPolicy {
+public final class pro/vlprojects/batcher/policy/buffering/MaxDurationBufferingPolicy : pro/vlprojects/batcher/policy/buffering/BufferingPolicy {
 	public fun <init> (Ljava/time/Duration;)V
-	public final fun getMaxAge ()Ljava/time/Duration;
+	public final fun getMaxDuration ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
 	public fun getUsageType ()Ljava/lang/Class;
-	public fun isMet (Lpro/vlprojects/batcher/buffer/AgeUsage;Ljava/time/Instant;)Z
+	public fun isMet (Lpro/vlprojects/batcher/buffer/BufferDurationUsage;Ljava/time/Instant;)Z
 	public synthetic fun isMet (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Z
-	public fun nextCheckAt (Lpro/vlprojects/batcher/buffer/AgeUsage;)Ljava/time/Instant;
+	public fun nextCheckAt (Lpro/vlprojects/batcher/buffer/BufferDurationUsage;)Ljava/time/Instant;
 	public synthetic fun nextCheckAt (Lpro/vlprojects/batcher/buffer/BufferUsage;)Ljava/time/Instant;
 	public fun toString ()Ljava/lang/String;
 }
