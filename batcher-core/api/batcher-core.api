@@ -1,15 +1,20 @@
-public abstract interface class pro/vlprojects/batcher/buffer/BufferUsage {
+public abstract interface class pro/vlprojects/batcher/buffer/AgeUsage : pro/vlprojects/batcher/buffer/BufferUsage {
 	public abstract fun getFirstRecordAt ()Ljava/time/Instant;
+}
+
+public abstract interface class pro/vlprojects/batcher/buffer/BufferUsage {
+}
+
+public abstract interface class pro/vlprojects/batcher/buffer/CapacityUsage : pro/vlprojects/batcher/buffer/BufferUsage {
 	public abstract fun getSize ()I
 }
 
-public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
+public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer : pro/vlprojects/batcher/buffer/BufferUsage {
 	public abstract fun add (Ljava/lang/Object;)V
 	public fun add (Ljava/util/Collection;)V
 	public abstract fun addListener (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
 	public abstract fun close ()Lpro/vlprojects/batcher/dto/Batch;
 	public abstract fun getPolicies ()Ljava/util/List;
-	public abstract fun getUsage ()Lpro/vlprojects/batcher/buffer/BufferUsage;
 	public abstract fun isDurable ()Z
 	public abstract fun removeListener (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
 }
@@ -123,6 +128,7 @@ public abstract interface class pro/vlprojects/batcher/policy/backpressure/Writi
 
 public abstract interface class pro/vlprojects/batcher/policy/buffering/BufferingPolicy {
 	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getUsageType ()Ljava/lang/Class;
 	public abstract fun isMet (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Z
 	public fun nextCheckAt (Lpro/vlprojects/batcher/buffer/BufferUsage;)Ljava/time/Instant;
 }
@@ -131,7 +137,9 @@ public final class pro/vlprojects/batcher/policy/buffering/CapacityBufferingPoli
 	public fun <init> (I)V
 	public final fun getCapacity ()I
 	public fun getName ()Ljava/lang/String;
-	public fun isMet (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Z
+	public fun getUsageType ()Ljava/lang/Class;
+	public synthetic fun isMet (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Z
+	public fun isMet (Lpro/vlprojects/batcher/buffer/CapacityUsage;Ljava/time/Instant;)Z
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -139,8 +147,11 @@ public final class pro/vlprojects/batcher/policy/buffering/MaxAgeBufferingPolicy
 	public fun <init> (Ljava/time/Duration;)V
 	public final fun getMaxAge ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
-	public fun isMet (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Z
-	public fun nextCheckAt (Lpro/vlprojects/batcher/buffer/BufferUsage;)Ljava/time/Instant;
+	public fun getUsageType ()Ljava/lang/Class;
+	public fun isMet (Lpro/vlprojects/batcher/buffer/AgeUsage;Ljava/time/Instant;)Z
+	public synthetic fun isMet (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Z
+	public fun nextCheckAt (Lpro/vlprojects/batcher/buffer/AgeUsage;)Ljava/time/Instant;
+	public synthetic fun nextCheckAt (Lpro/vlprojects/batcher/buffer/BufferUsage;)Ljava/time/Instant;
 	public fun toString ()Ljava/lang/String;
 }
 

@@ -5,19 +5,20 @@ import pro.vlprojects.batcher.listener.BatchReadyListener
 import pro.vlprojects.batcher.policy.buffering.BufferingPolicy
 
 /**
- * Collects records and dispatches them in batches once any of its [policies] is met. A policy due by
- * time needs a clock running somewhere, and that is the buffer's own, not the batcher's.
+ * Collects records and dispatches them in batches once any of its [policies] is met. It reports its
+ * usage by implementing the [BufferUsage] subtypes it can count. A policy due by time needs a clock
+ * running somewhere, and that is the buffer's own, not the batcher's.
  */
-public interface RecordBuffer<R : Any, U : BufferUsage> {
+public interface RecordBuffer<R : Any> : BufferUsage {
 
     /** Records outlive the process, so the source may acknowledge one as soon as [add] returns. */
     public val isDurable: Boolean
 
-    /** Asked in this order; the first one met names the batch in the metrics. */
-    public val policies: List<BufferingPolicy<U>>
-
-    /** Null while empty. Read by the gauges on every scrape: has to be cheap, may be approximate. */
-    public val usage: U?
+    /**
+     * Set when built and asked in this order; the first one met names the batch in the metrics. A
+     * buffer that is not of some policy's [usage type][BufferingPolicy.usageType] must refuse to be built.
+     */
+    public val policies: List<BufferingPolicy<*>>
 
     /**
      * From any thread, at any time; counts from the next dispatched batch. A batch goes to every listener in
