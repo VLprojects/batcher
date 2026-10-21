@@ -17,7 +17,9 @@ subprojects {
             explicitApi()
             compilerOptions {
                 allWarningsAsErrors = true
-                // Interface defaults as plain JVM default methods, without the DefaultImpls bridge.
+                // `fun onBatchWritten(...) {}` in an interface compiles to a JVM default method only. Without
+                // this it is also copied to BatcherMeter$DefaultImpls for Kotlin before 2.2, and that class
+                // would stay in the published API for good.
                 jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
             }
             // A breaking change shows up as a diff of the checked-in dump.
