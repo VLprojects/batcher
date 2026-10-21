@@ -14,8 +14,9 @@ import pro.vlprojects.batcher.listener.BatchDispatchedListener
 public interface RecordBuffer<R : Any> : BufferUsage {
 
     /**
-     * Set when built and asked in this order; the first one met names the batch in the metrics. A
-     * buffer takes them as policies over itself, so one whose usage it does not report does not compile;
+     * Set when built. On every check each is asked in this order and dispatches for as long as it is
+     * met with records collecting, then the next one is asked; the one that dispatched names the batch
+     * in the metrics. A buffer takes them as policies over itself, so one whose usage it does not report does not compile;
      * two of one [name][BufferingPolicy.name] it must refuse.
      */
     public val policies: List<BufferingPolicy<*>>
