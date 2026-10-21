@@ -7,7 +7,7 @@ import pro.vlprojects.batcher.buffer.usage.CapacityMeasurable
 import pro.vlprojects.batcher.buffer.usage.DurationMeasurable
 import java.time.Duration
 
-class DispatchPolicyTests {
+class BufferPolicyTests {
 
     @Test
     fun `the capacity policy dispatches on the record that fills it`() {
@@ -23,6 +23,14 @@ class DispatchPolicyTests {
 
         assertFalse(policy.requiresDispatch(durationBuffer(duration = Duration.ofMillis(999))))
         assertTrue(policy.requiresDispatch(durationBuffer(duration = Duration.ofSeconds(1))))
+    }
+
+    @Test
+    fun `the capacity back-pressure policy admits records while the buffer has room`() {
+        val policy = CapacityBackPressurePolicy(maxRecords = 2, action = BackPressureAction.REJECT)
+
+        assertTrue(policy.admits(capacityBuffer(recordCount = 1)))
+        assertFalse(policy.admits(capacityBuffer(recordCount = 2)))
     }
 
     private fun capacityBuffer(recordCount: Int): CapacityMeasurable =

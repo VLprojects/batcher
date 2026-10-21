@@ -7,6 +7,31 @@ public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer {
 	public abstract fun open ()V
 }
 
+public final class pro/vlprojects/batcher/buffer/policy/BackPressureAction : java/lang/Enum {
+	public static final field DISCARD Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
+	public static final field FALLBACK Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
+	public static final field REJECT Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
+	public static fun values ()[Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
+}
+
+public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferBackPressurePolicy {
+	public abstract fun admits (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
+	public abstract fun getAction ()Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public final class pro/vlprojects/batcher/buffer/policy/CapacityBackPressurePolicy : pro/vlprojects/batcher/buffer/policy/BufferBackPressurePolicy {
+	public fun <init> (ILpro/vlprojects/batcher/buffer/policy/BackPressureAction;)V
+	public fun admits (Lpro/vlprojects/batcher/buffer/usage/CapacityMeasurable;)Z
+	public synthetic fun admits (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
+	public fun getAction ()Lpro/vlprojects/batcher/buffer/policy/BackPressureAction;
+	public final fun getMaxRecords ()I
+	public fun getName ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class pro/vlprojects/batcher/buffer/policy/CapacityDispatchPolicy : pro/vlprojects/batcher/buffer/policy/DispatchPolicy {
 	public fun <init> (ILjava/time/Duration;)V
 	public final fun getCapacity ()I
@@ -61,6 +86,7 @@ public abstract interface class pro/vlprojects/batcher/data/Record {
 }
 
 public final class pro/vlprojects/batcher/fallback/FallbackReason : java/lang/Enum {
+	public static final field BUFFER_OVERFLOW Lpro/vlprojects/batcher/fallback/FallbackReason;
 	public static final field ENQUEUE_FAILED Lpro/vlprojects/batcher/fallback/FallbackReason;
 	public static final field PERSISTING_FAILED Lpro/vlprojects/batcher/fallback/FallbackReason;
 	public static final field QUEUE_CLOSED Lpro/vlprojects/batcher/fallback/FallbackReason;
@@ -82,6 +108,8 @@ public abstract interface class pro/vlprojects/batcher/listener/BatchDispatchedL
 
 public final class pro/vlprojects/batcher/metric/AcceptanceResult : java/lang/Enum {
 	public static final field ACCEPTED Lpro/vlprojects/batcher/metric/AcceptanceResult;
+	public static final field DISCARDED Lpro/vlprojects/batcher/metric/AcceptanceResult;
+	public static final field FALLBACK Lpro/vlprojects/batcher/metric/AcceptanceResult;
 	public static final field REJECTED Lpro/vlprojects/batcher/metric/AcceptanceResult;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/metric/AcceptanceResult;
@@ -93,6 +121,7 @@ public abstract interface class pro/vlprojects/batcher/metric/BatcherMeter {
 }
 
 public abstract interface class pro/vlprojects/batcher/metric/BufferMeter {
+	public fun incrementBackPressureApplying (ILpro/vlprojects/batcher/buffer/policy/BufferBackPressurePolicy;)V
 	public fun incrementBatchDispatching (Lpro/vlprojects/batcher/buffer/policy/DispatchPolicy;)V
 	public fun incrementBatchDispatchingOnClose ()V
 	public fun incrementPolicyChecked (Lpro/vlprojects/batcher/buffer/policy/DispatchPolicy;Lpro/vlprojects/batcher/metric/PolicyCheckStatus;)V

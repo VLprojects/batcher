@@ -3,6 +3,9 @@ package pro.vlprojects.batcher.fallback
 /** Why records went to the fallback; whether a replay would write them depends on it. */
 public enum class FallbackReason {
 
+    /** A buffer back-pressure policy did not admit them. A replay writes them. */
+    BUFFER_OVERFLOW,
+
     /** The writing queue had no room for the batch. A replay writes them. */
     QUEUE_OVERFLOW,
 
