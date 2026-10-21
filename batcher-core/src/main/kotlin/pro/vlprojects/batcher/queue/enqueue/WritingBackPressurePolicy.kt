@@ -1,14 +1,18 @@
 package pro.vlprojects.batcher.queue.enqueue
 
-import pro.vlprojects.batcher.queue.WritingBatchQueue
+import pro.vlprojects.batcher.usage.UsageMeasurable
 import java.time.Duration
 
 /**
- * What a full writing queue means. It acts at two points: before a record goes into the buffer,
- * where the source can still keep it, and when a dispatched batch is enqueued, where it cannot, since
- * its records belong to callers that have returned.
+ * What a full writing queue means, asked before every dispatched batch is enqueued. Over one kind of
+ * usage, like a dispatch policy. While it requires back pressure, the batcher waits up to
+ * [enqueueTimeout]; then the batch goes to the enqueuing fallback as `QUEUE_OVERFLOW`. The source is
+ * guarded by the buffer's own back-pressure policies.
  */
-public interface WritingBackPressurePolicy {
+public interface WritingBackPressurePolicy<in U : UsageMeasurable> {
+
+    /** The `policy` tag of the back-pressure metric. */
+    public val name: String
 
     /** The `component` tag of the policy's metrics: the stage it guards. */
     public val component: String
@@ -18,9 +22,8 @@ public interface WritingBackPressurePolicy {
     public val action: String
         get() = "back_pressure"
 
-    /** How long enqueue waits for room; then the batch goes to the enqueuing fallback as `QUEUE_OVERFLOW`. */
+    /** How long the batcher waits for back pressure to end, zero being no wait. */
     public val enqueueTimeout: Duration
 
-    /** Asked before the record goes into the buffer: false rejects it, and the source keeps it. */
-    public fun admits(queue: WritingBatchQueue<*>): Boolean = true
+    public fun requiresBackPressure(queue: U): Boolean
 }

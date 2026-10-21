@@ -1,5 +1,6 @@
 package pro.vlprojects.batcher.buffer.usage
 
+import pro.vlprojects.batcher.usage.UsageMeasurable
 import java.time.Duration
 
 public interface DurationMeasurable : UsageMeasurable {

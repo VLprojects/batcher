@@ -1,8 +1,8 @@
 package pro.vlprojects.batcher.buffer
 
-import pro.vlprojects.batcher.buffer.usage.UsageMeasurable
 import pro.vlprojects.batcher.data.Batch
 import pro.vlprojects.batcher.data.Record
+import pro.vlprojects.batcher.usage.UsageMeasurable
 
 /**
  * Holds accepted records until the batcher dispatches them. It reports its usage by implementing the

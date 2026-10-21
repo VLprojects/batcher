@@ -225,8 +225,8 @@ has two threads of its own.
 - The batcher's scheduler, on a daemon thread named after the batcher, asks every
   policy each check interval of its own: that is how a batch goes once
   the first record has waited past the max duration.
-- The queue is bounded. When it is full the batcher applies the back-pressure
-  setting: park the batch, reject the record, or wait for room.
+- The queue is bounded by its back-pressure policy. When it is full the batcher
+  waits up to `write-queue-enqueue-timeout`, then parks the batch.
 - One writer thread writes batches in order, one at a time.
 
 The same in time: a batch dispatched by size, one by duration, and a write that fails once:
@@ -251,7 +251,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `UsageMeasurable` | what a buffer reports about the records it collects, one subtype per kind: `CapacityMeasurable` (`countRecords()`), `DurationMeasurable` (`measureDuration()`) | the in-memory buffer reports both |
 | `DispatchPolicy<U>` | one rule for when a batch is due, over one kind of usage, and its `checkInterval`: how often the batcher asks it with no new record; fixed when the batcher is built, taken as policies over its buffer's type, so one whose usage it does not report does not compile; a repeated name is refused | `CapacityDispatchPolicy` (`batch-size`, checked every second as a backstop) and `DurationDispatchPolicy` (`buffering-max-duration`, checked every `buffering-check-interval`) |
 | `BufferBackPressurePolicy<U>` | what a full buffer means: asked before every record goes in, over one kind of usage like a dispatch policy; once one requires back pressure (`requiresBackPressure`), the record goes to the `AcceptingFallback` | `CapacityBackPressurePolicy` (`capacity`) |
-| `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
+| `WritingBackPressurePolicy<U>` | what a full writing queue means: asked before every dispatched batch is enqueued, over one kind of queue usage; while one requires back pressure (`requiresBackPressure`), the batcher waits up to its `enqueueTimeout`, then the batch goes to the `EnqueuingFallback` | `CapacityWritingBackPressurePolicy` (`write-queue-capacity`, `write-queue-enqueue-timeout`) |
 | `BatchDispatchedListener<R>` | take a batch the batcher has dispatched; any number, added to the batcher and removed at run time | the writing queue |
 | `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
 | `AcceptingFallback<R>` | decide what becomes of records back pressure turned away before the buffer: throw to reject them to the source, or park or drop them | reject |
@@ -307,12 +307,10 @@ keep the defaults while another one does not.
 | `WritingFallback<R>` | failed records must go somewhere: a log, a table, back to a queue |
 | `BufferBackPressurePolicy<U>` | the buffer must be bounded by something other than a record count, bytes say |
 | `DispatchPolicy<U>` | a batch is due by a rule of yours, for example a byte budget over a `MemoryMeasurable` of its own; it adds to the two defaults |
-| `WritingBackPressurePolicy` | none of `fallback`, `reject` and `block` fits the source |
+| `WritingBackPressurePolicy<U>` | the queue must be bounded by something other than a batch count |
 | `RecordBuffer<R>` | it must report a usage the default does not (bytes in memory), records must be grouped on the way in (a key per table), or survive a restart, for example in Redis |
 | `WritingBatchQueue<R>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
 | `BufferMeter`, `QueueMeter`, `WriterMeter` | your observability is not Micrometer |
-
-`back-pressure` in section 11 picks one of the three ready back-pressure policies.
 
 **Assemble your own.** `batcher-core` has no Spring dependency. Construct the
 buffer, the writer and the batcher yourself, or keep only the pieces you need
@@ -416,15 +414,15 @@ batcher:
     buffering-max-duration: 1s      # how long the first record of a batch may wait
     buffering-check-interval: 100ms # how often that wait is checked
     write-queue-capacity: 16        # batches in flight before back pressure
+    write-queue-enqueue-timeout: 0s # how long a dispatched batch waits for room
     shutdown-await-period: 15s      # budget for draining on stop
     slow-write-duration: 5s         # a write slower than this is logged
-    back-pressure: fallback         # fallback | reject | block
   instances:
     history:
       batch-size: 2000
     audit:
       buffering-max-duration: 5s
-      back-pressure: reject
+      write-queue-enqueue-timeout: 5s
 ```
 
 Two numbers set the shape of the load: `batch-size` and
@@ -434,17 +432,13 @@ before a record is queryable, plus at most one `buffering-check-interval`,
 a tenth of the max duration by default. Pick the delay you can live with, then
 the size that keeps inserts at roughly one per second per table.
 
-`back-pressure` picks a `WritingBackPressurePolicy`, and a bean of your own
-replaces it. It decides what a full queue means:
-
-- `fallback` hands the batch to the `EnqueuingFallback` and returns;
-- `reject` checks for room before the record goes into the buffer and throws
-  from `accept` when there is none, so the source keeps the record and
-  redelivers it. A batch that is already dispatched is never thrown back: its records
-  belong to callers that have returned;
-- `block` makes the thread that dispatched the batch wait for room, up to a timeout,
-  then parks it. A message listener that waits stops acknowledging, and the
-  broker stops delivering.
+The queue's back pressure is a `CapacityWritingBackPressurePolicy` over
+`write-queue-capacity`, and a bean of your own replaces it. A full queue holds
+up the dispatched batch for at most `write-queue-enqueue-timeout`, then hands it
+to the `EnqueuingFallback`: its records belong to callers that have returned.
+The thread that waits is the dispatching one; a message listener that waits
+stops acknowledging, and the broker stops delivering. The source itself is
+guarded by the buffer's back-pressure policy and the `AcceptingFallback`.
 
 `write-queue-capacity` is the memory bound:
 `batch-size * (write-queue-capacity + 1)` records at most.

@@ -2,7 +2,7 @@ package pro.vlprojects.batcher.buffer.accept
 
 import pro.vlprojects.batcher.buffer.dispatch.DispatchPolicy
 import pro.vlprojects.batcher.buffer.fallback.AcceptingFallback
-import pro.vlprojects.batcher.buffer.usage.UsageMeasurable
+import pro.vlprojects.batcher.usage.UsageMeasurable
 
 /**
  * What a full buffer means. Asked before every record goes in; once one requires back pressure the

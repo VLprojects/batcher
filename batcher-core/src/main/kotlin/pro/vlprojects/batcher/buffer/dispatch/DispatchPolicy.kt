@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.buffer.dispatch
 
-import pro.vlprojects.batcher.buffer.usage.UsageMeasurable
+import pro.vlprojects.batcher.usage.UsageMeasurable
 import java.time.Duration
 
 /**

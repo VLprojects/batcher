@@ -10,12 +10,6 @@ import java.time.Duration
  */
 public interface WritingBatchQueue<R : Record<*>> {
 
-    /** Batches waiting, or null when the queue cannot tell cheaply. */
-    public val size: Int?
-
-    /** No room for one more batch. Read before every accept by a rejecting policy: has to be cheap. */
-    public val isFull: Boolean
-
     /** Set by [close]: no batch gets in any more. */
     public val isClosed: Boolean
 
@@ -28,8 +22,8 @@ public interface WritingBatchQueue<R : Record<*>> {
     /** Before the first batch: a durable queue restores what it held, taken or not, ahead of new ones. */
     public fun open()
 
-    /** Waits up to [timeout] for room, zero being no wait. A throw means the batch is not in. */
-    public fun enqueue(batch: Batch<R>, timeout: Duration): EnqueueStatus
+    /** Room is the back-pressure policy's to judge: the queue takes what comes. A throw means the batch is not in. */
+    public fun enqueue(batch: Batch<R>): EnqueueStatus
 
     /** Null when nothing came within [timeout], and from the moment the queue is [isClosed] and [isEmpty]. */
     public fun take(timeout: Duration): Batch<R>?
