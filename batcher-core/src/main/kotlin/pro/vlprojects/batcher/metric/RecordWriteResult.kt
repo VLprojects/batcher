@@ -2,10 +2,10 @@ package pro.vlprojects.batcher.metric
 
 public enum class RecordWriteResult {
 
-    WRITTEN,
+    PERSISTED,
 
-    /** Handed to the write fallback, to be replayed from there. */
-    FALLBACK,
+    /** To be replayed from there. */
+    SENT_TO_FALLBACK,
 
     /** Neither the storage nor the fallback took them: this one must stay at zero. */
     LOST,

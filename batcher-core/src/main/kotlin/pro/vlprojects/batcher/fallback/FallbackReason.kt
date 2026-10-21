@@ -1,16 +1,20 @@
 package pro.vlprojects.batcher.fallback
 
+/** Why records went to the fallback; whether a replay would write them depends on it. */
 public enum class FallbackReason {
 
-    /** The queue had no room for the batch. */
-    BATCH_REJECTED,
+    /** The writing queue had no room for the batch. A replay writes them. */
+    QUEUE_FULL,
 
-    /** The queue failed to take the batch. */
-    ENQUEUE_FAILED,
+    /** A stop had closed the writing queue before the batch came. A replay writes them. */
+    QUEUE_CLOSED,
 
-    /** The write failed, and so did every slice these records were in. */
-    WRITE_FAILED,
+    /** The writing queue threw on the batch. A replay writes them. */
+    QUEUE_FAILED,
 
-    /** The stop ran out of its budget before these were written. */
-    WRITING_STOPPED,
+    /** The storage refused them one by one as well. A replay fails again: a bad record. */
+    PERSIST_FAILED,
+
+    /** The stop ran out of its budget before they were written. A replay writes them. */
+    STOP_TIMED_OUT,
 }

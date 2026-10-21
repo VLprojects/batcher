@@ -10,9 +10,9 @@
     <text x="228.0" y="64.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">holds records and</text>
     <text x="228.0" y="82.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">cuts them into batches</text>
     <rect x="456.0" y="16.0" width="196.0" height="76.0" rx="6" fill="#E3E8ED"/>
-    <text x="472.0" y="42.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">batch queue</text>
-    <text x="472.0" y="64.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#59636E" text-anchor="start">offer(batch)</text>
-    <text x="472.0" y="82.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#59636E" text-anchor="start">poll() → lease</text>
+    <text x="472.0" y="42.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">writing batch queue</text>
+    <text x="472.0" y="64.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#59636E" text-anchor="start">put(batch)</text>
+    <text x="472.0" y="82.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#59636E" text-anchor="start">take(), confirm()</text>
     <rect x="692.0" y="16.0" width="172.0" height="76.0" rx="6" fill="#DDF7E7"/>
     <text x="708.0" y="42.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">batch writer</text>
     <text x="848.0" y="42.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#12873F" text-anchor="end">yours</text>
@@ -28,9 +28,9 @@
     <text x="228.0" y="188.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">takes each cut batch;</text>
     <text x="228.0" y="206.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">default: the batcher</text>
     <rect x="456.0" y="140.0" width="196.0" height="76.0" rx="6" fill="#FFFFFF"/>
-    <text x="472.0" y="166.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">batch lease</text>
-    <text x="472.0" y="188.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">one batch on loan;</text>
-    <text x="472.0" y="206.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#59636E" text-anchor="start">complete(), release()</text>
+    <text x="472.0" y="166.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">put result</text>
+    <text x="472.0" y="188.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">in queue, queue full</text>
+    <text x="472.0" y="206.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">or queue closed</text>
     <rect x="692.0" y="140.0" width="172.0" height="76.0" rx="6" fill="#FFEEDC"/>
     <text x="708.0" y="166.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">write fallback</text>
     <text x="708.0" y="188.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#8F4600" text-anchor="start">what was not written,</text>
@@ -51,12 +51,12 @@
     <text x="302.0" y="120.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="end">hands to</text>
     <path d="M554.0,100 L554.0,126" stroke="#AFB8C1" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M550.0,125 L554.0,132 L558.0,125 Z" fill="#AFB8C1"/>
-    <text x="542.0" y="120.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="end">lends</text>
+    <text x="542.0" y="120.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="end">returns</text>
     <path d="M778.0,100 L778.0,126" stroke="#EE2D62" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M774.0,125 L778.0,132 L782.0,125 Z" fill="#EE2D62"/>
     <text x="766.0" y="120.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#EE2D62" text-anchor="end">write failed</text>
     <rect x="16.0" y="256.0" width="848.0" height="44.0" rx="6" fill="#FFFFFF"/>
-    <text x="32.0" y="283.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">batcher meter</text>
+    <text x="32.0" y="283.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#1F2328" text-anchor="start">meters</text>
     <text x="228.0" y="283.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="start">every type reports here</text>
     <text x="848.0" y="283.0" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#59636E" text-anchor="end">batcher-micrometer</text>
     <text x="710.4" y="283.0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#59636E" text-anchor="end">Micrometer is in</text>

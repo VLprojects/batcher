@@ -217,7 +217,7 @@ has two threads of its own.
 - The record that fills the batch carries it out to the queue; nothing else
   happens on the consumer thread.
 - The buffer thread, a daemon, watches the age of the oldest record and cuts a
-  batch when the deadline passes.
+  batch once it is older than the max age.
 - The queue is bounded. When it is full the batcher applies the back-pressure
   setting: park the batch, reject the record, or wait for room.
 - One writer thread writes batches in order, one at a time.
@@ -240,11 +240,10 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batch<T>` | records, an id, the arrival of the first one | value type |
 | `BatchWriter<T>` | one insert of one batch | **yours**, there is no default |
 | `RecordBuffer<T>` | collect records and cut batches by a rule of its own | in memory, cut by size or by age on a daemon thread |
-| `BatchReadyListener<T>` | take a batch the buffer has cut; any number, added and removed at run time | the batcher, which offers it to the queue |
-| `BatchQueue<T>` | hold cut batches until the writer leases one | in memory, bounded |
-| `BatchLease<T>` | a batch out of the queue: `complete()` or `release()` | — |
-| `WriteFallback<T>` | keep what could not be written, with a `FallbackCause` | none: log at ERROR and count |
-| `BatcherMeter` | report every event; each method does nothing by default | disabled in core, Micrometer in `batcher-micrometer` |
+| `BatchReadyListener<T>` | take a batch the buffer has cut; any number, added and removed at run time | the batcher, which puts it in the writing queue |
+| `WritingBatchQueue<T>` | hold cut batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
+| `WriteFallback<T>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
+| `BatcherMeter`, `BufferMeter`, `WriterMeter` | report every event; each method does nothing by default | none in core, Micrometer in `batcher-micrometer` |
 
 `BatchWriter` is the only thing you must write: `persist(batch)` for one insert
 of a batch, `persist(record)` for the retry of a failed one. `Batch.id` can go to
@@ -258,8 +257,8 @@ A stage lets go of a batch only once the next one has taken it:
 - the buffer drops the records once every `BatchReadyListener` has returned; a
   throw from any leaves them in the buffer, and all the listeners get the batch
   again;
-- the writer leases a batch from the queue and completes the lease once the batch
-  is written or parked; a stop that interrupts the write releases it.
+- the writer takes a batch from the writing queue and confirms it once the batch
+  is written or parked; a stop that interrupts the write puts it back.
 
 In memory this costs nothing. For a durable buffer or queue it is the point
 where it commits, so a crash between the two steps repeats a batch instead of
@@ -285,8 +284,8 @@ keep the defaults while another one does not.
 | `BatchWriter<T>` | always: this is your insert |
 | `WriteFallback<T>` | failed records must go somewhere: a log, a table, back to a queue |
 | `RecordBuffer<T>` | size and age are not your rule (a byte budget, a key per table), or records must survive a restart, for example in Redis |
-| `BatchQueue<T>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
-| `BatcherMeter` | your observability is not Micrometer |
+| `WritingBatchQueue<T>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
+| `BatcherMeter`, `BufferMeter`, `WriterMeter` | your observability is not Micrometer |
 
 What happens when the queue is full is a setting, not a type: see
 `back-pressure` in section 11.
@@ -310,16 +309,16 @@ pass you cannot tell those apart, and you lose good records because of a bad
 neighbour.
 
 The retry is `persist(record)` for each record of the failed batch. What is
-parked reaches the fallback as records, with a `FallbackCause`: one of four reasons
-and the error, if there was one. The reason tells a fallback what a replay
-would do:
+parked reaches the fallback as records, with one of five reasons and the error,
+if there was one. The reason tells a fallback what a replay would do:
 
 | Reason | Meaning | A replay |
 | --- | --- | --- |
-| `BATCH_REJECTED` | the queue had no room | writes it |
-| `ENQUEUE_FAILED` | the queue failed to take the batch | writes it |
-| `WRITE_FAILED` | the write failed, and so did the retry of these records | fails again: a bad record |
-| `WRITING_STOPPED` | the stop ran out of its budget | writes it |
+| `QUEUE_FULL` | the writing queue had no room | writes it |
+| `QUEUE_CLOSED` | a stop had closed the writing queue before the batch came | writes it |
+| `QUEUE_FAILED` | the writing queue threw on the batch | writes it |
+| `PERSIST_FAILED` | the storage refused these records one by one as well | fails again: a bad record |
+| `STOP_TIMED_OUT` | the stop ran out of its budget | writes it |
 
 ## 9. Lifecycle and shutdown
 
@@ -334,12 +333,12 @@ Shutdown is the part that decides whether you lose data on every deploy.
 In order:
 
 1. The batcher stops accepting, and the buffer closes. What it still holds is
-   offered to the queue, waiting for room within the budget.
+   put in the writing queue, waiting for room within the budget.
 2. The queue closes. The writer works through what is in it until it is empty
    or the budget is spent.
-3. A write still running at the end of the budget is interrupted and its lease
-   released. Whatever the queue still holds goes to the fallback as
-   `WRITING_STOPPED`.
+3. A write still running at the end of the budget is interrupted and its batch
+   put back. Whatever the queue still holds goes to the fallback as
+   `STOP_TIMED_OUT`.
 
 A durable buffer or queue keeps what it holds instead, for the next start.
 
@@ -372,8 +371,8 @@ A durable buffer and queue move the line:
 
 - **Durability holds** as far as the stores do: a record is safe once `accept`
   returns, and a hard kill loses nothing either one has committed.
-- **At least once, not at most once.** A crash between a write and its lease
-  completing writes the batch again. Pass `Batch.id` as the
+- **At least once, not at most once.** A crash between a write and its
+  confirmation writes the batch again. Pass `Batch.id` as the
   `insert_deduplication_token`.
 - **Order** holds only as far as the queue keeps it, and not at all across
   several instances writing from one queue.
@@ -432,10 +431,10 @@ it is wired in when Micrometer is on the classpath.
 | Series | Type | Tags | Answers |
 | --- | --- | --- | --- |
 | `batcher.acceptance` | counter, records | `result` | are records being rejected? |
-| `batcher.records` | counter, records | `result` | written, parked or lost? |
+| `batcher.records` | counter, records | `result` | persisted, sent to the fallback or lost? |
 | `batcher.buffer.records` | gauge, records | | how full is the buffer? |
 | `batcher.buffer.age` | gauge, seconds | | how long has the oldest record waited? |
-| `batcher.buffer.dispatched` | counter, batches | `reason` | cut by size or by deadline? |
+| `batcher.buffer.cuts` | counter, batches | `reason` | cut at capacity or at max age? |
 | `batcher.batch.write` | timer | `mode` | how slow are writes, and how often do we recover? |
 | `batcher.batch.size` | distribution summary, records | | are batches full? |
 | `batcher.writer.queue.size` | gauge, batches | | is the storage keeping up? |

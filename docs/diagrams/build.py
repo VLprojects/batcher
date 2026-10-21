@@ -401,13 +401,13 @@ def types(pal):
 
 	card(0, top, "batcher", [("accept(record)", True), ("start(), stop()", True)])
 	card(1, top, "record buffer", [("holds records and", False), ("cuts them into batches", False)])
-	card(2, top, "batch queue", [("offer(batch)", True), ("poll() → lease", True)])
+	card(2, top, "writing batch queue", [("put(batch)", True), ("take(), confirm()", True)])
 	card(3, top, "batch writer", [("persist(batch)", True), ("persist(record)", True)], "green", "yours")
 
 	card(0, low, "batch", [("records, an id and the", False), ("first record's arrival", False)])
 	a.bar(xs[0] + ws[0] - 16 - BAR_W, low + 13, h=16)
 	card(1, low, "batch ready listener", [("takes each cut batch;", False), ("default: the batcher", False)])
-	card(2, low, "batch lease", [("one batch on loan;", False), ("complete(), release()", True)])
+	card(2, low, "put result", [("in queue, queue full", False), ("or queue closed", False)])
 	card(3, low, "write fallback", [("what was not written,", False), ("and why", False)], "amber")
 
 	# along the chain: an arrow and what it carries, centred in the gap
@@ -423,14 +423,14 @@ def types(pal):
 			a.bar(cx - BAR_W / 2, mid - 16, h=16)
 
 	# down from each type: what it hands out, or where a failed write goes
-	for i, text, color in ((1, "hands to", "line"), (2, "lends", "line"), (3, "write failed", "red")):
+	for i, text, color in ((1, "hands to", "line"), (2, "returns", "line"), (3, "write failed", "red")):
 		cx = xs[i] + ws[i] / 2
 		a.varrow(cx, top + h + 8, low - 8, color)
 		a.t(cx - 12, top + h + 28.5, text, color="red" if color == "red" else "soft", weight="600" if color == "red" else "400", anchor="end")
 
 	y = low + h + gap
 	a.rect(16, y, 848, 44, "wash", r=6)
-	a.name(32, y + 27, "batcher meter")
+	a.name(32, y + 27, "meters")
 	a.t(xs[1] + 16, y + 27, "every type reports here")
 	a.t(848, y + 27, "batcher-micrometer", mono=True, size=12, anchor="end")
 	a.t(848 - 18 * 7.2 - 8, y + 27, "Micrometer is in", anchor="end")
