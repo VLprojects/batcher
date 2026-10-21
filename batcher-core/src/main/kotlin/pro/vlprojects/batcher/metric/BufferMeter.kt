@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.metric
 
-import pro.vlprojects.batcher.policy.buffering.BufferingPolicy
+import pro.vlprojects.batcher.buffer.policy.BufferingPolicy
 import java.time.Duration
 
 public interface BufferMeter {

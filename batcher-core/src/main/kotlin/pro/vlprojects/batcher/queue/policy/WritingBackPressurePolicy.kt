@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.policy.backpressure
+package pro.vlprojects.batcher.queue.policy
 
 import pro.vlprojects.batcher.queue.WritingBatchQueue
 import java.time.Duration

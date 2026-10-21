@@ -1,6 +1,6 @@
-package pro.vlprojects.batcher.policy.buffering
+package pro.vlprojects.batcher.buffer.policy
 
-import pro.vlprojects.batcher.buffer.BufferUsage
+import pro.vlprojects.batcher.buffer.usage.BufferUsage
 import java.time.Instant
 
 /**

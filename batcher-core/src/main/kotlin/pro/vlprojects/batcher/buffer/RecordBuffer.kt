@@ -1,8 +1,9 @@
 package pro.vlprojects.batcher.buffer
 
+import pro.vlprojects.batcher.buffer.policy.BufferingPolicy
+import pro.vlprojects.batcher.buffer.usage.BufferUsage
 import pro.vlprojects.batcher.dto.Batch
 import pro.vlprojects.batcher.listener.BatchReadyListener
-import pro.vlprojects.batcher.policy.buffering.BufferingPolicy
 
 /**
  * Collects records and dispatches them in batches once any of its [policies] is met. It reports its

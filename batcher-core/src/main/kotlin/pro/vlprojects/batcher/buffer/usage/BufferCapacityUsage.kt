@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.buffer
+package pro.vlprojects.batcher.buffer.usage
 
 public interface BufferCapacityUsage : BufferUsage {
 

@@ -1,6 +1,6 @@
-package pro.vlprojects.batcher.policy.buffering
+package pro.vlprojects.batcher.buffer.policy
 
-import pro.vlprojects.batcher.buffer.BufferCapacityUsage
+import pro.vlprojects.batcher.buffer.usage.BufferCapacityUsage
 import java.time.Instant
 
 /** Met once the buffer holds [capacity] records: a full batch goes at once. */

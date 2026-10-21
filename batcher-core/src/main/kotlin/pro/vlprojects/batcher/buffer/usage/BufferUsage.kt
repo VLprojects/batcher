@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.buffer
+package pro.vlprojects.batcher.buffer.usage
 
 /**
  * What a buffer reports about the records it is collecting. Each kind is a subtype of its own, and a

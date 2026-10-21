@@ -1,15 +1,4 @@
-public abstract interface class pro/vlprojects/batcher/buffer/BufferCapacityUsage : pro/vlprojects/batcher/buffer/BufferUsage {
-	public abstract fun countRecords ()I
-}
-
-public abstract interface class pro/vlprojects/batcher/buffer/BufferDurationUsage : pro/vlprojects/batcher/buffer/BufferUsage {
-	public abstract fun measureDuration (Ljava/time/Instant;)Ljava/time/Duration;
-}
-
-public abstract interface class pro/vlprojects/batcher/buffer/BufferUsage {
-}
-
-public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer : pro/vlprojects/batcher/buffer/BufferUsage {
+public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer : pro/vlprojects/batcher/buffer/usage/BufferUsage {
 	public abstract fun add (Ljava/lang/Object;)V
 	public fun add (Ljava/util/Collection;)V
 	public abstract fun addListener (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
@@ -17,6 +6,46 @@ public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer : pro
 	public abstract fun getPolicies ()Ljava/util/List;
 	public abstract fun open ()V
 	public abstract fun removeListener (Lpro/vlprojects/batcher/listener/BatchReadyListener;)V
+}
+
+public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getUsageType ()Ljava/lang/Class;
+	public abstract fun isMet (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;Ljava/time/Instant;)Z
+	public fun nextCheckAt (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;Ljava/time/Instant;)Ljava/time/Instant;
+}
+
+public final class pro/vlprojects/batcher/buffer/policy/CapacityBufferingPolicy : pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
+	public fun <init> (I)V
+	public final fun getCapacity ()I
+	public fun getName ()Ljava/lang/String;
+	public fun getUsageType ()Ljava/lang/Class;
+	public fun isMet (Lpro/vlprojects/batcher/buffer/usage/BufferCapacityUsage;Ljava/time/Instant;)Z
+	public synthetic fun isMet (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;Ljava/time/Instant;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class pro/vlprojects/batcher/buffer/policy/MaxDurationBufferingPolicy : pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
+	public fun <init> (Ljava/time/Duration;)V
+	public final fun getMaxDuration ()Ljava/time/Duration;
+	public fun getName ()Ljava/lang/String;
+	public fun getUsageType ()Ljava/lang/Class;
+	public fun isMet (Lpro/vlprojects/batcher/buffer/usage/BufferDurationUsage;Ljava/time/Instant;)Z
+	public synthetic fun isMet (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;Ljava/time/Instant;)Z
+	public fun nextCheckAt (Lpro/vlprojects/batcher/buffer/usage/BufferDurationUsage;Ljava/time/Instant;)Ljava/time/Instant;
+	public synthetic fun nextCheckAt (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;Ljava/time/Instant;)Ljava/time/Instant;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class pro/vlprojects/batcher/buffer/usage/BufferCapacityUsage : pro/vlprojects/batcher/buffer/usage/BufferUsage {
+	public abstract fun countRecords ()I
+}
+
+public abstract interface class pro/vlprojects/batcher/buffer/usage/BufferDurationUsage : pro/vlprojects/batcher/buffer/usage/BufferUsage {
+	public abstract fun measureDuration (Ljava/time/Instant;)Ljava/time/Duration;
+}
+
+public abstract interface class pro/vlprojects/batcher/buffer/usage/BufferUsage {
 }
 
 public final class pro/vlprojects/batcher/dto/Batch {
@@ -64,7 +93,7 @@ public abstract interface class pro/vlprojects/batcher/metric/BatcherMeter {
 }
 
 public abstract interface class pro/vlprojects/batcher/metric/BufferMeter {
-	public fun incrementBatchDispatching (Lpro/vlprojects/batcher/policy/buffering/BufferingPolicy;)V
+	public fun incrementBatchDispatching (Lpro/vlprojects/batcher/buffer/policy/BufferingPolicy;)V
 	public fun incrementDurationChecked (Lpro/vlprojects/batcher/metric/DurationCheckStatus;)V
 	public fun watchBuffer (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
 }
@@ -102,59 +131,6 @@ public abstract interface class pro/vlprojects/batcher/metric/WriterMeter {
 	public fun watchWritingQueue (Lkotlin/jvm/functions/Function0;)V
 }
 
-public final class pro/vlprojects/batcher/policy/backpressure/BlockingWritingBackPressurePolicy : pro/vlprojects/batcher/policy/backpressure/WritingBackPressurePolicy {
-	public fun <init> (Ljava/time/Duration;)V
-	public fun getEnqueueTimeout ()Ljava/time/Duration;
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class pro/vlprojects/batcher/policy/backpressure/FallbackWritingBackPressurePolicy : pro/vlprojects/batcher/policy/backpressure/WritingBackPressurePolicy {
-	public fun <init> ()V
-	public fun getEnqueueTimeout ()Ljava/time/Duration;
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class pro/vlprojects/batcher/policy/backpressure/RejectingWritingBackPressurePolicy : pro/vlprojects/batcher/policy/backpressure/WritingBackPressurePolicy {
-	public fun <init> ()V
-	public fun admits (Lpro/vlprojects/batcher/queue/WritingBatchQueue;)Z
-	public fun getEnqueueTimeout ()Ljava/time/Duration;
-	public fun toString ()Ljava/lang/String;
-}
-
-public abstract interface class pro/vlprojects/batcher/policy/backpressure/WritingBackPressurePolicy {
-	public fun admits (Lpro/vlprojects/batcher/queue/WritingBatchQueue;)Z
-	public abstract fun getEnqueueTimeout ()Ljava/time/Duration;
-}
-
-public abstract interface class pro/vlprojects/batcher/policy/buffering/BufferingPolicy {
-	public abstract fun getName ()Ljava/lang/String;
-	public abstract fun getUsageType ()Ljava/lang/Class;
-	public abstract fun isMet (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Z
-	public fun nextCheckAt (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Ljava/time/Instant;
-}
-
-public final class pro/vlprojects/batcher/policy/buffering/CapacityBufferingPolicy : pro/vlprojects/batcher/policy/buffering/BufferingPolicy {
-	public fun <init> (I)V
-	public final fun getCapacity ()I
-	public fun getName ()Ljava/lang/String;
-	public fun getUsageType ()Ljava/lang/Class;
-	public fun isMet (Lpro/vlprojects/batcher/buffer/BufferCapacityUsage;Ljava/time/Instant;)Z
-	public synthetic fun isMet (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Z
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class pro/vlprojects/batcher/policy/buffering/MaxDurationBufferingPolicy : pro/vlprojects/batcher/policy/buffering/BufferingPolicy {
-	public fun <init> (Ljava/time/Duration;)V
-	public final fun getMaxDuration ()Ljava/time/Duration;
-	public fun getName ()Ljava/lang/String;
-	public fun getUsageType ()Ljava/lang/Class;
-	public fun isMet (Lpro/vlprojects/batcher/buffer/BufferDurationUsage;Ljava/time/Instant;)Z
-	public synthetic fun isMet (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Z
-	public fun nextCheckAt (Lpro/vlprojects/batcher/buffer/BufferDurationUsage;Ljava/time/Instant;)Ljava/time/Instant;
-	public synthetic fun nextCheckAt (Lpro/vlprojects/batcher/buffer/BufferUsage;Ljava/time/Instant;)Ljava/time/Instant;
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class pro/vlprojects/batcher/queue/EnqueueStatus : java/lang/Enum {
 	public static final field ENQUEUED Lpro/vlprojects/batcher/queue/EnqueueStatus;
 	public static final field QUEUE_CLOSED Lpro/vlprojects/batcher/queue/EnqueueStatus;
@@ -176,6 +152,30 @@ public abstract interface class pro/vlprojects/batcher/queue/WritingBatchQueue {
 	public abstract fun requeue (Lpro/vlprojects/batcher/dto/Batch;)V
 	public abstract fun take (Ljava/time/Duration;)Lpro/vlprojects/batcher/dto/Batch;
 	public abstract fun takeAll ()Ljava/util/List;
+}
+
+public final class pro/vlprojects/batcher/queue/policy/BlockingWritingBackPressurePolicy : pro/vlprojects/batcher/queue/policy/WritingBackPressurePolicy {
+	public fun <init> (Ljava/time/Duration;)V
+	public fun getEnqueueTimeout ()Ljava/time/Duration;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class pro/vlprojects/batcher/queue/policy/FallbackWritingBackPressurePolicy : pro/vlprojects/batcher/queue/policy/WritingBackPressurePolicy {
+	public fun <init> ()V
+	public fun getEnqueueTimeout ()Ljava/time/Duration;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class pro/vlprojects/batcher/queue/policy/RejectingWritingBackPressurePolicy : pro/vlprojects/batcher/queue/policy/WritingBackPressurePolicy {
+	public fun <init> ()V
+	public fun admits (Lpro/vlprojects/batcher/queue/WritingBatchQueue;)Z
+	public fun getEnqueueTimeout ()Ljava/time/Duration;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class pro/vlprojects/batcher/queue/policy/WritingBackPressurePolicy {
+	public fun admits (Lpro/vlprojects/batcher/queue/WritingBatchQueue;)Z
+	public abstract fun getEnqueueTimeout ()Ljava/time/Duration;
 }
 
 public abstract interface class pro/vlprojects/batcher/writer/BatchWriter {

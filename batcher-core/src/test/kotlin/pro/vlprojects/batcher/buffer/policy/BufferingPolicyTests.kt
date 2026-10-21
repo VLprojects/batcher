@@ -1,12 +1,12 @@
-package pro.vlprojects.batcher.policy.buffering
+package pro.vlprojects.batcher.buffer.policy
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import pro.vlprojects.batcher.buffer.BufferCapacityUsage
-import pro.vlprojects.batcher.buffer.BufferDurationUsage
+import pro.vlprojects.batcher.buffer.usage.BufferCapacityUsage
+import pro.vlprojects.batcher.buffer.usage.BufferDurationUsage
 import java.time.Duration
 import java.time.Instant
 
