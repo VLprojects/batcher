@@ -10,6 +10,6 @@ public enum class PolicyCheckStatus {
 
     BUFFER_EMPTY,
 
-    /** The check threw, and the next one runs on time: a checker that gives up leaves the records stuck. */
+    /** The check threw, and the next one runs on time: a schedule that stops leaves the records stuck. */
     FAILED,
 }

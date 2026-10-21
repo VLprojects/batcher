@@ -19,7 +19,7 @@ class BufferingPolicyTests {
 
     @Test
     fun `the duration policy dispatches once the first record has waited the max duration`() {
-        val policy = BufferDurationPolicy(maxDuration = Duration.ofSeconds(1))
+        val policy = BufferDurationPolicy(maxDuration = Duration.ofSeconds(1), checkInterval = Duration.ofMillis(100))
 
         assertFalse(policy.shouldDispatch(durationUsage(duration = Duration.ofMillis(999))))
         assertTrue(policy.shouldDispatch(durationUsage(duration = Duration.ofSeconds(1))))

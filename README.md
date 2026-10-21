@@ -222,9 +222,9 @@ has two threads of its own.
 - `accept` takes the lock, appends to the buffer and returns. It does no I/O.
 - The record that fills the batch carries it out to the queue; nothing else
   happens on the consumer thread.
-- The policy checker, on a daemon thread named after the batcher, asks the
-  buffer's policies on a schedule it keeps per policy: that is how a batch goes
-  once the first record has waited past the max duration.
+- The buffer's scheduler, on a daemon thread named after the batcher, runs the
+  checks each policy has scheduled for itself: that is how a batch goes once
+  the first record has waited past the max duration.
 - The queue is bounded. When it is full the batcher applies the back-pressure
   setting: park the batch, reject the record, or wait for room.
 - One writer thread writes batches in order, one at a time.
@@ -248,9 +248,8 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batch<R>` | accepted records in order, so the first is the oldest, and an id | value type |
 | `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
 | `RecordBuffer<R>` | collect records and dispatch a batch whenever a policy is met, asking each in turn | in memory |
-| `BufferingPolicyChecker` | ask the buffer's policies on a schedule of its own per policy, and count every check; the buffer hands it the policies on open and stops it on close | one daemon thread named after the batcher, max duration every `buffering-check-interval`, capacity never |
 | `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (`countRecords()`), `BufferDurationUsage` (`measureDuration()`) | the in-memory buffer reports both |
-| `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, taken as policies over the buffer's own type, so one whose usage it does not report does not compile; a repeated name is refused | `BufferCapacityPolicy` (`batch-size`) and `BufferDurationPolicy` (`buffering-max-duration`) |
+| `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage, and when to check it with no new record, on the buffer's scheduler (`scheduleCheck`); fixed when the buffer is built, taken as policies over the buffer's own type, so one whose usage it does not report does not compile; a repeated name is refused | `BufferCapacityPolicy` (`batch-size`) and `BufferDurationPolicy` (`buffering-max-duration`, checked every `buffering-check-interval`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
 | `BatchDispatchedListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
 | `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
@@ -348,7 +347,7 @@ Shutdown is the part that decides whether you lose data on every deploy.
 
 In order:
 
-1. The batcher stops accepting, and the buffer closes: its policy checker
+1. The batcher stops accepting, and the buffer closes: its scheduler
    stops first. What it still holds is
    dispatched with no policy met, so the batches are enqueued in the writing
    queue as usual, waiting for room within the budget.

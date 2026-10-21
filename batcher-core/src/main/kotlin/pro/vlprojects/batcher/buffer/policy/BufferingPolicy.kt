@@ -1,6 +1,7 @@
 package pro.vlprojects.batcher.buffer.policy
 
 import pro.vlprojects.batcher.buffer.usage.BufferUsage
+import java.util.concurrent.ScheduledExecutorService
 
 /**
  * One rule for when what a buffer collects goes as a batch. A buffer holds several and asks each in
@@ -13,6 +14,13 @@ public interface BufferingPolicy<in U : BufferUsage> {
     /** The `policy` tag of the dispatch metric: dashboards key on it, so it must not change. */
     public val name: String
 
-    /** Asked after every add and on the [checker][BufferingPolicyChecker]'s schedule, with records collecting. */
+    /** Asked after every add and on the schedule from [scheduleCheck], with records collecting. */
     public fun shouldDispatch(usage: U): Boolean
+
+    /**
+     * From [open][pro.vlprojects.batcher.buffer.RecordBuffer.open]. A policy that can be due with no new
+     * record puts [check] on [scheduler]; one that changes only on add leaves it be. The scheduler and
+     * its threads are the buffer's, and so is stopping them: the policy keeps nothing of the schedule.
+     */
+    public fun scheduleCheck(scheduler: ScheduledExecutorService, check: Runnable) {}
 }

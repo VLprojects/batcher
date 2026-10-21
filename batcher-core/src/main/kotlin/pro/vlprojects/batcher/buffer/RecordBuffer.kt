@@ -1,7 +1,6 @@
 package pro.vlprojects.batcher.buffer
 
 import pro.vlprojects.batcher.buffer.policy.BufferingPolicy
-import pro.vlprojects.batcher.buffer.policy.BufferingPolicyChecker
 import pro.vlprojects.batcher.buffer.usage.BufferUsage
 import pro.vlprojects.batcher.data.Record
 import pro.vlprojects.batcher.dto.Batch
@@ -10,7 +9,7 @@ import pro.vlprojects.batcher.listener.BatchDispatchedListener
 /**
  * Collects records and dispatches them in batches once any of its [policies] is met. It reports its
  * usage by implementing the [BufferUsage] subtypes it can count. A policy due by time is met with no
- * new record, so the buffer is built with a [BufferingPolicyChecker] that asks them on a schedule.
+ * new record, so the buffer keeps a scheduler of its own, names its threads and counts every check.
  */
 public interface RecordBuffer<R : Record<*>> : BufferUsage {
 
@@ -33,7 +32,7 @@ public interface RecordBuffer<R : Record<*>> : BufferUsage {
     public fun removeListener(listener: BatchDispatchedListener<R>)
 
     /**
-     * Before the first record, once the listeners are in: hands every policy to the checker. A durable
+     * Before the first record, once the listeners are in: lets every policy [schedule its check][BufferingPolicy.scheduleCheck]. A durable
      * buffer also restores what it held at the last stop and dispatches it as the policies say.
      */
     public fun open()
@@ -51,7 +50,7 @@ public interface RecordBuffer<R : Record<*>> : BufferUsage {
     public fun add(records: Collection<R>): Unit = records.forEach(::add)
 
     /**
-     * Stops taking records and the checker, then empties itself before it returns. An in-memory buffer
+     * Stops taking records and shuts its scheduler down, waiting for a check under way, then empties itself before it returns. An in-memory buffer
      * dispatches what was still collecting with no policy met, a batch per group if it groups records
      * by a key; a durable one keeps it for the next [open]. Once closed, a throw from a listener is not
      * retried but comes out of here.
