@@ -8,33 +8,30 @@ public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer : pro
 	public abstract fun removeListener (Lpro/vlprojects/batcher/listener/BatchDispatchedListener;)V
 }
 
-public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
-	public abstract fun getName ()Ljava/lang/String;
-	public abstract fun getUsageType ()Ljava/lang/Class;
-	public abstract fun isMet (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;Ljava/time/Instant;)Z
-	public fun nextCheckAt (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;Ljava/time/Instant;)Ljava/time/Instant;
-}
-
-public final class pro/vlprojects/batcher/buffer/policy/CapacityBufferingPolicy : pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
+public final class pro/vlprojects/batcher/buffer/policy/BufferCapacityPolicy : pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
 	public fun <init> (I)V
 	public final fun getCapacity ()I
 	public fun getName ()Ljava/lang/String;
 	public fun getUsageType ()Ljava/lang/Class;
-	public fun isMet (Lpro/vlprojects/batcher/buffer/usage/BufferCapacityUsage;Ljava/time/Instant;)Z
-	public synthetic fun isMet (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;Ljava/time/Instant;)Z
+	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferCapacityUsage;)Z
+	public synthetic fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class pro/vlprojects/batcher/buffer/policy/MaxDurationBufferingPolicy : pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
+public final class pro/vlprojects/batcher/buffer/policy/BufferDurationPolicy : pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
 	public fun <init> (Ljava/time/Duration;)V
 	public final fun getMaxDuration ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
 	public fun getUsageType ()Ljava/lang/Class;
-	public fun isMet (Lpro/vlprojects/batcher/buffer/usage/BufferDurationUsage;Ljava/time/Instant;)Z
-	public synthetic fun isMet (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;Ljava/time/Instant;)Z
-	public fun nextCheckAt (Lpro/vlprojects/batcher/buffer/usage/BufferDurationUsage;Ljava/time/Instant;)Ljava/time/Instant;
-	public synthetic fun nextCheckAt (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;Ljava/time/Instant;)Ljava/time/Instant;
+	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferDurationUsage;)Z
+	public synthetic fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
 	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getUsageType ()Ljava/lang/Class;
+	public abstract fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/usage/BufferCapacityUsage : pro/vlprojects/batcher/buffer/usage/BufferUsage {
@@ -42,7 +39,7 @@ public abstract interface class pro/vlprojects/batcher/buffer/usage/BufferCapaci
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/usage/BufferDurationUsage : pro/vlprojects/batcher/buffer/usage/BufferUsage {
-	public abstract fun measureDuration (Ljava/time/Instant;)Ljava/time/Duration;
+	public abstract fun measureDuration ()Ljava/time/Duration;
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/usage/BufferUsage {
@@ -95,18 +92,18 @@ public abstract interface class pro/vlprojects/batcher/metric/BatcherMeter {
 public abstract interface class pro/vlprojects/batcher/metric/BufferMeter {
 	public fun incrementBatchDispatching (Lpro/vlprojects/batcher/buffer/policy/BufferingPolicy;)V
 	public fun incrementBatchDispatchingOnClose ()V
-	public fun incrementDurationChecked (Lpro/vlprojects/batcher/metric/DurationCheckStatus;)V
+	public fun incrementPoliciesChecked (Lpro/vlprojects/batcher/metric/PolicyCheckStatus;)V
 	public fun watchBuffer (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
 }
 
-public final class pro/vlprojects/batcher/metric/DurationCheckStatus : java/lang/Enum {
-	public static final field BATCH_DISPATCHED Lpro/vlprojects/batcher/metric/DurationCheckStatus;
-	public static final field BUFFER_EMPTY Lpro/vlprojects/batcher/metric/DurationCheckStatus;
-	public static final field FAILED Lpro/vlprojects/batcher/metric/DurationCheckStatus;
-	public static final field RESCHEDULED Lpro/vlprojects/batcher/metric/DurationCheckStatus;
+public final class pro/vlprojects/batcher/metric/PolicyCheckStatus : java/lang/Enum {
+	public static final field BATCH_DISPATCHED Lpro/vlprojects/batcher/metric/PolicyCheckStatus;
+	public static final field BUFFER_EMPTY Lpro/vlprojects/batcher/metric/PolicyCheckStatus;
+	public static final field FAILED Lpro/vlprojects/batcher/metric/PolicyCheckStatus;
+	public static final field NOT_DUE Lpro/vlprojects/batcher/metric/PolicyCheckStatus;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/metric/DurationCheckStatus;
-	public static fun values ()[Lpro/vlprojects/batcher/metric/DurationCheckStatus;
+	public static fun valueOf (Ljava/lang/String;)Lpro/vlprojects/batcher/metric/PolicyCheckStatus;
+	public static fun values ()[Lpro/vlprojects/batcher/metric/PolicyCheckStatus;
 }
 
 public final class pro/vlprojects/batcher/metric/RecordWritingStatus : java/lang/Enum {

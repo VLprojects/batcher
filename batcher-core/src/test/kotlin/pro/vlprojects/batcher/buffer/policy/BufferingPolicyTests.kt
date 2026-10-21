@@ -1,36 +1,28 @@
 package pro.vlprojects.batcher.buffer.policy
 
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import pro.vlprojects.batcher.buffer.usage.BufferCapacityUsage
 import pro.vlprojects.batcher.buffer.usage.BufferDurationUsage
 import java.time.Duration
-import java.time.Instant
 
 class BufferingPolicyTests {
 
-    private val at = Instant.parse("2026-10-21T10:00:00Z")
-
     @Test
-    fun `the capacity is met by the record that fills it`() {
-        val policy = CapacityBufferingPolicy(capacity = 2)
+    fun `the capacity policy dispatches on the record that fills it`() {
+        val policy = BufferCapacityPolicy(capacity = 2)
 
-        assertFalse(policy.isMet(capacityUsage(recordCount = 1), at))
-        assertTrue(policy.isMet(capacityUsage(recordCount = 2), at))
-        assertNull(policy.nextCheckAt(capacityUsage(recordCount = 1), at))
+        assertFalse(policy.shouldDispatch(capacityUsage(recordCount = 1)))
+        assertTrue(policy.shouldDispatch(capacityUsage(recordCount = 2)))
     }
 
     @Test
-    fun `the max duration is met once the first record has waited it`() {
-        val policy = MaxDurationBufferingPolicy(maxDuration = Duration.ofSeconds(1))
-        val usage = durationUsage(firstRecordAt = at)
+    fun `the duration policy dispatches once the first record has waited the max duration`() {
+        val policy = BufferDurationPolicy(maxDuration = Duration.ofSeconds(1))
 
-        assertFalse(policy.isMet(usage, at.plusMillis(999)))
-        assertTrue(policy.isMet(usage, at.plusSeconds(1)))
-        assertEquals(at.plusSeconds(1), policy.nextCheckAt(usage, at.plusMillis(400)))
+        assertFalse(policy.shouldDispatch(durationUsage(duration = Duration.ofMillis(999))))
+        assertTrue(policy.shouldDispatch(durationUsage(duration = Duration.ofSeconds(1))))
     }
 
     private fun capacityUsage(recordCount: Int): BufferCapacityUsage =
@@ -38,8 +30,8 @@ class BufferingPolicyTests {
             override fun countRecords(): Int = recordCount
         }
 
-    private fun durationUsage(firstRecordAt: Instant): BufferDurationUsage =
+    private fun durationUsage(duration: Duration): BufferDurationUsage =
         object : BufferDurationUsage {
-            override fun measureDuration(now: Instant): Duration = Duration.between(firstRecordAt, now)
+            override fun measureDuration(): Duration = duration
         }
 }

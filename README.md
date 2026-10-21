@@ -240,8 +240,8 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batch<R>` | records, an id, the arrival of the first one | value type |
 | `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
 | `RecordBuffer<R>` | collect records and dispatch a batch once any of its policies is met | in memory, with a daemon thread for the duration |
-| `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (`countRecords()`), `BufferDurationUsage` (`measureDuration(now)`) | the in-memory buffer reports both |
-| `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, which refuses a policy whose usage it does not report | `CapacityBufferingPolicy` (`batch-size`) and `MaxDurationBufferingPolicy` (`buffering-max-duration`) |
+| `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (`countRecords()`), `BufferDurationUsage` (`measureDuration()`) | the in-memory buffer reports both |
+| `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, which refuses a policy whose usage it does not report or whose name repeats | `BufferCapacityPolicy` (`batch-size`) and `BufferDurationPolicy` (`buffering-max-duration`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
 | `BatchDispatchedListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
 | `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
@@ -410,7 +410,7 @@ batcher:
 Two numbers set the shape of the load: `batch-size` and
 `buffering-max-duration`. Rows per second at full load is
 `batch-size / buffering-max-duration`, and that is also the worst-case delay
-before a record is queryable. Pick the delay you can live with, then the size
+before a record is queryable, give or take one policy check of the buffer. Pick the delay you can live with, then the size
 that keeps inserts at roughly one per second per table.
 
 `back-pressure` picks a `WritingBackPressurePolicy`, and a bean of your own

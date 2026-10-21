@@ -1,10 +1,9 @@
 package pro.vlprojects.batcher.buffer.policy
 
 import pro.vlprojects.batcher.buffer.usage.BufferCapacityUsage
-import java.time.Instant
 
 /** Met once the buffer holds [capacity] records: a full batch goes at once. */
-public class CapacityBufferingPolicy(public val capacity: Int) : BufferingPolicy<BufferCapacityUsage> {
+public class BufferCapacityPolicy(public val capacity: Int) : BufferingPolicy<BufferCapacityUsage> {
 
     override val usageType: Class<BufferCapacityUsage> = BufferCapacityUsage::class.java
 
@@ -14,7 +13,7 @@ public class CapacityBufferingPolicy(public val capacity: Int) : BufferingPolicy
         require(capacity > 0) { "A capacity must be positive: $capacity" }
     }
 
-    override fun isMet(usage: BufferCapacityUsage, now: Instant): Boolean = usage.countRecords() >= capacity
+    override fun shouldDispatch(usage: BufferCapacityUsage): Boolean = usage.countRecords() >= capacity
 
-    override fun toString(): String = "CapacityBufferingPolicy[capacity: $capacity]"
+    override fun toString(): String = "BufferCapacityPolicy[capacity: $capacity]"
 }

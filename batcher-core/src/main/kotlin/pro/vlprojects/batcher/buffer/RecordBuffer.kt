@@ -7,14 +7,16 @@ import pro.vlprojects.batcher.listener.BatchDispatchedListener
 
 /**
  * Collects records and dispatches them in batches once any of its [policies] is met. It reports its
- * usage by implementing the [BufferUsage] subtypes it can count. A policy due by time needs a clock
- * running somewhere, and that is the buffer's own, not the batcher's.
+ * usage by implementing the [BufferUsage] subtypes it can count. A policy due by time is met with no
+ * new record, so the buffer also checks its policies on a schedule of its own, and a batch goes at
+ * most one check late.
  */
 public interface RecordBuffer<R : Any> : BufferUsage {
 
     /**
      * Set when built and asked in this order; the first one met names the batch in the metrics. A
-     * buffer that is not of some policy's [usage type][BufferingPolicy.usageType] must refuse to be built.
+     * buffer that is not of some policy's [usage type][BufferingPolicy.usageType], or holds two policies
+     * of one [name][BufferingPolicy.name], must refuse to be built.
      */
     public val policies: List<BufferingPolicy<*>>
 

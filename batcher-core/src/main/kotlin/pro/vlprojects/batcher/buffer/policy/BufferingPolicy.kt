@@ -1,7 +1,6 @@
 package pro.vlprojects.batcher.buffer.policy
 
 import pro.vlprojects.batcher.buffer.usage.BufferUsage
-import java.time.Instant
 
 /**
  * One rule for when what a buffer collects goes as a batch. A buffer holds several, and the first one
@@ -9,15 +8,15 @@ import java.time.Instant
  */
 public interface BufferingPolicy<U : BufferUsage> {
 
-    /** The usage it reads, for the buffer to check once when built rather than on every record. */
+    /**
+     * The usage it reads. Generics are erased at run time, so this is the only way for a buffer to see
+     * when built that it can serve the policy, and not with a cast failing on the first record.
+     */
     public val usageType: Class<U>
 
     /** The `policy` tag of the dispatch metric: dashboards key on it, so it must not change. */
     public val name: String
 
-    /** Asked after every add and at every [nextCheckAt], with records collecting. */
-    public fun isMet(usage: U, now: Instant): Boolean
-
-    /** When the buffer must ask again with no new record, or null when only an add can meet the rule. */
-    public fun nextCheckAt(usage: U, now: Instant): Instant? = null
+    /** Asked after every add and on every check of the buffer's own, with records collecting. */
+    public fun shouldDispatch(usage: U): Boolean
 }
