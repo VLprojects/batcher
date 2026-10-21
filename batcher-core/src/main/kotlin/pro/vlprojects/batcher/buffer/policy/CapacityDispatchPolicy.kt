@@ -21,7 +21,7 @@ public class CapacityDispatchPolicy(
         }
     }
 
-    override fun shouldDispatch(buffer: CapacityMeasurable): Boolean = buffer.countRecords() >= capacity
+    override fun requiresDispatch(buffer: CapacityMeasurable): Boolean = buffer.countRecords() >= capacity
 
     override fun toString(): String = "CapacityDispatchPolicy[capacity: $capacity, checkInterval: $checkInterval]"
 }

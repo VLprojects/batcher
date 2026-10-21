@@ -18,7 +18,7 @@ public class DurationDispatchPolicy(
         }
     }
 
-    override fun shouldDispatch(buffer: DurationMeasurable): Boolean = buffer.measureDuration() >= maxDuration
+    override fun requiresDispatch(buffer: DurationMeasurable): Boolean = buffer.measureDuration() >= maxDuration
 
     override fun toString(): String =
         "DurationDispatchPolicy[maxDuration: $maxDuration, checkInterval: $checkInterval]"

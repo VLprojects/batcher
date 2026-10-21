@@ -21,5 +21,5 @@ public interface DispatchPolicy<in U : UsageMeasurable> {
     public val checkInterval: Duration
 
     /** Asked after every add and every [checkInterval], with records collecting. */
-    public fun shouldDispatch(buffer: U): Boolean
+    public fun requiresDispatch(buffer: U): Boolean
 }

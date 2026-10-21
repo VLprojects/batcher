@@ -13,15 +13,15 @@ public final class pro/vlprojects/batcher/buffer/policy/CapacityDispatchPolicy :
 	public final fun getCapacity ()I
 	public fun getCheckInterval ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
-	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/CapacityMeasurable;)Z
-	public synthetic fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
+	public fun requiresDispatch (Lpro/vlprojects/batcher/buffer/usage/CapacityMeasurable;)Z
+	public synthetic fun requiresDispatch (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/DispatchPolicy {
 	public abstract fun getCheckInterval ()Ljava/time/Duration;
 	public abstract fun getName ()Ljava/lang/String;
-	public abstract fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
+	public abstract fun requiresDispatch (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 }
 
 public final class pro/vlprojects/batcher/buffer/policy/DurationDispatchPolicy : pro/vlprojects/batcher/buffer/policy/DispatchPolicy {
@@ -29,8 +29,8 @@ public final class pro/vlprojects/batcher/buffer/policy/DurationDispatchPolicy :
 	public fun getCheckInterval ()Ljava/time/Duration;
 	public final fun getMaxDuration ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
-	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/DurationMeasurable;)Z
-	public synthetic fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
+	public fun requiresDispatch (Lpro/vlprojects/batcher/buffer/usage/DurationMeasurable;)Z
+	public synthetic fun requiresDispatch (Lpro/vlprojects/batcher/buffer/usage/UsageMeasurable;)Z
 	public fun toString ()Ljava/lang/String;
 }
 
