@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.buffer.policy
 
-import pro.vlprojects.batcher.buffer.usage.BufferUsage
+import pro.vlprojects.batcher.buffer.usage.UsageMeasurable
 import java.util.concurrent.ScheduledExecutorService
 
 /**
@@ -9,7 +9,7 @@ import java.util.concurrent.ScheduledExecutorService
  * [U] is `in`, so a policy over a usage is a policy over any buffer that reports it, and the compiler
  * turns down the rest.
  */
-public interface BufferingPolicy<in U : BufferUsage> {
+public interface DispatchPolicy<in U : UsageMeasurable> {
 
     /** The `policy` tag of the dispatch metric: dashboards key on it, so it must not change. */
     public val name: String

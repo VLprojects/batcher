@@ -1,14 +1,14 @@
 package pro.vlprojects.batcher.buffer
 
-import pro.vlprojects.batcher.buffer.policy.BufferingPolicy
-import pro.vlprojects.batcher.buffer.usage.BufferUsage
+import pro.vlprojects.batcher.buffer.policy.DispatchPolicy
+import pro.vlprojects.batcher.buffer.usage.UsageMeasurable
 import pro.vlprojects.batcher.data.Record
 import pro.vlprojects.batcher.dto.Batch
 import pro.vlprojects.batcher.listener.BatchDispatchedListener
 
 /**
  * Collects records and dispatches them in batches once any of its [policies] is met. It reports its
- * usage by implementing the [BufferUsage] subtypes it can count. A policy due by time is met with no
+ * usage by implementing the [UsageMeasurable] subtypes it can count. A policy due by time is met with no
  * new record, so the buffer keeps a scheduler of its own, names its threads and counts every check.
  */
 public interface RecordBuffer<R : Record<*>> {
@@ -17,9 +17,9 @@ public interface RecordBuffer<R : Record<*>> {
      * Set when built. After every add each is asked in this order and dispatches for as long as it is
      * met with records collecting, then the next one is asked; the one that dispatched names the batch
      * in the metrics. A buffer takes them as policies over itself, so one whose usage it does not
-     * report does not compile; two of one [name][BufferingPolicy.name] it must refuse.
+     * report does not compile; two of one [name][DispatchPolicy.name] it must refuse.
      */
-    public val policies: List<BufferingPolicy<*>>
+    public val policies: List<DispatchPolicy<*>>
 
     /**
      * From any thread, at any time; counts from the next dispatched batch. A batch goes to every listener in
@@ -32,7 +32,7 @@ public interface RecordBuffer<R : Record<*>> {
     public fun removeListener(listener: BatchDispatchedListener<R>)
 
     /**
-     * Before the first record, once the listeners are in: lets every policy [schedule][BufferingPolicy.schedule] its check. A durable
+     * Before the first record, once the listeners are in: lets every policy [schedule][DispatchPolicy.schedule] its check. A durable
      * buffer also restores what it held at the last stop and dispatches it as the policies say.
      */
     public fun open()

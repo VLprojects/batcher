@@ -2,7 +2,7 @@ package pro.vlprojects.batcher.buffer.usage
 
 import java.time.Duration
 
-public interface BufferDurationUsage : BufferUsage {
+public interface DurationMeasurable : UsageMeasurable {
 
     /**
      * How long the first record still collecting has waited since it was accepted, by the clock that

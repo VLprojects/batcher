@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.buffer.policy
 
-import pro.vlprojects.batcher.buffer.usage.BufferDurationUsage
+import pro.vlprojects.batcher.buffer.usage.DurationMeasurable
 import java.time.Duration
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -9,10 +9,10 @@ import java.util.concurrent.TimeUnit
  * Met once the first record has waited [maxDuration]: a half-full batch does not wait forever. Only a
  * check every [checkInterval] meets it, so a batch goes at most one interval late.
  */
-public class BufferDurationPolicy(
+public class DurationDispatchPolicy(
     public val maxDuration: Duration,
     public val checkInterval: Duration,
-) : BufferingPolicy<BufferDurationUsage> {
+) : DispatchPolicy<DurationMeasurable> {
 
     override val name: String = "max_duration"
 
@@ -21,7 +21,7 @@ public class BufferDurationPolicy(
         require(checkInterval.isPositive) { "A check interval must be positive: $checkInterval" }
     }
 
-    override fun shouldDispatch(usage: BufferDurationUsage): Boolean = usage.measureDuration() >= maxDuration
+    override fun shouldDispatch(usage: DurationMeasurable): Boolean = usage.measureDuration() >= maxDuration
 
     /** Fixed delay: a slow check pushes the next one back instead of piling them up. */
     override fun schedule(scheduler: ScheduledExecutorService, check: Runnable) {
@@ -30,5 +30,5 @@ public class BufferDurationPolicy(
     }
 
     override fun toString(): String =
-        "BufferDurationPolicy[maxDuration: $maxDuration, checkInterval: $checkInterval]"
+        "DurationDispatchPolicy[maxDuration: $maxDuration, checkInterval: $checkInterval]"
 }

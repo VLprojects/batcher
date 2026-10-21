@@ -248,8 +248,8 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batch<R>` | accepted records in order, so the first is the oldest, and an id | value type |
 | `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
 | `RecordBuffer<R>` | collect records and dispatch a batch whenever a policy is met, asking each in turn | in memory |
-| `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (`countRecords()`), `BufferDurationUsage` (`measureDuration()`) | the in-memory buffer reports both |
-| `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage, and when to check it with no new record, on the buffer's scheduler (`schedule`, on open); fixed when the buffer is built, taken as policies over the buffer's own type, so one whose usage it does not report does not compile; a repeated name is refused | `BufferCapacityPolicy` (`batch-size`) and `BufferDurationPolicy` (`buffering-max-duration`, checked every `buffering-check-interval`) |
+| `UsageMeasurable` | what a buffer reports about the records it collects, one subtype per kind: `CapacityMeasurable` (`countRecords()`), `DurationMeasurable` (`measureDuration()`) | the in-memory buffer reports both |
+| `DispatchPolicy<U>` | one rule for when a batch is due, over one kind of usage, and when to check it with no new record, on the buffer's scheduler (`schedule`, on open); fixed when the buffer is built, taken as policies over the buffer's own type, so one whose usage it does not report does not compile; a repeated name is refused | `CapacityDispatchPolicy` (`batch-size`) and `DurationDispatchPolicy` (`buffering-max-duration`, checked every `buffering-check-interval`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
 | `BatchDispatchedListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
 | `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
@@ -297,7 +297,7 @@ keep the defaults while another one does not.
 | --- | --- |
 | `BatchWriter<R>` | always: this is your insert |
 | `WritingFallback<R>` | failed records must go somewhere: a log, a table, back to a queue |
-| `BufferingPolicy<U>` | a batch is due by a rule of yours, for example a byte budget over a usage kind that counts bytes; it adds to the two defaults |
+| `DispatchPolicy<U>` | a batch is due by a rule of yours, for example a byte budget over a `MemoryMeasurable` of its own; it adds to the two defaults |
 | `WritingBackPressurePolicy` | none of `fallback`, `reject` and `block` fits the source |
 | `RecordBuffer<R>` | it must report a usage the default does not (bytes in memory), records must be grouped on the way in (a key per table), or survive a restart, for example in Redis |
 | `WritingBatchQueue<R>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
