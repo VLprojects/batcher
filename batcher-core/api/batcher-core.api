@@ -12,7 +12,6 @@ public final class pro/vlprojects/batcher/buffer/policy/BufferCapacityPolicy : p
 	public fun <init> (I)V
 	public final fun getCapacity ()I
 	public fun getName ()Ljava/lang/String;
-	public fun getUsageType ()Ljava/lang/Class;
 	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferCapacityUsage;)Z
 	public synthetic fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
 	public fun toString ()Ljava/lang/String;
@@ -22,7 +21,6 @@ public final class pro/vlprojects/batcher/buffer/policy/BufferDurationPolicy : p
 	public fun <init> (Ljava/time/Duration;)V
 	public final fun getMaxDuration ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
-	public fun getUsageType ()Ljava/lang/Class;
 	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferDurationUsage;)Z
 	public synthetic fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
 	public fun toString ()Ljava/lang/String;
@@ -30,7 +28,6 @@ public final class pro/vlprojects/batcher/buffer/policy/BufferDurationPolicy : p
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
 	public abstract fun getName ()Ljava/lang/String;
-	public abstract fun getUsageType ()Ljava/lang/Class;
 	public abstract fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
 }
 

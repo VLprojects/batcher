@@ -15,8 +15,8 @@ public interface RecordBuffer<R : Any> : BufferUsage {
 
     /**
      * Set when built and asked in this order; the first one met names the batch in the metrics. A
-     * buffer that is not of some policy's [usage type][BufferingPolicy.usageType], or holds two policies
-     * of one [name][BufferingPolicy.name], must refuse to be built.
+     * buffer takes them as policies over itself, so one whose usage it does not report does not compile;
+     * two of one [name][BufferingPolicy.name] it must refuse.
      */
     public val policies: List<BufferingPolicy<*>>
 

@@ -6,8 +6,6 @@ import java.time.Duration
 /** Met once the first record has waited [maxDuration]: a half-full batch does not wait forever. */
 public class BufferDurationPolicy(public val maxDuration: Duration) : BufferingPolicy<BufferDurationUsage> {
 
-    override val usageType: Class<BufferDurationUsage> = BufferDurationUsage::class.java
-
     override val name: String = "max_duration"
 
     init {

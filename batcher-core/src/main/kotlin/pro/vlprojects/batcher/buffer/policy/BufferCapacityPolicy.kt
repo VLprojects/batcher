@@ -5,8 +5,6 @@ import pro.vlprojects.batcher.buffer.usage.BufferCapacityUsage
 /** Met once the buffer holds [capacity] records: a full batch goes at once. */
 public class BufferCapacityPolicy(public val capacity: Int) : BufferingPolicy<BufferCapacityUsage> {
 
-    override val usageType: Class<BufferCapacityUsage> = BufferCapacityUsage::class.java
-
     override val name: String = "capacity"
 
     init {
