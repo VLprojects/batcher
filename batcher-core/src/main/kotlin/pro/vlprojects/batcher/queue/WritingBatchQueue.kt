@@ -7,7 +7,7 @@ import java.time.Duration
  * Holds dispatched batches until the writer takes them. A taken batch stays here until [confirm]: a
  * durable queue gives back what a crash interrupted, and the in-memory one what a stop did.
  */
-public interface WritingBatchQueue<T : Any> {
+public interface WritingBatchQueue<R : Any> {
 
     public val isDurable: Boolean
 
@@ -27,20 +27,20 @@ public interface WritingBatchQueue<T : Any> {
     public val isEmpty: Boolean
 
     /** Waits up to [timeout] for room, zero being no wait. A throw means the batch is not in. */
-    public fun enqueue(batch: Batch<T>, timeout: Duration): EnqueueStatus
+    public fun enqueue(batch: Batch<R>, timeout: Duration): EnqueueStatus
 
     /** Null when nothing came within [timeout], and from the moment the queue is [isClosed] and [isEmpty]. */
-    public fun take(timeout: Duration): Batch<T>?
+    public fun take(timeout: Duration): Batch<R>?
 
     /** Written or parked: the taken batch leaves the queue for good. */
-    public fun confirm(batch: Batch<T>)
+    public fun confirm(batch: Batch<R>)
 
     /** Not dealt with: the taken batch goes back, ahead of the rest. */
-    public fun requeue(batch: Batch<T>)
+    public fun requeue(batch: Batch<R>)
 
     /** Takes no more batches. */
     public fun close()
 
     /** Once the writer has stopped: what is left, for the fallback. A durable queue keeps it and gives none. */
-    public fun takeAll(): List<Batch<T>>
+    public fun takeAll(): List<Batch<R>>
 }

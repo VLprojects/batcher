@@ -9,10 +9,10 @@ import java.util.UUID
  *
  * [records] is taken as is, without a copy: whoever dispatches the batch must not touch the list again.
  */
-public class Batch<out T : Any>(
+public class Batch<out R : Any>(
     /** Given explicitly only by a durable stage that restores a batch it already held. */
     public val id: UUID = UUID.randomUUID(),
-    public val records: List<T>,
+    public val records: List<R>,
     /** The oldest record's arrival, not when the batch was dispatched: it is that wait that matters. */
     public val firstRecordAt: Instant,
 ) {

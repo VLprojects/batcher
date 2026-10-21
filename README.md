@@ -236,16 +236,16 @@ Everything in the pipeline above is an interface in `batcher-core`.
 
 | Type | Responsibility | Default |
 | --- | --- | --- |
-| `Batcher<T>` | entry point: `accept(record)`, `accept(records)`, start, stop | the only implementation |
-| `Batch<T>` | records, an id, the arrival of the first one | value type |
-| `BatchWriter<T>` | one insert of one batch | **yours**, there is no default |
-| `RecordBuffer<T, U>` | collect records and dispatch a batch once any of its policies is met | in memory, with a daemon thread for the age |
+| `Batcher<R>` | entry point: `accept(record)`, `accept(records)`, start, stop | the only implementation |
+| `Batch<R>` | records, an id, the arrival of the first one | value type |
+| `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
+| `RecordBuffer<R, U>` | collect records and dispatch a batch once any of its policies is met | in memory, with a daemon thread for the age |
 | `BufferUsage` | what the buffer is collecting: size and the first record's arrival; a buffer that tracks more gives a subtype | read by the policies and the gauges |
 | `BufferingPolicy<U>` | one rule for when a batch is due, over a `BufferUsage` or its subtype | `CapacityBufferingPolicy` (`batch-size`) and `MaxAgeBufferingPolicy` (`buffering-max-duration`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
-| `BatchReadyListener<T>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
-| `WritingBatchQueue<T>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
-| `WritingFallback<T>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
+| `BatchReadyListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
+| `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
+| `WritingFallback<R>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | report every event; each method does nothing by default | none in core, Micrometer in `batcher-micrometer` |
 
 `BatchWriter` is the only thing you must write: `persist(batch)` for one insert
@@ -284,12 +284,12 @@ keep the defaults while another one does not.
 
 | Seam | Replace it when |
 | --- | --- |
-| `BatchWriter<T>` | always: this is your insert |
-| `WritingFallback<T>` | failed records must go somewhere: a log, a table, back to a queue |
+| `BatchWriter<R>` | always: this is your insert |
+| `WritingFallback<R>` | failed records must go somewhere: a log, a table, back to a queue |
 | `BufferingPolicy<U>` | a batch is due by a rule of yours, for example a byte budget over a buffer whose usage counts bytes; it adds to the two defaults |
 | `WritingBackPressurePolicy` | none of `fallback`, `reject` and `block` fits the source |
-| `RecordBuffer<T, U>` | its usage must track more than size (bytes in memory), records must be grouped on the way in (a key per table), or survive a restart, for example in Redis |
-| `WritingBatchQueue<T>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
+| `RecordBuffer<R, U>` | its usage must track more than size (bytes in memory), records must be grouped on the way in (a key per table), or survive a restart, for example in Redis |
+| `WritingBatchQueue<R>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | your observability is not Micrometer |
 
 `back-pressure` in section 11 picks one of the three ready back-pressure policies.
