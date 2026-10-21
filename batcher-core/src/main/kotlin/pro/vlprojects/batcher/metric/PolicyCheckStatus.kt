@@ -1,11 +1,11 @@
 package pro.vlprojects.batcher.metric
 
-/** Every way one of the buffer's own policy checks can end. */
+/** Every way one check of a policy on its interval can end. */
 public enum class PolicyCheckStatus {
 
     BATCH_DISPATCHED,
 
-    /** Records were collecting, but no policy was met yet. */
+    /** Records were collecting, but the policy was not met yet. */
     NOT_DUE,
 
     BUFFER_EMPTY,

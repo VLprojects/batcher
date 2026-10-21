@@ -8,8 +8,8 @@ import pro.vlprojects.batcher.listener.BatchDispatchedListener
 /**
  * Collects records and dispatches them in batches once any of its [policies] is met. It reports its
  * usage by implementing the [BufferUsage] subtypes it can count. A policy due by time is met with no
- * new record, so the buffer also checks its policies on a schedule of its own, and a batch goes at
- * most one check late.
+ * new record, so the buffer also asks each policy on that policy's
+ * [check interval][BufferingPolicy.checkInterval], on a schedule of its own.
  */
 public interface RecordBuffer<R : Any> : BufferUsage {
 

@@ -18,7 +18,9 @@ public final class pro/vlprojects/batcher/buffer/policy/BufferCapacityPolicy : p
 }
 
 public final class pro/vlprojects/batcher/buffer/policy/BufferDurationPolicy : pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
-	public fun <init> (Ljava/time/Duration;)V
+	public fun <init> (Ljava/time/Duration;Ljava/time/Duration;)V
+	public synthetic fun <init> (Ljava/time/Duration;Ljava/time/Duration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getCheckInterval ()Ljava/time/Duration;
 	public final fun getMaxDuration ()Ljava/time/Duration;
 	public fun getName ()Ljava/lang/String;
 	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferDurationUsage;)Z
@@ -27,6 +29,7 @@ public final class pro/vlprojects/batcher/buffer/policy/BufferDurationPolicy : p
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
+	public fun getCheckInterval ()Ljava/time/Duration;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
 }
@@ -89,7 +92,7 @@ public abstract interface class pro/vlprojects/batcher/metric/BatcherMeter {
 public abstract interface class pro/vlprojects/batcher/metric/BufferMeter {
 	public fun incrementBatchDispatching (Lpro/vlprojects/batcher/buffer/policy/BufferingPolicy;)V
 	public fun incrementBatchDispatchingOnClose ()V
-	public fun incrementPoliciesChecked (Lpro/vlprojects/batcher/metric/PolicyCheckStatus;)V
+	public fun incrementPolicyChecked (Lpro/vlprojects/batcher/buffer/policy/BufferingPolicy;Lpro/vlprojects/batcher/metric/PolicyCheckStatus;)V
 	public fun watchBuffer (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
 }
 

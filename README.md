@@ -216,8 +216,9 @@ has two threads of its own.
 - `accept` takes the lock, appends to the buffer and returns. It does no I/O.
 - The record that fills the batch carries it out to the queue; nothing else
   happens on the consumer thread.
-- The buffer thread, a daemon, watches how long the first record has waited and
-  dispatches a batch once that is past the max duration.
+- The buffer thread, a daemon, asks every policy that has a check interval on
+  that interval, and dispatches a batch once the first record has waited past
+  the max duration.
 - The queue is bounded. When it is full the batcher applies the back-pressure
   setting: park the batch, reject the record, or wait for room.
 - One writer thread writes batches in order, one at a time.
@@ -241,7 +242,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
 | `RecordBuffer<R>` | collect records and dispatch a batch whenever a policy is met, asking each in turn | in memory, with a daemon thread for the duration |
 | `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (`countRecords()`), `BufferDurationUsage` (`measureDuration()`) | the in-memory buffer reports both |
-| `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, taken as policies over the buffer's own type, so one whose usage it does not report does not compile; a repeated name is refused | `BufferCapacityPolicy` (`batch-size`) and `BufferDurationPolicy` (`buffering-max-duration`) |
+| `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, taken as policies over the buffer's own type, so one whose usage it does not report does not compile; a repeated name is refused | `BufferCapacityPolicy` (`batch-size`) and `BufferDurationPolicy` (`buffering-max-duration`, `buffering-check-interval`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
 | `BatchDispatchedListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
 | `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
@@ -393,12 +394,13 @@ needs.
 ```yaml
 batcher:
   defaults:
-    batch-size: 500              # records per write
-    buffering-max-duration: 1s   # how long the first record of a batch may wait
-    write-queue-capacity: 16     # batches in flight before back pressure
-    shutdown-await-period: 15s   # budget for draining on stop
-    slow-write-duration: 5s      # a write slower than this is logged
-    back-pressure: fallback      # fallback | reject | block
+    batch-size: 500                 # records per write
+    buffering-max-duration: 1s      # how long the first record of a batch may wait
+    buffering-check-interval: 100ms # how often that wait is checked
+    write-queue-capacity: 16        # batches in flight before back pressure
+    shutdown-await-period: 15s      # budget for draining on stop
+    slow-write-duration: 5s         # a write slower than this is logged
+    back-pressure: fallback         # fallback | reject | block
   instances:
     history:
       batch-size: 2000
@@ -410,8 +412,9 @@ batcher:
 Two numbers set the shape of the load: `batch-size` and
 `buffering-max-duration`. Rows per second at full load is
 `batch-size / buffering-max-duration`, and that is also the worst-case delay
-before a record is queryable, give or take one policy check of the buffer. Pick the delay you can live with, then the size
-that keeps inserts at roughly one per second per table.
+before a record is queryable, plus at most one `buffering-check-interval`,
+a tenth of the max duration by default. Pick the delay you can live with, then
+the size that keeps inserts at roughly one per second per table.
 
 `back-pressure` picks a `WritingBackPressurePolicy`, and a bean of your own
 replaces it. It decides what a full queue means:
