@@ -48,7 +48,8 @@ public interface RecordBuffer<R : Any> : BufferUsage {
 
     /**
      * Stops taking records and dispatching batches. An in-memory buffer returns what was still
-     * collecting for the caller to place; a durable one keeps it for the next [open] and returns null.
+     * collecting for the caller to place, a batch per group if it groups records by a key; a durable
+     * one keeps it for the next [open] and returns none.
      */
-    public fun close(): Batch<R>?
+    public fun close(): List<Batch<R>>
 }
