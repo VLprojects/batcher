@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.fallback
+package pro.vlprojects.batcher.queue.fallback
 
 /** Why the writing queue did not take a dispatched batch. A replay writes it, whichever it is. */
 public enum class EnqueuingFallbackReason {

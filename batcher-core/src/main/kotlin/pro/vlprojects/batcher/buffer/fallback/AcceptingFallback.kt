@@ -1,6 +1,6 @@
-package pro.vlprojects.batcher.fallback
+package pro.vlprojects.batcher.buffer.fallback
 
-import pro.vlprojects.batcher.buffer.policy.BufferBackPressurePolicy
+import pro.vlprojects.batcher.buffer.accept.BufferBackPressurePolicy
 import pro.vlprojects.batcher.data.Record
 
 /**

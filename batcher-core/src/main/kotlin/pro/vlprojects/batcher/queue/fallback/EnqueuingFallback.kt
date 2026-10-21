@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.fallback
+package pro.vlprojects.batcher.queue.fallback
 
 import pro.vlprojects.batcher.data.Batch
 import pro.vlprojects.batcher.data.Record

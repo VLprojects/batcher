@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.queue.policy
+package pro.vlprojects.batcher.queue.enqueue
 
 import java.time.Duration
 

@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.metric
+package pro.vlprojects.batcher.buffer.metric
 
 /** Every way one scheduled check of a policy can end. */
 public enum class PolicyCheckStatus {

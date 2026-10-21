@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.buffer.policy
+package pro.vlprojects.batcher.buffer.dispatch
 
 import pro.vlprojects.batcher.buffer.usage.CapacityMeasurable
 import java.time.Duration

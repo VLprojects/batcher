@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.listener
+package pro.vlprojects.batcher.buffer.dispatch
 
 import pro.vlprojects.batcher.data.Batch
 import pro.vlprojects.batcher.data.Record

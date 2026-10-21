@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.fallback
+package pro.vlprojects.batcher.writer.fallback
 
 /** Why records went to the writing fallback; whether a replay would write them depends on it. */
 public enum class WritingFallbackReason {

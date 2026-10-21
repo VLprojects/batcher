@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.buffer.policy
+package pro.vlprojects.batcher.buffer.accept
 
 import pro.vlprojects.batcher.buffer.usage.CapacityMeasurable
 

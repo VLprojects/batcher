@@ -1,5 +1,7 @@
-package pro.vlprojects.batcher.buffer.policy
+package pro.vlprojects.batcher.buffer.accept
 
+import pro.vlprojects.batcher.buffer.dispatch.DispatchPolicy
+import pro.vlprojects.batcher.buffer.fallback.AcceptingFallback
 import pro.vlprojects.batcher.buffer.usage.UsageMeasurable
 
 /**

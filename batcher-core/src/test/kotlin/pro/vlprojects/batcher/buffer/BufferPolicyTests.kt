@@ -1,8 +1,11 @@
-package pro.vlprojects.batcher.buffer.policy
+package pro.vlprojects.batcher.buffer
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import pro.vlprojects.batcher.buffer.accept.CapacityBackPressurePolicy
+import pro.vlprojects.batcher.buffer.dispatch.CapacityDispatchPolicy
+import pro.vlprojects.batcher.buffer.dispatch.DurationDispatchPolicy
 import pro.vlprojects.batcher.buffer.usage.CapacityMeasurable
 import pro.vlprojects.batcher.buffer.usage.DurationMeasurable
 import java.time.Duration

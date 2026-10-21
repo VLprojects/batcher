@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.metric
+package pro.vlprojects.batcher.buffer.metric
 
 public enum class AcceptanceResult {
 

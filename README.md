@@ -257,7 +257,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `AcceptingFallback<R>` | decide what becomes of records back pressure turned away before the buffer: throw to reject them to the source, or park or drop them | reject |
 | `EnqueuingFallback<R>` | keep a dispatched batch the writing queue did not take, with the reason and the error | none: log at ERROR and count |
 | `WritingFallback<R>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
-| `BatcherMeter`, `BufferMeter`, `WriterMeter` | report every event; each method does nothing by default | none in core, Micrometer in `batcher-micrometer` |
+| `BufferMeter`, `QueueMeter`, `WriterMeter` | report every event; each method does nothing by default | none in core, Micrometer in `batcher-micrometer` |
 
 `BatchWriter` is the only thing you must write: `persist(batch)` for one insert
 of a batch, `persist(record)` for the retry of a failed one. `Batch.id` can go to
@@ -310,7 +310,7 @@ keep the defaults while another one does not.
 | `WritingBackPressurePolicy` | none of `fallback`, `reject` and `block` fits the source |
 | `RecordBuffer<R>` | it must report a usage the default does not (bytes in memory), records must be grouped on the way in (a key per table), or survive a restart, for example in Redis |
 | `WritingBatchQueue<R>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
-| `BatcherMeter`, `BufferMeter`, `WriterMeter` | your observability is not Micrometer |
+| `BufferMeter`, `QueueMeter`, `WriterMeter` | your observability is not Micrometer |
 
 `back-pressure` in section 11 picks one of the three ready back-pressure policies.
 
