@@ -1,6 +1,6 @@
 package pro.vlprojects.batcher.fallback
 
-import pro.vlprojects.batcher.dto.Record
+import pro.vlprojects.batcher.data.Record
 
 /**
  * Keeps what could not be written until something replays it, and throws when it cannot: silence

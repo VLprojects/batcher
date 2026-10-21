@@ -1,6 +1,6 @@
 public abstract interface class pro/vlprojects/batcher/buffer/RecordBuffer : pro/vlprojects/batcher/buffer/usage/BufferUsage {
 	public fun add (Ljava/util/Collection;)V
-	public abstract fun add (Lpro/vlprojects/batcher/dto/Record;)V
+	public abstract fun add (Lpro/vlprojects/batcher/data/Record;)V
 	public abstract fun addListener (Lpro/vlprojects/batcher/listener/BatchDispatchedListener;)V
 	public abstract fun close ()V
 	public abstract fun getPolicies ()Ljava/util/List;
@@ -47,6 +47,11 @@ public abstract interface class pro/vlprojects/batcher/buffer/usage/BufferDurati
 public abstract interface class pro/vlprojects/batcher/buffer/usage/BufferUsage {
 }
 
+public abstract interface class pro/vlprojects/batcher/data/Record {
+	public abstract fun getAcceptedAt ()Ljava/time/Instant;
+	public abstract fun getPayload ()Ljava/lang/Object;
+}
+
 public final class pro/vlprojects/batcher/dto/Batch {
 	public fun <init> (Ljava/util/UUID;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/util/UUID;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -56,11 +61,6 @@ public final class pro/vlprojects/batcher/dto/Batch {
 	public final fun getSize ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public abstract interface class pro/vlprojects/batcher/dto/Record {
-	public abstract fun getAcceptedAt ()Ljava/time/Instant;
-	public abstract fun getPayload ()Ljava/lang/Object;
 }
 
 public final class pro/vlprojects/batcher/fallback/FallbackReason : java/lang/Enum {
@@ -76,7 +76,7 @@ public final class pro/vlprojects/batcher/fallback/FallbackReason : java/lang/En
 
 public abstract interface class pro/vlprojects/batcher/fallback/WritingFallback {
 	public abstract fun handle (Ljava/util/Collection;Lpro/vlprojects/batcher/fallback/FallbackReason;Ljava/lang/Throwable;)V
-	public fun handle (Lpro/vlprojects/batcher/dto/Record;Lpro/vlprojects/batcher/fallback/FallbackReason;Ljava/lang/Throwable;)V
+	public fun handle (Lpro/vlprojects/batcher/data/Record;Lpro/vlprojects/batcher/fallback/FallbackReason;Ljava/lang/Throwable;)V
 }
 
 public abstract interface class pro/vlprojects/batcher/listener/BatchDispatchedListener {
@@ -183,7 +183,7 @@ public abstract interface class pro/vlprojects/batcher/queue/policy/WritingBackP
 }
 
 public abstract interface class pro/vlprojects/batcher/writer/BatchWriter {
+	public abstract fun persist (Lpro/vlprojects/batcher/data/Record;)V
 	public abstract fun persist (Lpro/vlprojects/batcher/dto/Batch;)V
-	public abstract fun persist (Lpro/vlprojects/batcher/dto/Record;)V
 }
 

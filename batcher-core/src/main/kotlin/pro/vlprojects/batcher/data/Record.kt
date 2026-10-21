@@ -1,4 +1,4 @@
-package pro.vlprojects.batcher.dto
+package pro.vlprojects.batcher.data
 
 import java.time.Instant
 

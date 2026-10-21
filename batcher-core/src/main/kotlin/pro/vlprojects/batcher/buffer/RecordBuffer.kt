@@ -3,8 +3,8 @@ package pro.vlprojects.batcher.buffer
 import pro.vlprojects.batcher.buffer.policy.BufferingPolicy
 import pro.vlprojects.batcher.buffer.policy.BufferingPolicyChecker
 import pro.vlprojects.batcher.buffer.usage.BufferUsage
+import pro.vlprojects.batcher.data.Record
 import pro.vlprojects.batcher.dto.Batch
-import pro.vlprojects.batcher.dto.Record
 import pro.vlprojects.batcher.listener.BatchDispatchedListener
 
 /**
