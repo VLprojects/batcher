@@ -90,9 +90,9 @@ The only thing you have to write is the batch write itself:
 ```kotlin
 class HistoryWriter(private val history: HistoryService) : BatchWriter<HistoryRecord> {
 
-    override fun persist(batch: Batch<HistoryRecord>) = history.saveAll(batch.records.map { it.data })
+    override fun persist(batch: Batch<HistoryRecord>) = history.saveAll(batch.records.map { it.payload })
 
-    override fun persist(record: AcceptedRecord<HistoryRecord>) = history.save(record.data)
+    override fun persist(record: Record<HistoryRecord>) = history.save(record.payload)
 }
 ```
 
@@ -237,18 +237,18 @@ Everything in the pipeline above is an interface in `batcher-core`.
 
 | Type | Responsibility | Default |
 | --- | --- | --- |
-| `Batcher<D>` | entry point: `accept(data)` for one or a collection, start, stop; wraps each in an `AcceptedRecord` | the only implementation |
-| `AcceptedRecord<D>` | your `data` as you gave it, wrapped rather than made to implement anything, and `acceptedAt` by the batcher's clock | value type |
-| `Batch<D>` | accepted records in order, an id; `firstRecordAt` is the first one's `acceptedAt` | value type |
-| `BatchWriter<D>` | one insert of one batch | **yours**, there is no default |
-| `RecordBuffer<D>` | collect records and dispatch a batch whenever a policy is met, asking each in turn | in memory |
+| `Batcher<T>` | entry point: `accept(payload)` for one or a collection, start, stop; wraps each in an `Record` | the only implementation |
+| `Record<T>` | your `payload` as you gave it, wrapped rather than made to implement anything, and `acceptedAt` by the batcher's clock | value type |
+| `Batch<T>` | accepted records in order, an id; `firstRecordAt` is the first one's `acceptedAt` | value type |
+| `BatchWriter<T>` | one insert of one batch | **yours**, there is no default |
+| `RecordBuffer<T>` | collect records and dispatch a batch whenever a policy is met, asking each in turn | in memory |
 | `BufferingPolicyChecker` | ask the buffer's policies on a schedule of its own per policy, and count every check; the buffer hands it the policies on open and stops it on close | one daemon thread named after the batcher, max duration every `buffering-check-interval`, capacity never |
 | `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (`countRecords()`), `BufferDurationUsage` (`measureDuration()`) | the in-memory buffer reports both |
 | `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, taken as policies over the buffer's own type, so one whose usage it does not report does not compile; a repeated name is refused | `BufferCapacityPolicy` (`batch-size`) and `BufferDurationPolicy` (`buffering-max-duration`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
-| `BatchDispatchedListener<D>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
-| `WritingBatchQueue<D>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
-| `WritingFallback<D>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
+| `BatchDispatchedListener<T>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
+| `WritingBatchQueue<T>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
+| `WritingFallback<T>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | report every event; each method does nothing by default | none in core, Micrometer in `batcher-micrometer` |
 
 `BatchWriter` is the only thing you must write: `persist(batch)` for one insert
@@ -290,12 +290,12 @@ keep the defaults while another one does not.
 
 | Seam | Replace it when |
 | --- | --- |
-| `BatchWriter<D>` | always: this is your insert |
-| `WritingFallback<D>` | failed records must go somewhere: a log, a table, back to a queue |
+| `BatchWriter<T>` | always: this is your insert |
+| `WritingFallback<T>` | failed records must go somewhere: a log, a table, back to a queue |
 | `BufferingPolicy<U>` | a batch is due by a rule of yours, for example a byte budget over a usage kind that counts bytes; it adds to the two defaults |
 | `WritingBackPressurePolicy` | none of `fallback`, `reject` and `block` fits the source |
-| `RecordBuffer<D>` | it must report a usage the default does not (bytes in memory), records must be grouped on the way in (a key per table), or survive a restart, for example in Redis |
-| `WritingBatchQueue<D>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
+| `RecordBuffer<T>` | it must report a usage the default does not (bytes in memory), records must be grouped on the way in (a key per table), or survive a restart, for example in Redis |
+| `WritingBatchQueue<T>` | batches must survive a restart, for example in Kafka, RabbitMQ or a table |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | your observability is not Micrometer |
 
 `back-pressure` in section 11 picks one of the three ready back-pressure policies.

@@ -1,16 +1,16 @@
 package pro.vlprojects.batcher.fallback
 
-import pro.vlprojects.batcher.dto.AcceptedRecord
+import pro.vlprojects.batcher.dto.Record
 
 /**
  * Keeps what could not be written until something replays it, and throws when it cannot: silence
  * here turns a loss into a clean shutdown. [error] is null when nothing was thrown, as with a full
  * queue.
  */
-public fun interface WritingFallback<in D : Any> {
+public fun interface WritingFallback<in T : Any> {
 
-    public fun handle(records: Collection<AcceptedRecord<D>>, reason: FallbackReason, error: Throwable?)
+    public fun handle(records: Collection<Record<T>>, reason: FallbackReason, error: Throwable?)
 
-    public fun handle(record: AcceptedRecord<D>, reason: FallbackReason, error: Throwable?): Unit =
+    public fun handle(record: Record<T>, reason: FallbackReason, error: Throwable?): Unit =
         handle(listOf(record), reason, error)
 }
