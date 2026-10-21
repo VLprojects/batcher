@@ -20,13 +20,7 @@ public interface BufferingPolicy<in U : BufferUsage> {
     /**
      * From [open][pro.vlprojects.batcher.buffer.RecordBuffer.open]. A policy that can be due with no new
      * record puts [check] on [scheduler]; one that changes only on add leaves it be. The scheduler and
-     * its threads are the buffer's; the policy keeps only what it scheduled, so it serves one buffer.
+     * its threads are the buffer's, and so is shutting them down: the policy keeps nothing of the schedule.
      */
     public fun schedule(scheduler: ScheduledExecutorService, check: Runnable) {}
-
-    /**
-     * From [close][pro.vlprojects.batcher.buffer.RecordBuffer.close]: no check starts after this. One
-     * under way runs to the end, and the buffer waits for it.
-     */
-    public fun unschedule() {}
 }

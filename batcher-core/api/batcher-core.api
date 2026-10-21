@@ -26,14 +26,12 @@ public final class pro/vlprojects/batcher/buffer/policy/BufferDurationPolicy : p
 	public fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferDurationUsage;)Z
 	public synthetic fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
 	public fun toString ()Ljava/lang/String;
-	public fun unschedule ()V
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/policy/BufferingPolicy {
 	public abstract fun getName ()Ljava/lang/String;
 	public fun schedule (Ljava/util/concurrent/ScheduledExecutorService;Ljava/lang/Runnable;)V
 	public abstract fun shouldDispatch (Lpro/vlprojects/batcher/buffer/usage/BufferUsage;)Z
-	public fun unschedule ()V
 }
 
 public abstract interface class pro/vlprojects/batcher/buffer/usage/BufferCapacityUsage : pro/vlprojects/batcher/buffer/usage/BufferUsage {

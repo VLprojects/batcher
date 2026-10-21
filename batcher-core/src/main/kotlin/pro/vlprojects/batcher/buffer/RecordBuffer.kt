@@ -50,7 +50,7 @@ public interface RecordBuffer<R : Record<*>> : BufferUsage {
     public fun add(records: Collection<R>): Unit = records.forEach(::add)
 
     /**
-     * Stops taking records, [unschedules][BufferingPolicy.unschedule] every policy and waits for a check under way, then empties itself before it returns. An in-memory buffer
+     * Stops taking records and shuts its scheduler down, waiting for a check under way, then empties itself before it returns. An in-memory buffer
      * dispatches what was still collecting with no policy met, a batch per group if it groups records
      * by a key; a durable one keeps it for the next [open]. Once closed, a throw from a listener is not
      * retried but comes out of here.
