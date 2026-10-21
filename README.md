@@ -267,7 +267,8 @@ In memory this costs nothing. For a durable buffer or queue it is the point
 where it commits, so a crash between the two steps repeats a batch instead of
 losing it. Neither declares what it is: the difference is in `open` and
 `close`. On `open` a durable stage restores what it held; on `close` it keeps
-it for the next start, while an in-memory one hands it on to the fallback. A
+it for the next start, while an in-memory buffer dispatches it and an in-memory
+queue hands it to the fallback. A
 durable buffer also lets the source acknowledge a record as soon as `accept`
 returns.
 
@@ -339,7 +340,8 @@ Shutdown is the part that decides whether you lose data on every deploy.
 In order:
 
 1. The batcher stops accepting, and the buffer closes. What it still holds is
-   enqueued in the writing queue, waiting for room within the budget.
+   dispatched with no policy met, so the batches are enqueued in the writing
+   queue as usual, waiting for room within the budget.
 2. The queue closes. The writer works through what is in it until it is empty
    or the budget is spent.
 3. A write still running at the end of the budget is interrupted and its batch
@@ -441,7 +443,7 @@ it is wired in when Micrometer is on the classpath.
 | `batcher.records` | counter, records | `result` | persisted, sent to the fallback or lost? |
 | `batcher.buffer.records` | gauge, records | | how full is the buffer? |
 | `batcher.buffer.age` | gauge, seconds | | how long has the oldest record waited? |
-| `batcher.buffer.dispatched` | counter, batches | `policy` | dispatched at capacity or at max duration? |
+| `batcher.buffer.dispatched` | counter, batches | `policy` | dispatched at capacity, at max duration or on close? |
 | `batcher.batch.write` | timer | `mode` | how slow are writes, and how often do we recover? |
 | `batcher.batch.size` | distribution summary, records | | are batches full? |
 | `batcher.writer.queue.size` | gauge, batches | | is the storage keeping up? |

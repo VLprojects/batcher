@@ -317,7 +317,7 @@ def shutdown(pal):
 	a.path(f"M{stop},{st_y - 8} L{stop},{bottom + 8}", "ink")
 	a.path(f"M{budget},{wr_y - 8} L{budget},{bottom + 8}", "ink")
 	a.label(stop - 12, 24, "stop arrives", "after the message listeners", anchor="end")
-	a.label(stop + 12, 24, "buffer closes", "its last batches join the queue")
+	a.label(stop + 12, 24, "buffer closes", "its last batches are dispatched")
 
 	ly = bottom + 30
 	a.label(rest - 4, ly, "writer drains the queue", "one batch at a time, while the budget lasts")

@@ -47,9 +47,10 @@ public interface RecordBuffer<R : Any> : BufferUsage {
     public fun add(records: Collection<R>): Unit = records.forEach(::add)
 
     /**
-     * Stops taking records and dispatching batches. An in-memory buffer returns what was still
-     * collecting for the caller to place, a batch per group if it groups records by a key; a durable
-     * one keeps it for the next [open] and returns none.
+     * Stops taking records and the clock, then empties itself before it returns. An in-memory buffer
+     * dispatches what was still collecting with no policy met, a batch per group if it groups records
+     * by a key; a durable one keeps it for the next [open]. Once closed, a throw from a listener is not
+     * retried but comes out of here.
      */
-    public fun close(): List<Batch<R>>
+    public fun close()
 }
