@@ -51,7 +51,6 @@ public final class pro/vlprojects/batcher/dto/Batch {
 	public fun <init> (Ljava/util/UUID;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/util/UUID;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getFirstRecordAt ()Ljava/time/Instant;
 	public final fun getId ()Ljava/util/UUID;
 	public final fun getRecords ()Ljava/util/List;
 	public final fun getSize ()I
@@ -59,14 +58,9 @@ public final class pro/vlprojects/batcher/dto/Batch {
 	public fun toString ()Ljava/lang/String;
 }
 
-public class pro/vlprojects/batcher/dto/Record {
-	public fun <init> (Ljava/lang/Object;Ljava/time/Instant;)V
-	public synthetic fun <init> (Ljava/lang/Object;Ljava/time/Instant;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAcceptedAt ()Ljava/time/Instant;
-	public final fun getPayload ()Ljava/lang/Object;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+public abstract interface class pro/vlprojects/batcher/dto/Record {
+	public abstract fun getAcceptedAt ()Ljava/time/Instant;
+	public abstract fun getPayload ()Ljava/lang/Object;
 }
 
 public final class pro/vlprojects/batcher/fallback/FallbackReason : java/lang/Enum {

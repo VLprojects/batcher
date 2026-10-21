@@ -85,14 +85,20 @@ The naming follows the Spring Boot reference: a module of your own is
 starts with `spring-boot`. Configuration keys live under `batcher`, not under
 `spring`.
 
-The only thing you have to write is the batch write itself:
+The only things you have to write are your record and the batch write itself:
 
 ```kotlin
-class HistoryWriter(private val history: HistoryService) : BatchWriter<Record<HistoryRecord>> {
+class AcceptedHistory(
+    override val payload: HistoryRecord,
+    override val acceptedAt: Instant,
+    val origin: String,
+) : Record<HistoryRecord>
 
-    override fun persist(batch: Batch<Record<HistoryRecord>>) = history.saveAll(batch.records.map { it.payload })
+class HistoryWriter(private val history: HistoryService) : BatchWriter<AcceptedHistory> {
 
-    override fun persist(record: Record<HistoryRecord>) = history.save(record.payload)
+    override fun persist(batch: Batch<AcceptedHistory>) = history.saveAll(batch.records.map { it.payload })
+
+    override fun persist(record: AcceptedHistory) = history.save(record.payload)
 }
 ```
 
@@ -100,7 +106,7 @@ With the starter, a batcher is one bean and a few settings:
 
 ```kotlin
 @Bean
-fun historyBatcher(batchers: BatcherFactory, writer: HistoryWriter): Batcher<Record<HistoryRecord>> =
+fun historyBatcher(batchers: BatcherFactory, writer: HistoryWriter): Batcher<AcceptedHistory> =
     batchers.create("history", writer)
 ```
 
@@ -115,7 +121,7 @@ batcher:
 Without Spring, the same thing is a builder:
 
 ```kotlin
-val batcher = Batcher.builder<Record<HistoryRecord>>("history")
+val batcher = Batcher.builder<AcceptedHistory>("history")
     .batchSize(2000)
     .bufferingMaxDuration(Duration.ofSeconds(1))
     .writer(HistoryWriter(history))
@@ -238,8 +244,8 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | Type | Responsibility | Default |
 | --- | --- | --- |
 | `Batcher<R>` | entry point: `accept(record)` for one or a collection, start, stop | the only implementation |
-| `Record<T>` | your `payload` as you gave it, wrapped rather than made to implement anything, and `acceptedAt`; every other type takes `R : Record<*>`, so a subtype can carry more, where a record came from say | open value type |
-| `Batch<R>` | accepted records in order, an id; `firstRecordAt` is the first one's `acceptedAt` | value type |
+| `Record<T>` | your own record type: `payload` as it came, `acceptedAt`, and anything else you need back, where it came from say; every other type takes `R : Record<*>` | **yours** |
+| `Batch<R>` | accepted records in order, so the first is the oldest, and an id | value type |
 | `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
 | `RecordBuffer<R>` | collect records and dispatch a batch whenever a policy is met, asking each in turn | in memory |
 | `BufferingPolicyChecker` | ask the buffer's policies on a schedule of its own per policy, and count every check; the buffer hands it the policies on open and stops it on close | one daemon thread named after the batcher, max duration every `buffering-check-interval`, capacity never |

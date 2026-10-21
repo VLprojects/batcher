@@ -1,6 +1,5 @@
 package pro.vlprojects.batcher.dto
 
-import java.time.Instant
 import java.util.UUID
 
 /**
@@ -18,10 +17,6 @@ public class Batch<out R : Record<*>>(
     public val size: Int
         get() = records.size
 
-    /** The oldest record's acceptance, not when the batch was dispatched: it is that wait that matters. */
-    public val firstRecordAt: Instant
-        get() = records.first().acceptedAt
-
     init {
         require(records.isNotEmpty()) { "A batch must hold at least one record" }
     }
@@ -31,5 +26,5 @@ public class Batch<out R : Record<*>>(
     override fun hashCode(): Int = id.hashCode()
 
     /** No records: a batch of thousands would flood every log line it ends up in. */
-    override fun toString(): String = "Batch[id: $id, size: $size, firstRecordAt: $firstRecordAt]"
+    override fun toString(): String = "Batch[id: $id, size: $size]"
 }
