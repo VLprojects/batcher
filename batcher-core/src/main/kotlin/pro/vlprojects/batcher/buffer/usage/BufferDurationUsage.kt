@@ -4,6 +4,9 @@ import java.time.Duration
 
 public interface BufferDurationUsage : BufferUsage {
 
-    /** How long the first record still collecting has waited, by the buffer's own clock; zero while empty. */
+    /**
+     * How long the first record still collecting has waited since it was accepted, by the clock that
+     * stamped it; zero while empty.
+     */
     public fun measureDuration(): Duration
 }
