@@ -240,7 +240,7 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Batch<R>` | records, an id, the arrival of the first one | value type |
 | `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
 | `RecordBuffer<R>` | collect records and dispatch a batch once any of its policies is met | in memory, with a daemon thread for the duration |
-| `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (size), `BufferDurationUsage` (the first record's arrival) | the in-memory buffer reports both |
+| `BufferUsage` | what a buffer reports about the records it collects, one subtype per kind: `BufferCapacityUsage` (record count), `BufferDurationUsage` (how long the first record has waited) | the in-memory buffer reports both |
 | `BufferingPolicy<U>` | one rule for when a batch is due, over one kind of usage; fixed when the buffer is built, which refuses a policy whose usage it does not report | `CapacityBufferingPolicy` (`batch-size`) and `MaxDurationBufferingPolicy` (`buffering-max-duration`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
 | `BatchReadyListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
@@ -265,9 +265,11 @@ A stage lets go of a batch only once the next one has taken it:
 
 In memory this costs nothing. For a durable buffer or queue it is the point
 where it commits, so a crash between the two steps repeats a batch instead of
-losing it. Both declare `isDurable`: a durable buffer lets the source
-acknowledge a record as soon as `accept` returns, and on stop a durable stage
-keeps what it holds instead of handing it to the fallback.
+losing it. Neither declares what it is: the difference is in `open` and
+`close`. On `open` a durable stage restores what it held; on `close` it keeps
+it for the next start, while an in-memory one hands it on to the fallback. A
+durable buffer also lets the source acknowledge a record as soon as `accept`
+returns.
 
 ## 7. Extension points
 

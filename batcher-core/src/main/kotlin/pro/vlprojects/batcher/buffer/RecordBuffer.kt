@@ -11,9 +11,6 @@ import pro.vlprojects.batcher.policy.buffering.BufferingPolicy
  */
 public interface RecordBuffer<R : Any> : BufferUsage {
 
-    /** Records outlive the process, so the source may acknowledge one as soon as [add] returns. */
-    public val isDurable: Boolean
-
     /**
      * Set when built and asked in this order; the first one met names the batch in the metrics. A
      * buffer that is not of some policy's [usage type][BufferingPolicy.usageType] must refuse to be built.
@@ -31,6 +28,12 @@ public interface RecordBuffer<R : Any> : BufferUsage {
     public fun removeListener(listener: BatchReadyListener<R>)
 
     /**
+     * Before the first record, once the listeners are in: an in-memory buffer starts its clock, a
+     * durable one also restores what it held at the last stop and dispatches it as the policies say.
+     */
+    public fun open()
+
+    /**
      * Returns once the record is in. A throw means it is not, and it is still the caller's: with no
      * listener a dispatched batch has nowhere to go, so the buffer stops taking records.
      */
@@ -43,8 +46,8 @@ public interface RecordBuffer<R : Any> : BufferUsage {
     public fun add(records: Collection<R>): Unit = records.forEach(::add)
 
     /**
-     * Stops taking records and dispatching batches. Returns what was still collecting for the caller to
-     * place, or null: nothing was, or the buffer is durable and keeps it for the next start.
+     * Stops taking records and dispatching batches. An in-memory buffer returns what was still
+     * collecting for the caller to place; a durable one keeps it for the next [open] and returns null.
      */
     public fun close(): Batch<R>?
 }

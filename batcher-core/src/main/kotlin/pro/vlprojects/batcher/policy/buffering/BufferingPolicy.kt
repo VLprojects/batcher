@@ -19,5 +19,5 @@ public interface BufferingPolicy<U : BufferUsage> {
     public fun isMet(usage: U, now: Instant): Boolean
 
     /** When the buffer must ask again with no new record, or null when only an add can meet the rule. */
-    public fun nextCheckAt(usage: U): Instant? = null
+    public fun nextCheckAt(usage: U, now: Instant): Instant? = null
 }

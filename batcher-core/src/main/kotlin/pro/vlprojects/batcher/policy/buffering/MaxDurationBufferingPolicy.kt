@@ -15,10 +15,11 @@ public class MaxDurationBufferingPolicy(public val maxDuration: Duration) : Buff
         require(maxDuration.isPositive) { "A max duration must be positive: $maxDuration" }
     }
 
-    override fun isMet(usage: BufferDurationUsage, now: Instant): Boolean =
-        nextCheckAt(usage)?.let { !now.isBefore(it) } ?: false
+    override fun isMet(usage: BufferDurationUsage, now: Instant): Boolean = usage.duration(now) >= maxDuration
 
-    override fun nextCheckAt(usage: BufferDurationUsage): Instant? = usage.firstRecordAt?.plus(maxDuration)
+    override fun nextCheckAt(usage: BufferDurationUsage, now: Instant): Instant = now.plus(
+        maxDuration.minus(usage.duration(now)),
+    )
 
     override fun toString(): String = "MaxDurationBufferingPolicy[maxDuration: $maxDuration]"
 }

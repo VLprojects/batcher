@@ -9,8 +9,6 @@ import java.time.Duration
  */
 public interface WritingBatchQueue<R : Any> {
 
-    public val isDurable: Boolean
-
     /** Batches waiting, or null when the queue cannot tell cheaply. */
     public val size: Int?
 
@@ -25,6 +23,9 @@ public interface WritingBatchQueue<R : Any> {
      * at once on close, since what it holds waits for the next start.
      */
     public val isEmpty: Boolean
+
+    /** Before the first batch: a durable queue restores what it held, taken or not, ahead of new ones. */
+    public fun open()
 
     /** Waits up to [timeout] for room, zero being no wait. A throw means the batch is not in. */
     public fun enqueue(batch: Batch<R>, timeout: Duration): EnqueueStatus

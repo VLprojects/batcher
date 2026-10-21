@@ -18,35 +18,28 @@ class BufferingPolicyTests {
     fun `the capacity is met by the record that fills it`() {
         val policy = CapacityBufferingPolicy(capacity = 2)
 
-        assertFalse(policy.isMet(capacityUsage(size = 1), at))
-        assertTrue(policy.isMet(capacityUsage(size = 2), at))
-        assertNull(policy.nextCheckAt(capacityUsage(size = 1)))
+        assertFalse(policy.isMet(capacityUsage(recordCount = 1), at))
+        assertTrue(policy.isMet(capacityUsage(recordCount = 2), at))
+        assertNull(policy.nextCheckAt(capacityUsage(recordCount = 1), at))
     }
 
     @Test
     fun `the max duration is met once the first record has waited it`() {
         val policy = MaxDurationBufferingPolicy(maxDuration = Duration.ofSeconds(1))
+        val usage = durationUsage(firstRecordAt = at)
 
-        assertFalse(policy.isMet(durationUsage(firstRecordAt = at), at.plusMillis(999)))
-        assertTrue(policy.isMet(durationUsage(firstRecordAt = at), at.plusSeconds(1)))
-        assertEquals(at.plusSeconds(1), policy.nextCheckAt(durationUsage(firstRecordAt = at)))
+        assertFalse(policy.isMet(usage, at.plusMillis(999)))
+        assertTrue(policy.isMet(usage, at.plusSeconds(1)))
+        assertEquals(at.plusSeconds(1), policy.nextCheckAt(usage, at.plusMillis(400)))
     }
 
-    @Test
-    fun `an empty buffer never meets the max duration`() {
-        val policy = MaxDurationBufferingPolicy(maxDuration = Duration.ofSeconds(1))
-
-        assertFalse(policy.isMet(durationUsage(firstRecordAt = null), at.plusSeconds(10)))
-        assertNull(policy.nextCheckAt(durationUsage(firstRecordAt = null)))
-    }
-
-    private fun capacityUsage(size: Int): BufferCapacityUsage =
+    private fun capacityUsage(recordCount: Int): BufferCapacityUsage =
         object : BufferCapacityUsage {
-            override val size = size
+            override val recordCount = recordCount
         }
 
-    private fun durationUsage(firstRecordAt: Instant?): BufferDurationUsage =
+    private fun durationUsage(firstRecordAt: Instant): BufferDurationUsage =
         object : BufferDurationUsage {
-            override val firstRecordAt = firstRecordAt
+            override fun duration(now: Instant): Duration = Duration.between(firstRecordAt, now)
         }
 }
