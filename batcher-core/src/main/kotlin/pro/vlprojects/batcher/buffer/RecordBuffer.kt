@@ -8,16 +8,16 @@ import pro.vlprojects.batcher.policy.buffering.BufferingPolicy
  * Collects records and dispatches them in batches once any of its [policies] is met. A policy due by
  * time needs a clock running somewhere, and that is the buffer's own, not the batcher's.
  */
-public interface RecordBuffer<T : Any, F : BufferFill> {
+public interface RecordBuffer<T : Any, U : BufferUsage> {
 
     /** Records outlive the process, so the source may acknowledge one as soon as [add] returns. */
     public val isDurable: Boolean
 
     /** Asked in this order; the first one met names the batch in the metrics. */
-    public val policies: List<BufferingPolicy<F>>
+    public val policies: List<BufferingPolicy<U>>
 
     /** Null while empty. Read by the gauges on every scrape: has to be cheap, may be approximate. */
-    public val fill: F?
+    public val usage: U?
 
     /**
      * From any thread, at any time; counts from the next dispatched batch. A batch goes to every listener in
