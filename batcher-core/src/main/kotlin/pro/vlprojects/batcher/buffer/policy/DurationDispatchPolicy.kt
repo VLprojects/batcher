@@ -21,7 +21,7 @@ public class DurationDispatchPolicy(
         require(checkInterval.isPositive) { "A check interval must be positive: $checkInterval" }
     }
 
-    override fun shouldDispatch(usage: DurationMeasurable): Boolean = usage.measureDuration() >= maxDuration
+    override fun shouldDispatch(buffer: DurationMeasurable): Boolean = buffer.measureDuration() >= maxDuration
 
     /** Fixed delay: a slow check pushes the next one back instead of piling them up. */
     override fun schedule(scheduler: ScheduledExecutorService, check: Runnable) {

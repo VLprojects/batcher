@@ -13,7 +13,7 @@ public class CapacityDispatchPolicy(
         require(capacity > 0) { "A capacity must be positive: $capacity" }
     }
 
-    override fun shouldDispatch(usage: CapacityMeasurable): Boolean = usage.countRecords() >= capacity
+    override fun shouldDispatch(buffer: CapacityMeasurable): Boolean = buffer.countRecords() >= capacity
 
     override fun toString(): String = "CapacityDispatchPolicy[capacity: $capacity]"
 }

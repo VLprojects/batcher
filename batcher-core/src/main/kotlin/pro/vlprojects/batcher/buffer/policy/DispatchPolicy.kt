@@ -15,7 +15,7 @@ public interface DispatchPolicy<in U : UsageMeasurable> {
     public val name: String
 
     /** Asked after every add and on the schedule from [schedule], with records collecting. */
-    public fun shouldDispatch(usage: U): Boolean
+    public fun shouldDispatch(buffer: U): Boolean
 
     /**
      * From [open][pro.vlprojects.batcher.buffer.RecordBuffer.open]. A policy that can be due with no new
