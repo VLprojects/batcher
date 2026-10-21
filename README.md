@@ -222,7 +222,7 @@ has two threads of its own.
 - `accept` takes the lock, appends to the buffer and returns. It does no I/O.
 - The record that fills the batch carries it out to the queue; nothing else
   happens on the consumer thread.
-- The buffer's scheduler, on a daemon thread named after the batcher, asks every
+- The batcher's scheduler, on a daemon thread named after the batcher, asks every
   policy each check interval of its own: that is how a batch goes once
   the first record has waited past the max duration.
 - The queue is bounded. When it is full the batcher applies the back-pressure
@@ -247,11 +247,11 @@ Everything in the pipeline above is an interface in `batcher-core`.
 | `Record<T>` | your own record type: `payload` as it came, `acceptedAt`, and anything else you need back, where it came from say; every other type takes `R : Record<*>` | **yours** |
 | `Batch<R>` | accepted records in order, so the first is the oldest, and an id | value type |
 | `BatchWriter<R>` | one insert of one batch | **yours**, there is no default |
-| `RecordBuffer<R>` | collect records and dispatch a batch whenever a policy is met, asking each in turn | in memory |
+| `RecordBuffer<R>` | hold records until the batcher dispatches them, in batches of at most `batch-size`, and keep a dispatched batch until it is written or parked (`confirm`); no schedule and no listeners of its own | in memory |
 | `UsageMeasurable` | what a buffer reports about the records it collects, one subtype per kind: `CapacityMeasurable` (`countRecords()`), `DurationMeasurable` (`measureDuration()`) | the in-memory buffer reports both |
-| `DispatchPolicy<U>` | one rule for when a batch is due, over one kind of usage, and its `checkInterval`: how often the buffer asks it with no new record; fixed when the buffer is built, taken as policies over the buffer's own type, so one whose usage it does not report does not compile; a repeated name is refused | `CapacityDispatchPolicy` (`batch-size`, checked every second as a backstop) and `DurationDispatchPolicy` (`buffering-max-duration`, checked every `buffering-check-interval`) |
+| `DispatchPolicy<U>` | one rule for when a batch is due, over one kind of usage, and its `checkInterval`: how often the batcher asks it with no new record; fixed when the batcher is built, taken as policies over its buffer's type, so one whose usage it does not report does not compile; a repeated name is refused | `CapacityDispatchPolicy` (`batch-size`, checked every second as a backstop) and `DurationDispatchPolicy` (`buffering-max-duration`, checked every `buffering-check-interval`) |
 | `WritingBackPressurePolicy` | what a full writing queue means: reject the record, or how long to wait for room | by `back-pressure`: fallback, rejecting or blocking |
-| `BatchDispatchedListener<R>` | take a batch the buffer has dispatched; any number, added and removed at run time | the batcher, which enqueues it in the writing queue |
+| `BatchDispatchedListener<R>` | take a batch the batcher has dispatched; any number, added to the batcher and removed at run time | the writing queue |
 | `WritingBatchQueue<R>` | hold dispatched batches until the writer takes one, and keep a taken one until it is confirmed | in memory, bounded |
 | `WritingFallback<R>` | keep what could not be written, with the reason and the error | none: log at ERROR and count |
 | `BatcherMeter`, `BufferMeter`, `WriterMeter` | report every event; each method does nothing by default | none in core, Micrometer in `batcher-micrometer` |
@@ -265,9 +265,12 @@ delivers the batch again.
 
 A stage lets go of a batch only once the next one has taken it:
 
-- the buffer drops the records once every `BatchDispatchedListener` has returned; a
-  throw from any leaves them in the buffer, and all the listeners get the batch
-  again;
+- the buffer drops the records of a dispatched batch only once it is written or
+  parked in the fallback, end to end: a buffer whose source acknowledges on
+  confirm, a message broker say, loses nothing even with the writing queue in
+  memory;
+- the batcher hands a dispatched batch to every `BatchDispatchedListener`; a
+  throw from any keeps it with the batcher, and all the listeners get it again;
 - the writer takes a batch from the writing queue and confirms it once the batch
   is written or parked; a stop that interrupts the write requeues it.
 
@@ -347,9 +350,8 @@ Shutdown is the part that decides whether you lose data on every deploy.
 
 In order:
 
-1. The batcher stops accepting, and the buffer closes: its scheduler
-   stops first. What it still holds is
-   dispatched with no policy met, so the batches are enqueued in the writing
+1. The batcher stops accepting and stops asking its policies, then closes the
+   buffer. What an in-memory buffer still holds is dispatched with no policy met, so the batches are enqueued in the writing
    queue as usual, waiting for room within the budget.
 2. The queue closes. The writer works through what is in it until it is empty
    or the budget is spent.
