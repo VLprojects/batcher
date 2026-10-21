@@ -1,10 +1,9 @@
-package pro.vlprojects.batcher.dto
+package pro.vlprojects.batcher.data
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import pro.vlprojects.batcher.data.Record
 import java.time.Instant
 
 class BatchTests {

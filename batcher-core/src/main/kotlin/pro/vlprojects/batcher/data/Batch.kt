@@ -1,6 +1,5 @@
-package pro.vlprojects.batcher.dto
+package pro.vlprojects.batcher.data
 
-import pro.vlprojects.batcher.data.Record
 import java.util.UUID
 
 /**

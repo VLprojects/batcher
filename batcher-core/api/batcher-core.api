@@ -45,12 +45,7 @@ public abstract interface class pro/vlprojects/batcher/buffer/usage/DurationMeas
 public abstract interface class pro/vlprojects/batcher/buffer/usage/UsageMeasurable {
 }
 
-public abstract interface class pro/vlprojects/batcher/data/Record {
-	public abstract fun getAcceptedAt ()Ljava/time/Instant;
-	public abstract fun getPayload ()Ljava/lang/Object;
-}
-
-public final class pro/vlprojects/batcher/dto/Batch {
+public final class pro/vlprojects/batcher/data/Batch {
 	public fun <init> (Ljava/util/UUID;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/util/UUID;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -59,6 +54,11 @@ public final class pro/vlprojects/batcher/dto/Batch {
 	public final fun getSize ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class pro/vlprojects/batcher/data/Record {
+	public abstract fun getAcceptedAt ()Ljava/time/Instant;
+	public abstract fun getPayload ()Ljava/lang/Object;
 }
 
 public final class pro/vlprojects/batcher/fallback/FallbackReason : java/lang/Enum {
@@ -78,7 +78,7 @@ public abstract interface class pro/vlprojects/batcher/fallback/WritingFallback 
 }
 
 public abstract interface class pro/vlprojects/batcher/listener/BatchDispatchedListener {
-	public abstract fun handle (Lpro/vlprojects/batcher/dto/Batch;)V
+	public abstract fun handle (Lpro/vlprojects/batcher/data/Batch;)V
 }
 
 public final class pro/vlprojects/batcher/metric/AcceptanceResult : java/lang/Enum {
@@ -144,15 +144,15 @@ public final class pro/vlprojects/batcher/queue/EnqueueStatus : java/lang/Enum {
 
 public abstract interface class pro/vlprojects/batcher/queue/WritingBatchQueue {
 	public abstract fun close ()V
-	public abstract fun confirm (Lpro/vlprojects/batcher/dto/Batch;)V
-	public abstract fun enqueue (Lpro/vlprojects/batcher/dto/Batch;Ljava/time/Duration;)Lpro/vlprojects/batcher/queue/EnqueueStatus;
+	public abstract fun confirm (Lpro/vlprojects/batcher/data/Batch;)V
+	public abstract fun enqueue (Lpro/vlprojects/batcher/data/Batch;Ljava/time/Duration;)Lpro/vlprojects/batcher/queue/EnqueueStatus;
 	public abstract fun getSize ()Ljava/lang/Integer;
 	public abstract fun isClosed ()Z
 	public abstract fun isEmpty ()Z
 	public abstract fun isFull ()Z
 	public abstract fun open ()V
-	public abstract fun requeue (Lpro/vlprojects/batcher/dto/Batch;)V
-	public abstract fun take (Ljava/time/Duration;)Lpro/vlprojects/batcher/dto/Batch;
+	public abstract fun requeue (Lpro/vlprojects/batcher/data/Batch;)V
+	public abstract fun take (Ljava/time/Duration;)Lpro/vlprojects/batcher/data/Batch;
 	public abstract fun takeAll ()Ljava/util/List;
 }
 
@@ -181,7 +181,7 @@ public abstract interface class pro/vlprojects/batcher/queue/policy/WritingBackP
 }
 
 public abstract interface class pro/vlprojects/batcher/writer/BatchWriter {
+	public abstract fun persist (Lpro/vlprojects/batcher/data/Batch;)V
 	public abstract fun persist (Lpro/vlprojects/batcher/data/Record;)V
-	public abstract fun persist (Lpro/vlprojects/batcher/dto/Batch;)V
 }
 

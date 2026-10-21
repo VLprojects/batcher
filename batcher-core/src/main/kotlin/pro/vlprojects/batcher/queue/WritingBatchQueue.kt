@@ -1,7 +1,7 @@
 package pro.vlprojects.batcher.queue
 
+import pro.vlprojects.batcher.data.Batch
 import pro.vlprojects.batcher.data.Record
-import pro.vlprojects.batcher.dto.Batch
 import java.time.Duration
 
 /**

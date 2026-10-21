@@ -2,8 +2,8 @@ package pro.vlprojects.batcher.buffer
 
 import pro.vlprojects.batcher.buffer.policy.DispatchPolicy
 import pro.vlprojects.batcher.buffer.usage.UsageMeasurable
+import pro.vlprojects.batcher.data.Batch
 import pro.vlprojects.batcher.data.Record
-import pro.vlprojects.batcher.dto.Batch
 import pro.vlprojects.batcher.listener.BatchDispatchedListener
 
 /**
